@@ -1,0 +1,166 @@
+#' Compute a p-value for the to be estimated copula
+#'
+#' @param observedX1 a vector of observations of size n
+#' @param observedX2 a vector of observations of size n
+#' @param observedX3 a vector of observations of size n
+#' @param est_family the copula family to estimate
+#' @param nReplications the amount of bootstrap replications to perform
+#' @param h the bandwidth to use in the estimation.
+#' @param grid the grid to use in the estimation.
+#' @param methodBoot the bootstrap method to use in the estimations, either
+#' "CondParamBoot" or "NPBoot"
+#'
+#' @return a list with (p_value, T_comp, bootstrap_T)
+#' \itemize{
+#'     \item the p-value of the test
+#'     \item T_comp is the computed Cramer von Mises distance
+#'     \item bootstrap_T are the bootstrapped Cramer von Mises distances.
+#' }
+#'
+#' @example
+#' # We simulate from a conditional copula
+#' N = 500
+#' X3 = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = 0.9 * pnorm(X3, mean = 5, sd = 2)
+#' simCopula = matrix(nrow = N, ncol = 2)
+#' for (i in 1:N) {
+#'   simCopula[i,] = VineCopula::BiCopSim(N=1 , family = 3,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau[i] ))
+#' }
+#' X1 = qnorm(simCopula[,1])
+#' X2 = qnorm(simCopula[,2])
+#'
+#' # We do the estimation
+#' grid = c(0.2, 0.4, 0.6, 0.8)
+#' resultsList = condCopulas_GoFTest(observedX1 = X1, observedX2 = X2,
+#'   observedX3 = X3, est_family = 3, nReplications = 50, h = 0.4, grid = grid,
+#'   methodBoot = "CondParamBoot")
+#' resultsList
+#'
+condCopulas_GoFTest <- function(observedX1, observedX2, observedX3,
+                                est_family, nReplications, h, grid, methodBoot)
+{
+  env_main <- environment()
+  n = length(observedX1)
+  grid_length <- length(grid)
+  grid_long <- rep(grid, times = grid_length)
+  grid_long2 <- rep(grid, each = grid_length)
+  grid_X3 <- quantile(observedX3, grid)
+
+  C_hat = estimateNPCondCopula(observedX1, observedX2, observedX3,
+                               U1_ = grid, U2_ = grid, newX3 = grid_X3,
+                               kernel = "Epanechnikov", h = h)
+
+  theta_x3 = estimateParCondCopula(observedX1, observedX2, observedX3,
+                                   newX3 = grid_X3, family = est_family,
+                                   h = 0.1, method = "itau")
+  C_theta_hat = condCopulas_GoFTest_CDFfromPar(theta_x3, env_main)
+  T_comp = sum((C_hat - C_theta_hat)^2)
+
+  bootstrap_T = switch(methodBoot,
+
+                       CondParamBoot = {condCopulas_GoFTest_CondParamBoot(env_main)}
+                       ,
+                       NPBoot = {condCopulas_GoFTest_NPBoot(env_main)}
+                       ,
+                       {stop(paste0("Bootstrap method not implemented: ", methodBoot))}
+  )
+  bootstrap_T <- bootstrap_T[!is.na(bootstrap_T)]  # Remove the NA values
+  p_value = mean(as.numeric(bootstrap_T > T_comp))
+
+  return(list( p_value = p_value,
+               T_comp = T_comp,
+               bootstrap_T = bootstrap_T ))
+}
+
+#' Estimate the CDF from a conditional parameter
+#' Subfunction of condCopulas_GoFTest
+#' @NoRd
+#'
+condCopulas_GoFTest_CDFfromPar <- function(theta_x3, E)
+{
+  C_theta_hat = array(0, dim = c(E$grid_length, E$grid_length, E$grid_length))
+  if (E$est_family %in% c(1,3,4,5,6)){
+    for (k in 1:length(theta_x3)){
+      C_theta_hat[,,k] = VineCopula::BiCopCDF(
+        E$grid_long, E$grid_long2, family = E$est_family, theta_x3[k])
+    }
+  } else {
+    for (k in 1:dim(theta_x3)[1]){
+      C_theta_hat[,,k] = VineCopula::BiCopCDF(
+        E$grid_long, E$grid_long2, family = E$est_family,
+        theta_x3[k,1], par2 = theta_x3[k,2])
+    }
+  }
+  return(C_theta_hat)
+}
+
+#' Perform the conditional parametric bootstrap procedure
+#' Subfunction of condCopulas_GoFTest
+#' @NoRd
+#'
+condCopulas_GoFTest_CondParamBoot <- function(E)
+{
+
+  bootstrap_sample = matrix(nrow = E$n, ncol = 3)
+  bootstrap_T = rep(NA, E$nReplications)
+  X3_pars = estimateParCondCopula(E$observedX1, E$observedX2, E$observedX3,
+                                  E$observedX3, family = E$est_family, h = E$h)
+  if (anyNA(X3_pars)){ warning("NA in estimation") }
+
+  for (k in 1:E$nReplications){  # amount of bootstrapped tests statistics
+    bootstrap_random = sample.int(E$n, replace = TRUE)  # Sample with replacement
+    bootstrap_sample[,3] = E$observedX3[bootstrap_random]
+    bootstrap_par = X3_pars[bootstrap_random]
+    if (est_family %in% c(1,3,4,5,6)){
+      bootstrap_sample[,1:2] = VineCopula::BiCopSim(N=E$n, family = E$est_family,
+                                                    par = bootstrap_par)
+    } else if (est_family == 2) {
+      bootstrap_sample[,1:2] = VineCopula::BiCopSim(N=E$n, family = E$est_family,
+                                                    par = bootstrap_par, par2 = 4)
+    } else {
+      cat("sim_family ", sim_family, " not implemented")
+    }
+
+    C_hat_star = estimateNPCondCopula(
+      bootstrap_sample[,1], bootstrap_sample[,2],
+      bootstrap_sample[,3], U1_ = E$grid, U2_ = E$grid, newX3 = E$grid_X3,
+      kernel = "Epanechnikov", h = E$h)
+    theta_x3_star = estimateParCondCopula(
+      bootstrap_sample[,1], bootstrap_sample[,2],
+      bootstrap_sample[,3], newX3 = E$grid_X3, family = E$est_family, h = E$h)
+    C_theta_hat_star = condCopulas_GoFTest_CDFfromPar(theta_x3_star, E)
+    bootstrap_T[k] = sum((C_hat_star - C_theta_hat_star)^2)
+  }
+  return(bootstrap_T)
+}
+
+#' Perform the Nonparametric bootstrap procedure
+#' Subfunction of condCopulas_GoFTest
+#' @NoRd
+#'
+condCopulas_GoFTest_NPBoot <- function(E)
+{
+
+  bootstrap_sample = matrix(nrow = E$n, ncol = 3)
+  bootstrap_T = rep(NA, E$nReplications)
+
+  for (k in 1:E$nReplications){  # amount of  bootstrapped tests statistics
+
+    bootstrap_random = sample.int(E$n, replace = TRUE)  # Sample with replacement
+
+    bootstrap_sample[,1] = E$observedX1[bootstrap_random]
+    bootstrap_sample[,2] = E$observedX2[bootstrap_random]
+    bootstrap_sample[,3] = E$observedX3[bootstrap_random]
+
+    C_hat_star = estimateNPCondCopula(
+      bootstrap_sample[,1], bootstrap_sample[,2], bootstrap_sample[,3],
+      U1_ = E$grid, U2_ = E$grid, newX3 = E$grid_X3, kernel = "Epanechnikov", h = E$h)
+    theta_x3_star = estimateParCondCopula(
+      bootstrap_sample[,1], bootstrap_sample[,2], bootstrap_sample[,3],
+      newX3 = E$grid_X3, family = E$est_family, h = E$h)
+    C_theta_hat_star = condCopulas_GoFTest_CDFfromPar(theta_x3_star, E)
+    bootstrap_T[k] = sum((C_hat_star - E$C_hat + E$C_theta_hat - C_theta_hat_star)^2)
+  }
+  return(bootstrap_T)
+}

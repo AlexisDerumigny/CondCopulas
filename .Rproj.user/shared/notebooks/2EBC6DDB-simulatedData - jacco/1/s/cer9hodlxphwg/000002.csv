@@ -1,0 +1,4 @@
+"0","ggplot() + geom_point(aes(x=X1, y=X2, color = X3)) + "
+"0","  scale_color_gradient(low=""blue"", high=""yellow"") +"
+"0","  ggtitle(""Scatterplot of (X1, X2) colored by X3"")"
+"0",""
