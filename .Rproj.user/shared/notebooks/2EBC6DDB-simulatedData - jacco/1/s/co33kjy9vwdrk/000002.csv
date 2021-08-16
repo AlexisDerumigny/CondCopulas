@@ -1,3 +1,0 @@
-"0","whichX3Low = which(X3 <= 2)"
-"0","whichX3High = which(X3 > 8)"
-"0","ggplot() + geom_point(aes(x=X1[whichX3Low], y=X2[whichX3Low]))"

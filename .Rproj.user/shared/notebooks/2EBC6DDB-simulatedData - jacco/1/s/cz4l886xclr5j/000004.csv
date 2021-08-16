@@ -1,6 +1,0 @@
-"0",""
-"0","ggplot(dataCondQuantiles, aes(x = pX, y = qX2, color = valX3, group = as.factor(valX3))) + geom_line() +"
-"0","  ggtitle(""Conditional quantiles of X2 given X3 = x3"") +"
-"0","  xlab(""Level of the conditional quantile"") +"
-"0","  ylab(""Value of the conditional quantile"") + scale_color_continuous(name = ""Conditioning\nvalue x3"")"
-"0",""

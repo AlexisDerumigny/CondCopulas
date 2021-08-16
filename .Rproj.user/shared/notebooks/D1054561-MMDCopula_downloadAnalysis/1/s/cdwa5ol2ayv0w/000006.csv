@@ -1,4 +1,0 @@
-"0","ggplot(mat_download) +"
-"0","  geom_line(aes(x = date, y = MMDCopula)) +"
-"0","  ylab(label = ""Download count of MMDCopula per day"") +"
-"0","  scale_x_date(breaks = as.Date(""2020-10-01"") %m+% months(c(0:6)*2))"

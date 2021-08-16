@@ -1,7 +1,0 @@
-"0","resultsList = condCopulas_GoFTest(observedX1 = X1, observedX2 = X2,
-  observedX3 = X3, est_family = 3, nReplications = 50, h = 0.4, grid = grid,
-  methodBoot = ""CondParamBoot"")
-"
-"2","Error in condCopulas_GoFTest(observedX1 = X1, observedX2 = X2, observedX3 = X3,  : 
-  impossible de trouver la fonction ""condCopulas_GoFTest""
-"

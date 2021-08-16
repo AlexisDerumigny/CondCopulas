@@ -1,3 +1,0 @@
-"0","ggplot(dowloads) +"
-"0","  geom_line(aes(x = date, y = count, color = package)) +"
-"0","  scale_y_log10()"
