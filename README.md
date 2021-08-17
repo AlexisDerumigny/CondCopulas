@@ -6,20 +6,23 @@ Conditional copulas
 # With pointwise conditioning
 
 
-## Estimation of conditional copulas
+## Estimation of conditional copulas (using kernel smoothing)
 
-* estimationCondCopulas.R
-    * `estimateNPCondCopula`: nonparametric estimation of conditional copulas
-    * `estimateParCondCopula`: parametric estimation of conditional copulas
-    * `estimateParCondCopula_ZIJ`: parametric estimation of conditional copulas
-    using (already computed) conditional pseudo-observations
+
+* `estimateNPCondCopula`: nonparametric estimation of conditional copulas
+
+* `estimateParCondCopula`: parametric estimation of conditional copulas
+
+* `estimateParCondCopula_ZIJ`: parametric estimation of conditional copulas
+using (already computed) conditional pseudo-observations
 
 
 ## Estimation of conditional Kendall's tau (CKT)
 
 A general wrapper function:
 
-* `CKT.estimate`: that can be used for any method of estimating conditional Kendall's tau
+* `CKT.estimate`: that can be used for any method of estimating conditional Kendall's tau.
+Each of these methods is detailed below and has its own function.
 
 ### Kernel-based estimation of conditional Kendall's tau
 
@@ -28,29 +31,31 @@ A general wrapper function:
 ### Kendall's regression
 
 * `CKT.kendallReg.fit`: fit Kendall's regression, a regression-like method for the estimation of conditional Kendall's tau
+
 * `CKT.kendallReg.predict`: for prediction of the new conditional Kendall's tau (given new covariates)
 
 
 ### Classification-based estimation of conditional Kendall's tau
 
 * using tree:
-    * `CKT.fit.tree`: for fitting the tree
-    * `CKT.predict.tree`: for prediction of the tree
+    * `CKT.fit.tree`: for fitting a tree-based model for the conditional Kendall's tau
+    * `CKT.predict.tree`: for prediction of new conditional Kendall's taus    
     
 * using random forests:
-    * `CKT.fit.randomForest`: for fitting the random forest
+    * `CKT.fit.randomForest`: for fitting a random forest-based model for the conditional Kendall's tau
     * `CKT.predict.randomForest`: for prediction of new conditional Kendall's taus    
 
 * using nearest neighbors:
     * `CKT.predict.kNN`: for several numbers of nearest neighbors
     
 * using neural networks:
-    * `CKT.fit.nNets`: for fitting the neural networks
+    * `CKT.fit.nNets`: for fitting a neural networks-based model for the conditional Kendall's tau
     * `CKT.predict.nNets`: for prediction of new conditional Kendall's taus
     
 * using GLM:
-    * `CKT.fit.GLM`: for fitting the GLM
-    * `CKT.predict.GLM`: for prediction of the GLM
+    * `CKT.fit.GLM`: for fitting a GLM-like model for the conditional Kendall's tau
+    * `CKT.predict.GLM`: for prediction of new conditional Kendall's taus
+
 
 ### Advanced functions for manual hyperparameter choices
 
@@ -81,3 +86,4 @@ finite-distance bounds and asymptotic behavior.
 Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 *Journal of Multivariate Analysis*, 178, 104610.
+
