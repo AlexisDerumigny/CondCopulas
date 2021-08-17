@@ -63,3 +63,21 @@ A general wrapper function:
 * `CKT.adaptkNN`: for a (local) aggregation of the number of nearest neighbors based on Lepski's method
 
 
+# References
+
+Derumigny, A., & Fermanian, J. D. (2017).
+About tests of the “simplifying” assumption for conditional copulas.
+*Dependence Modeling*, 5(1), 154-197.
+
+Derumigny, A., & Fermanian, J. D. (2019).
+A classification point-of-view about conditional Kendall’s tau.
+*Computational Statistics & Data Analysis*, 135, 70-94.
+
+Derumigny, A., & Fermanian, J. D. (2019).
+On kernel-based estimation of conditional Kendall’s tau:
+finite-distance bounds and asymptotic behavior.
+*Dependence Modeling*, 7(1), 292-321.
+
+Derumigny, A., & Fermanian, J. D. (2020).
+On Kendall’s regression.
+*Journal of Multivariate Analysis*, 178, 104610.
