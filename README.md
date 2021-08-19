@@ -5,6 +5,16 @@ Conditional copulas
 
 # With pointwise conditioning
 
+## Test of the simplifying assumption
+
+* `simpA.NP`: in a purely nonparametric framework
+
+* `simpA.param`: assuming that the conditional copula
+belongs to a parametric family of copulas for all values of the conditioning variable
+
+* `simpA.kendallReg`: test of the simplifying assumption based on the constancy
+of the conditional Kendall's tau assuming that it satisfies a regression-like equation
+
 
 ## Estimation of conditional copulas (using kernel smoothing)
 
