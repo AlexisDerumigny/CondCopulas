@@ -68,7 +68,10 @@ A list with components:
 \itemize{
     \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newData}.
     \item \code{fit}: the fitted model, of S3 class glmnet
-(see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+    (see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+    \item \code{lambda}: the value of the penalized parameter used.
+    (i.e. either the one supplied by the user or
+    the one determined by cross-validation)
 }
 }
 \description{
@@ -103,6 +106,9 @@ newZ = seq(2, 10, by = 0.1)
 estimatedCKT_kendallReg <- CKT.kendallReg.fit(
    observedX1 = X1, observedX2 = X2, observedZ = Z,
    ZToEstimate = newZ, h_kernel = 0.07)
+
+coef(estimatedCKT_kendallReg$fit,
+     s = estimatedCKT_kendallReg$lambda)
 
 # Comparison between true Kendall's tau (in black)
 # and estimated Kendall's tau (in red)

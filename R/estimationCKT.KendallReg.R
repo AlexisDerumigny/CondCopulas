@@ -52,7 +52,10 @@
 #' \itemize{
 #'     \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newData}.
 #'     \item \code{fit}: the fitted model, of S3 class glmnet
-#' (see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+#'     (see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+#'     \item \code{lambda}: the value of the penalized parameter used.
+#'     (i.e. either the one supplied by the user or
+#'     the one determined by cross-validation)
 #' }
 #'
 #' @references
@@ -75,6 +78,9 @@
 #' estimatedCKT_kendallReg <- CKT.kendallReg.fit(
 #'    observedX1 = X1, observedX2 = X2, observedZ = Z,
 #'    ZToEstimate = newZ, h_kernel = 0.07)
+#'
+#' coef(estimatedCKT_kendallReg$fit,
+#'      s = estimatedCKT_kendallReg$lambda)
 #'
 #' # Comparison between true Kendall's tau (in black)
 #' # and estimated Kendall's tau (in red)
@@ -126,7 +132,7 @@ CKT.kendallReg.fit <- function(
   estimatedCKT = CKT.kendallReg.predict(fit = fit, newData = newData,
                                         lambda = lambda, Lambda_inv = Lambda_inv)
   return (list(estimatedCKT = estimatedCKT,
-               fit = fit))
+               fit = fit, lambda = lambda))
 }
 
 
@@ -217,36 +223,59 @@ CKT.KendallReg.LambdaCV <- function(
   observedX1, observedX2,
   observedZ, ZToEstimate, designMatrixZ,
   typeEstCKT = 4, h_lambda, Lambda = identity, kernel.name = "Epa",
-  Kfolds_lambda = 10, l_norm = 1)
+  Kfolds_lambda = 10, l_norm = 1, matrixSignsPairs = NULL,
+  progressBars = "global")
 {
   n = length(observedX1)
   nZprime = length(ZToEstimate)
 
-  matrixSignsPairs_ = computeMatrixSignPairs(
-    vectorX1 = observedX1, vectorX2 = observedX2, typeEstCKT = typeEstCKT)
+  if (is.null(matrixSignsPairs)){
+    matrixSignsPairs = computeMatrixSignPairs(
+      vectorX1 = observedX1, vectorX2 = observedX2, typeEstCKT = typeEstCKT)
+  }
 
   if (is.vector(observedZ)){
     estimCKTNP <- CKT.kernel.univariate
   } else {
     estimCKTNP <- CKT.kernel.multivariate
   }
+  switch (progressBars,
+
+          "none" = { globProgressBar = FALSE
+          indivProgressBar = FALSE },
+
+          "global" = { globProgressBar = TRUE
+          indivProgressBar = FALSE },
+
+          "eachStep" = { globProgressBar = FALSE
+          indivProgressBar = TRUE },
+
+          {stop("Uncorrect value for 'progressBars'.")}
+  )
 
   foldid = sample(rep(seq(Kfolds_lambda), length = n))
   list_vectorEstimate = as.list(seq(Kfolds_lambda))
   list_vectorEstimate_comp = as.list(seq(Kfolds_lambda))
   list_resultEstimation = as.list(seq(Kfolds_lambda))
   vectorLambda = c()
+  if (globProgressBar) {pb <- pbapply::startpb(min = 0, max = 3 * Kfolds_lambda)}
   for (i in seq(Kfolds_lambda)) {
     which = foldid == i
     list_vectorEstimate[[i]] = estimCKTNP(
-      matrixSignsPairs = matrixSignsPairs_[!which, !which],
+      matrixSignsPairs = matrixSignsPairs[!which, !which],
       observedZ = observedZ[!which], typeEstCKT = typeEstCKT,
-      h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name)
+      h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
+      progressBar = indivProgressBar)
+
+    if (globProgressBar) {pbapply::setpb(pb, pbapply::getpb(pb) + 1)}
 
     list_vectorEstimate_comp[[i]] = estimCKTNP(
-      matrixSignsPairs = matrixSignsPairs_[which, which],
+      matrixSignsPairs = matrixSignsPairs[which, which],
       observedZ = observedZ[which], typeEstCKT = typeEstCKT,
-      h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name)
+      h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
+      progressBar = indivProgressBar)
+
+    if (globProgressBar) {pbapply::setpb(pb, pbapply::getpb(pb) + 1)}
 
     whichna = which(!is.finite(list_vectorEstimate[[i]]))
     if (length(which(is.finite(list_vectorEstimate[[i]]))) == 0) {
@@ -263,7 +292,10 @@ CKT.KendallReg.LambdaCV <- function(
                        x = designMatrixZ)
     }
     vectorLambda = c(vectorLambda, list_resultEstimation[[i]]$lambda)
+
+    if (globProgressBar) {pbapply::setpb(pb, pbapply::getpb(pb) + 1)}
   }
+  if (globProgressBar) {pbapply::closepb(pb)}
 
   # Choice of the lambda used
   uniqueLambda = unique(vectorLambda)

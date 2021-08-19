@@ -15,7 +15,9 @@ CKT.KendallReg.LambdaCV(
   Lambda = identity,
   kernel.name = "Epa",
   Kfolds_lambda = 10,
-  l_norm = 1
+  l_norm = 1,
+  matrixSignsPairs = NULL,
+  progressBars = "global"
 )
 }
 \arguments{
@@ -75,3 +77,4 @@ Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 Journal of Multivariate Analysis, 178, 104610.
 }
+\keyword{internal}
