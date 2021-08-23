@@ -50,6 +50,13 @@
 #' between predicted and estimated conditional Kendall's tau
 #' while l_norm=2 corresponds to the sum of squares of differences.
 #'
+#'
+#' @return a list containing
+#' \itemize{
+#'     \item \code{statWn}: the value of the test statistic.
+#'     \item \code{p_val}: the p-value of the test.
+#' }
+#'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
 #' On Kendall’s regression.

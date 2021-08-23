@@ -22,23 +22,23 @@ testStat_T2c <- function(env)
   # Estimation by conditional CMLE
   if (env$family == 2) {
     env$theta_0 = VineCopula::BiCopEst(u1 = env$Z1, u2 = env$Z2,
-                                   family = 1 , method = "itau")
+                                   family = 1 , method = "itau")$par
 
-    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2_J,
+    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2,
                                              U3 = env$U3, newU3 = env$grid$nodes,
                                              family = 1 , method = "itau",
                                              h = env$h)
   } else {
     env$theta_0 = VineCopula::BiCopEst(u1 = env$Z1, u2 = env$Z2,
-                                       family = env$family , method = "mle")
+                                       family = env$family , method = "mle")$par
 
-    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2_J,
+    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2,
                                              U3 = env$U3, newU3 = env$grid$nodes,
                                              family = env$family , method = "mle",
                                              h = env$h)
   }
 
-  true_stat = sum( env$grid$weights * (env$theta_0 - env$theta_xJ)^2)
+  env$true_stat = sum( env$grid$weights * (env$theta_0 - env$theta_xJ)^2)
 }
 
 
@@ -65,17 +65,17 @@ testStat_T2c_boot1st <- function(env)
   # Estimation by conditional CMLE
   if (env$family == 2) {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                       family = 1 , method = "itau")
+                                       family = 1 , method = "itau")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_J_st,
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
                                              U3 = env$U3_st, newU3 = env$grid$nodes,
                                              family = 1 , method = "itau",
                                              h = env$h)
   } else {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                       family = env$family , method = "mle")
+                                       family = env$family , method = "mle")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_J_st,
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
                                              U3 = env$U3_st, newU3 = env$grid$nodes,
                                              family = env$family , method = "mle",
                                              h = env$h)
@@ -109,17 +109,17 @@ testStat_T2c_boot2st <- function(env)
   # Estimation by conditional CMLE
   if (env$family == 2) {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                          family = 1 , method = "itau")
+                                          family = 1 , method = "itau")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_J_st,
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
                                                 U3 = env$U3_st, newU3 = env$grid$nodes,
                                                 family = 1 , method = "itau",
                                                 h = env$h)
   } else {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                          family = env$family , method = "mle")
+                                          family = env$family , method = "mle")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_J_st,
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
                                                 U3 = env$U3_st, newU3 = env$grid$nodes,
                                                 family = env$family , method = "mle",
                                                 h = env$h)

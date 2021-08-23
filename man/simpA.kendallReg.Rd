@@ -57,6 +57,13 @@ l_norm=1 corresponds to the sum of absolute values of differences
 between predicted and estimated conditional Kendall's tau
 while l_norm=2 corresponds to the sum of squares of differences.}
 }
+\value{
+a list containing
+\itemize{
+    \item \code{statWn}: the value of the test statistic.
+    \item \code{p_val}: the p-value of the test.
+}
+}
 \description{
 This function computes Kendall's regression, a regression-like
 model for conditional Kendall's tau. More precisely, it fits the model

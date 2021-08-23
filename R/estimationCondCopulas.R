@@ -21,6 +21,11 @@
 #' \eqn{\hat C_{1,2|3}(u_1, u_2 | X_3 = x_3)}
 #' where \eqn{u_1} = U1_[i], \eqn{u_2} = U2_[j] and \eqn{x_3} = newX3[k]
 #'
+#' @references
+#' Derumigny, A., & Fermanian, J. D. (2017).
+#' About tests of the “simplifying” assumption for conditional copulas.
+#' Dependence Modeling, 5(1), 154-197.
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' N = 500
@@ -113,6 +118,12 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' @return a vector of size \code{length(newX3)} containing
 #' the estimated conditional copula parameters for each value of newU3.
 #'
+#'
+#' @references
+#' Derumigny, A., & Fermanian, J. D. (2017).
+#' About tests of the “simplifying” assumption for conditional copulas.
+#' Dependence Modeling, 5(1), 154-197.
+#'
 #' @examples
 #'
 #' # We simulate from a conditional copula
@@ -179,7 +190,7 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
 #' @param Z2_J the conditional pseudos-observations of the second variable,
 #' i.e. \eqn{\hat F_{2|J}( x_{i,2} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.
 #' @param U3 the pseudos-observations of the conditional variable.
-#' @param newU3 new observations of the conditionning variable on which we would like
+#' @param newU3 new observations of the conditioning variable on which we would like
 #' to estimate the conditional parameter
 #' @param family the family of conditional copulas used.
 #' @param method method of estimation for the parametric conditional copula.
@@ -187,6 +198,12 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
 #'
 #' @return a vector of size \code{length(newX3)} containing
 #' the estimated conditional copula parameters for each value of newU3.
+#'
+#'
+#' @references
+#' Derumigny, A., & Fermanian, J. D. (2017).
+#' About tests of the “simplifying” assumption for conditional copulas.
+#' Dependence Modeling, 5(1), 154-197.
 #'
 #' @export
 #'

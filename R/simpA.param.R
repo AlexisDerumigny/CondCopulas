@@ -22,7 +22,18 @@
 #'   (see the documentation of the class \code{VineCopula::\link[VineCopula]{BiCop}()}
 #'   for the available families).
 #'
+#' @return a list containing
+#' \itemize{
+#'     \item \code{true_stat}: the value of the test statistic computed on the whole sample
+#'     \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
+#'     test statistics.
+#'     \item \code{p_val}: the p-value of the test.
+#' }
 #'
+#' @references
+#' Derumigny, A., & Fermanian, J. D. (2017).
+#' About tests of the “simplifying” assumption for conditional copulas.
+#' Dependence Modeling, 5(1), 154-197.
 #'
 #' @examples
 #' # We simulate from a conditional copula
@@ -57,7 +68,7 @@
 #' @export
 #'
 simpA.param <- function(
-  X1, X2, X3, family, testStat = "T2c", typeBoot = "bootNP", h,
+  X1, X2, X3, family, testStat = "T2c", typeBoot = "boot.NP", h,
   nBootstrap = 100,
   kernel.name = "Epanechnikov", truncVal = h,
   numericalInt = list(kind = "legendre", nGrid = 10) )
@@ -68,11 +79,9 @@ simpA.param <- function(
 
   nGrid = numericalInt$nGrid
   grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
-  # Change of range to be on [0,1]
+  # Change of range to be on [h, 1-h]
   grid$nodes <- grid$nodes * (1/2 - h) + 1/2
   grid$weights <- grid$weights / 2
-
-  ### TODO: add truncation
 
   switch(
     typeBoot,

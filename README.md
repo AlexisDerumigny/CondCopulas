@@ -5,7 +5,7 @@ Conditional copulas
 
 # With pointwise conditioning
 
-## Test of the simplifying assumption
+## Tests of the simplifying assumption
 
 * `simpA.NP`: in a purely nonparametric framework
 
@@ -76,6 +76,22 @@ Each of these methods is detailed below and has its own function.
 * `CKT.KendallReg.LambdaCV` : cross-validated choice of the penalization parameter lambda
 
 * `CKT.adaptkNN`: for a (local) aggregation of the number of nearest neighbors based on Lepski's method
+
+
+# With discrete conditioning by Borel sets
+
+## Test of the assumption that the conditioning Borel subset has no influence on the conditional copula
+
+* `bCond.simpA.param` : assuming that the copula belongs to a parametric family
+
+
+## Estimation
+
+* `bCond.pobs` : computation of the conditional pseudo-observations
+$F_{1|A(i)}(X_{i,1} | A(i))$ and $F_{2|A(i)}(X_{i,2} | A(i))$ for every $i=1, \dots, n$.
+
+* `bCond.estParamCopula` : estimation of a conditional parametric copula,
+i.e. for every set $A$, a conditional parameter $\theta(A)$ is estimated.
 
 
 # References

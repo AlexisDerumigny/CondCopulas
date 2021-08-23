@@ -15,7 +15,7 @@ i.e. \eqn{\hat F_{2|J}( x_{i,2} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.}
 
 \item{U3}{the pseudos-observations of the conditional variable.}
 
-\item{newU3}{new observations of the conditionning variable on which we would like
+\item{newU3}{new observations of the conditioning variable on which we would like
 to estimate the conditional parameter}
 
 \item{family}{the family of conditional copulas used.}
@@ -31,4 +31,9 @@ the estimated conditional copula parameters for each value of newU3.
 \description{
 This is an auxiliary function that is called when conditional pseudos-observations
 are already available to estimate a parametric conditional copula.
+}
+\references{
+Derumigny, A., & Fermanian, J. D. (2017).
+About tests of the “simplifying” assumption for conditional copulas.
+Dependence Modeling, 5(1), 154-197.
 }

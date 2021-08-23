@@ -19,6 +19,18 @@
 #' \code{statmod::\link[statmod]{gauss.quad}}, including the number of
 #' quadrature points and the type of interpolation.
 #'
+#' @return a list containing
+#' \itemize{
+#'     \item \code{true_stat}: the value of the test statistic computed on the whole sample
+#'     \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
+#'     test statistics.
+#'     \item \code{p_val}: the p-value of the test.
+#' }
+#'
+#' @references
+#' Derumigny, A., & Fermanian, J. D. (2017).
+#' About tests of the “simplifying” assumption for conditional copulas.
+#' Dependence Modeling, 5(1), 154-197.
 #'
 #' @examples
 #' # We simulate from a conditional copula
