@@ -17,8 +17,10 @@
 #'   \item \code{T2c_tau} Same as above, except that the copula family is now parametrized
 #'   by its Kendall's tau instead of its natural parameter.
 #' }
-#' @param typeBoot
-#' @param nBootstrap
+#' @param typeBoot type of bootstrap used
+#' @param nBootstrap number of bootstrap replications
+#' @param check.pars.tau uses parameter check when transforming estimated parameters
+#' to Kendall's tau (only used for the statistic \code{T2c_tau}).
 #'
 #' @return a list containing
 #' \itemize{
@@ -67,7 +69,7 @@
 #'
 bCond.simpA.param <- function(
   X1, X2, partition, family, testStat = "T2c_tau", typeBoot = "boot.NP",
-  nBootstrap = 100)
+  nBootstrap = 100, check.pars.tau = FALSE)
 {
   if (length(X1) != length(X2)){stop("X1 and X2 should be of the same length.")}
   if (length(X1) != nrow(partition)){
@@ -154,8 +156,11 @@ testStat_bT2c <- function(env){
   if (env$parametrization == "par"){
     env$true_stat = sum((env$theta_0 - env$theta_boxes)^2)
   } else if (env$parametrization == "tau"){
-    env$true_stat = sum(( VineCopula::BiCopPar2Tau(env$theta_0, family = env$family)
-                          - VineCopula::BiCopPar2Tau(env$theta_boxes, family = env$family) )^2)
+    env$tau_0 = VineCopula::BiCopPar2Tau(env$theta_0, family = env$family,
+                                         check.pars = check.pars.tau)
+    env$tau_boxes = VineCopula::BiCopPar2Tau(env$theta_boxes, family = env$family,
+                                             check.pars = check.pars.tau)
+    env$true_stat = sum(( env$tau_0 - env$tau_boxes )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
@@ -173,12 +178,15 @@ testStat_bT2c_boot1st <- function(env){
                                             family = env$family_est, partition = env$partition_st)
 
   if (env$parametrization == "par"){
-    env$stat_st = sum((env$theta_boxes_st - env$theta_boxes - env$theta_0_st + env$theta_0)^2)
+    env$stat_st = sum((env$theta_boxes_st - env$theta_boxes + env$theta_0 - env$theta_0_st)^2)
   } else if (env$parametrization == "tau"){
-    env$stat_st = sum(( VineCopula::BiCopPar2Tau(env$theta_boxes_st, family = env$family)
-                        - VineCopula::BiCopPar2Tau(env$theta_boxes, family = env$family)
-                        - VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family)
-                        + VineCopula::BiCopPar2Tau(env$theta_0, family = env$family))^2)
+    env$tau_0_st = VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family,
+                                            check.pars = check.pars.tau)
+    env$tau_boxes_st = VineCopula::BiCopPar2Tau(env$theta_theta_boxes_st, family = env$family,
+                                                check.pars = check.pars.tau)
+
+    env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes
+                        + env$tau_0 - env$tau_boxes_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
@@ -198,8 +206,11 @@ testStat_bT2c_boot2st <- function(env){
   if (env$parametrization == "par"){
     env$stat_st = sum( (env$theta_boxes_st - env$theta_0_st)^2 )
   } else if (env$parametrization == "tau"){
-    env$stat_st = sum( ( VineCopula::BiCopPar2Tau(env$theta_boxes_st, family = env$family)
-                         - VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family) )^2)
+    env$tau_0_st = VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family,
+                                            check.pars = check.pars.tau)
+    env$tau_boxes_st = VineCopula::BiCopPar2Tau(env$theta_theta_boxes_st, family = env$family,
+                                                check.pars = check.pars.tau)
+    env$stat_st = sum( ( env$tau_boxes_st - env$tau_boxes_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
