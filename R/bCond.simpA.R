@@ -128,7 +128,7 @@ bCond.simpA.param <- function(
     },
 
     stop("Unknown test statistic name. Possible choice are: ",
-         "'T2c'.")
+         "'T2c_tau', 'T2c_par'.")
   )
 
   env <- environment()
@@ -151,9 +151,9 @@ testStat_bT2c <- function(env){
   env$theta_boxes = bCond.estParamCopula(U1 = condPobs[,1], U2 = condPobs[,2],
                                          family = env$family_est, partition = env$partition)
 
-  if (parametrization == "par"){
+  if (env$parametrization == "par"){
     env$true_stat = sum((env$theta_0 - env$theta_boxes)^2)
-  } else if (parametrization == "tau"){
+  } else if (env$parametrization == "tau"){
     env$true_stat = sum(( VineCopula::BiCopPar2Tau(env$theta_0, family = family)
                           - VineCopula::BiCopPar2Tau(env$theta_boxes, family = family) )^2)
   } else {
