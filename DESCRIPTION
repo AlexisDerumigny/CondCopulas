@@ -1,7 +1,7 @@
 Package: CondCopulas
 Type: Package
 Title: Estimation and inference for conditional copulas models
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097"))
 	)
@@ -12,6 +12,8 @@ Description:
 License: CC BY-NC 4.0
 Encoding: UTF-8
 RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.1.0)
 Suggests:
     MASS,
     data.tree,

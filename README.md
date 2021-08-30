@@ -1,4 +1,12 @@
 
+# How to install
+
+From GitHub, using the `devtools` package:
+``` r
+devtools::install_github("AlexisDerumigny/CondCopulas")
+```
+
+
 Conditional copulas
 =====================
 
