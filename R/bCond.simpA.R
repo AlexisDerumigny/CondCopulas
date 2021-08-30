@@ -186,7 +186,7 @@ testStat_bT2c_boot1st <- function(env){
                                                 check.pars = check.pars.tau)
 
     env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes
-                        + env$tau_0 - env$tau_boxes_st )^2)
+                        + env$tau_0 - env$tau_0_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
@@ -210,7 +210,7 @@ testStat_bT2c_boot2st <- function(env){
                                             check.pars = check.pars.tau)
     env$tau_boxes_st = VineCopula::BiCopPar2Tau(env$theta_theta_boxes_st, family = env$family,
                                                 check.pars = check.pars.tau)
-    env$stat_st = sum( ( env$tau_boxes_st - env$tau_boxes_st )^2)
+    env$stat_st = sum( ( env$tau_boxes_st - env$tau_0_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
