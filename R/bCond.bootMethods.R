@@ -45,10 +45,11 @@ boot.paramInd.bCond <- function(env, FUN_trueStat, FUN_stat_st)
   {
     if (env$family == 2) {
       simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
-                                          par = env$theta_0, par2 = 4)
+                                          par = env$cop_0$par, par2 = 4)
     }
     else {
-      simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family, par = env$theta_0)
+      simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
+                                          par = env$cop_0$par)
     }
     env$X1_st = simCopule_st[,1]
     env$X2_st = simCopule_st[,2]
@@ -83,10 +84,10 @@ boot.paramCond.bCond <- function(env, FUN_trueStat, FUN_stat_st)
       where_box = as.logical(env$partition_st[,box])
       if (env$family == 2) {
         simCopule_st[where_box,] = VineCopula::BiCopSim(
-          N = nobs_box, family = env$family, par = env$theta_boxes[box], par2 = 4)
+          N = nobs_box, family = env$family, par = env$cop_boxes[[box]]$par, par2 = 4)
       } else {
         simCopule_st[where_box,] = VineCopula::BiCopSim(
-          N = nobs_box, family = env$family, par = env$theta_boxes[box])
+          N = nobs_box, family = env$family, par = env$cop_boxes[[box]]$par)
       }
     }
 

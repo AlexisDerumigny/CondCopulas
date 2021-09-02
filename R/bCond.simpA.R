@@ -40,28 +40,30 @@
 #' Z = stats::runif(n = n)
 #' CKT = 0.2 * as.numeric(Z <= 0.3) +
 #'   0.5 * as.numeric(Z > 0.3 & Z <= 0.5) +
-#'   - 0.8 * as.numeric(Z > 0.5)
+#'   + 0.3 * as.numeric(Z > 0.5)
+#' family = 3
 #' simCopula = VineCopula::BiCopSim(N = n,
-#'   par = VineCopula::BiCopTau2Par(CKT, family = 1), family = 1)
+#'   par = VineCopula::BiCopTau2Par(CKT, family = family), family = family)
 #' X1 = simCopula[,1]
 #' X2 = simCopula[,2]
 #' partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 #'
-#' result = bCond.simpA.param(X1 = X1, X2 = X2,
-#'   partition = partition, family = 1, typeBoot = "boot.paramCond")
+#' result = bCond.simpA.param(X1 = X1, X2 = X2, testStat = "T2c_tau",
+#'   partition = partition, family = family, typeBoot = "boot.paramInd")
 #' print(result$p_val)
 #'
 #' n = 800
 #' Z = stats::runif(n = n)
 #' CKT = 0.1
+#' family = 3
 #' simCopula = VineCopula::BiCopSim(N = n,
-#'   par = VineCopula::BiCopTau2Par(CKT, family = 1), family = 1)
+#'   par = VineCopula::BiCopTau2Par(CKT, family = family), family = family)
 #' X1 = simCopula[,1]
 #' X2 = simCopula[,2]
 #' partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 #'
 #' result = bCond.simpA.param(X1 = X1, X2 = X2,
-#'   partition = partition, family = 1, typeBoot = "boot.paramCond")
+#'   partition = partition, family = family, typeBoot = "boot.NP")
 #' print(result$p_val)
 #'
 #'
@@ -69,7 +71,7 @@
 #'
 bCond.simpA.param <- function(
   X1, X2, partition, family, testStat = "T2c_tau", typeBoot = "boot.NP",
-  nBootstrap = 100, check.pars.tau = FALSE)
+  nBootstrap = 100)
 {
   if (length(X1) != length(X2)){stop("X1 and X2 should be of the same length.")}
   if (length(X1) != nrow(partition)){
@@ -147,19 +149,19 @@ testStat_bT2c <- function(env){
   condPobs <- bCond.pobs(X1 = env$X1, X2 = env$X2, partition = env$partition)
 
   # Estimation of the simplified (conditional) parameter
-  env$theta_0 = VineCopula::BiCopEst(u1 = condPobs[,1], u2 = condPobs[,2],
-                                     family = env$family_est , method = env$method)$par
+  env$cop_0 = VineCopula::BiCopEst(u1 = condPobs[,1], u2 = condPobs[,2],
+                                     family = env$family_est , method = env$method)
 
-  env$theta_boxes = bCond.estParamCopula(U1 = condPobs[,1], U2 = condPobs[,2],
+  env$cop_boxes = bCond.estParamCopula(U1 = condPobs[,1], U2 = condPobs[,2],
                                          family = env$family_est, partition = env$partition)
 
   if (env$parametrization == "par"){
+    env$theta_0 = env$cop_0$par
+    env$theta_boxes = unlist(lapply(env$cop_boxes, function(x){x$par}))
     env$true_stat = sum((env$theta_0 - env$theta_boxes)^2)
   } else if (env$parametrization == "tau"){
-    env$tau_0 = VineCopula::BiCopPar2Tau(env$theta_0, family = env$family,
-                                         check.pars = check.pars.tau)
-    env$tau_boxes = VineCopula::BiCopPar2Tau(env$theta_boxes, family = env$family,
-                                             check.pars = check.pars.tau)
+    env$tau_0 = env$cop_0$tau
+    env$tau_boxes = unlist(lapply(env$cop_boxes, function(x){x$tau}))
     env$true_stat = sum(( env$tau_0 - env$tau_boxes )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
@@ -171,22 +173,22 @@ testStat_bT2c_boot1st <- function(env){
   condPobs_st <- bCond.pobs(X1 = env$X1_st, X2 = env$X2_st, partition = env$partition_st)
 
   # Estimation of the simplified (conditional) parameter
-  env$theta_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
-                                        family = env$family_est , method = env$method)$par
+  env$cop_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
+                                        family = env$family_est , method = env$method)
 
-  env$theta_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
-                                            family = env$family_est, partition = env$partition_st)
+  env$cop_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
+                                          family = env$family_est, partition = env$partition_st)
 
   if (env$parametrization == "par"){
+    env$theta_0_st = env$cop_0_st$par
+    env$theta_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$par}))
+
     env$stat_st = sum((env$theta_boxes_st - env$theta_boxes + env$theta_0 - env$theta_0_st)^2)
   } else if (env$parametrization == "tau"){
-    env$tau_0_st = VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family,
-                                            check.pars = check.pars.tau)
-    env$tau_boxes_st = VineCopula::BiCopPar2Tau(env$theta_theta_boxes_st, family = env$family,
-                                                check.pars = check.pars.tau)
+    env$tau_0_st = env$cop_0_st$tau
+    env$tau_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$tau}))
 
-    env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes
-                        + env$tau_0 - env$tau_0_st )^2)
+    env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes + env$tau_0 - env$tau_0_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
@@ -197,20 +199,22 @@ testStat_bT2c_boot2st <- function(env){
   condPobs_st <- bCond.pobs(X1 = env$X1_st, X2 = env$X2_st, partition = env$partition_st)
 
   # Estimation of the simplified (conditional) parameter
-  env$theta_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
-                                        family = env$family_est , method = env$method)$par
+  env$cop_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
+                                      family = env$family_est , method = env$method)
 
-  env$theta_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
-                                            family = env$family_est, partition = env$partition_st)
+  env$cop_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
+                                          family = env$family_est, partition = env$partition_st)
 
   if (env$parametrization == "par"){
+    env$theta_0_st = env$cop_0_st$par
+    env$theta_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$par}))
     env$stat_st = sum( (env$theta_boxes_st - env$theta_0_st)^2 )
+
   } else if (env$parametrization == "tau"){
-    env$tau_0_st = VineCopula::BiCopPar2Tau(env$theta_0_st, family = env$family,
-                                            check.pars = check.pars.tau)
-    env$tau_boxes_st = VineCopula::BiCopPar2Tau(env$theta_theta_boxes_st, family = env$family,
-                                                check.pars = check.pars.tau)
+    env$tau_0_st = env$cop_0_st$tau
+    env$tau_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$tau}))
     env$stat_st = sum( ( env$tau_boxes_st - env$tau_0_st )^2)
+
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }

@@ -1,7 +1,7 @@
 Package: CondCopulas
 Type: Package
 Title: Estimation and inference for conditional copulas models
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097"))
 	)

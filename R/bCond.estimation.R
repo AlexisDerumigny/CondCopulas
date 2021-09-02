@@ -71,8 +71,7 @@ bCond.pobs <- function(X1, X2, partition)
 #' partition[i,j] should be the indicator of whether the \code{i}-th observation
 #' belongs or not to the \code{j}-th conditioning event
 #'
-#' @return a vector of size \code{p} containing the estimated parameters
-#' of the \code{p} conditional copulas
+#' @return a list of size \code{p} containing the \code{p} conditional copulas
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2017).
@@ -92,10 +91,10 @@ bCond.pobs <- function(X1, X2, partition)
 #' partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 #' condPseudoObs = bCond.pobs(X1 = X1, X2 = X2, partition = partition)
 #'
-#' estimatedParams = bCond.estParamCopula(
+#' estimatedCondCopulas = bCond.estParamCopula(
 #'   U1 = condPseudoObs[,1], U2 = condPseudoObs[,2],
 #'   family = 1, partition = partition)
-#' print(estimatedParams)
+#' print(estimatedCondCopulas)
 #' # Comparison with the true conditional parameters: 0.2, 0.5, -0.8.
 #'
 #'
@@ -109,23 +108,23 @@ bCond.estParamCopula <- function(U1, U2, family, partition)
   }
   p = ncol(partition)
   family = rep(family, length.out = p)
-  theta_boxes = rep(NA , p)
+  copulas_boxes = as.list(rep(NA , p))
 
   for (box in 1:p)
   {
     if (family[box] != 2) {
-      theta_boxes[box] =
+      copulas_boxes[[box]] =
         try(VineCopula::BiCopEst(u1 = U1[which(partition[,box])] ,
                                  u2 = U2[which(partition[,box])] ,
-                                 family = family[box], method = "mle")$par , silent = TRUE)
+                                 family = family[box], method = "mle") , silent = TRUE)
     } else if (family[box] == 2) {
-      theta_boxes[box] =
+      copulas_boxes[[box]] =
         try(VineCopula::BiCopEst(u1 = U1[which(partition[,box])] ,
                                  u2 = U2[which(partition[,box])] ,
                                  family = 1, method = "itau")$par , silent = TRUE)
     }
   }
 
-  return (theta_boxes)
+  return (copulas_boxes)
 }
 
