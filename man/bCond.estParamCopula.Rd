@@ -21,8 +21,7 @@ partition[i,j] should be the indicator of whether the \code{i}-th observation
 belongs or not to the \code{j}-th conditioning event}
 }
 \value{
-a vector of size \code{p} containing the estimated parameters
-of the \code{p} conditional copulas
+a list of size \code{p} containing the \code{p} conditional copulas
 }
 \description{
 This function uses canonical maximum likelihood to estimate
@@ -44,10 +43,10 @@ X2 = simCopula[,2]
 partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 condPseudoObs = bCond.pobs(X1 = X1, X2 = X2, partition = partition)
 
-estimatedParams = bCond.estParamCopula(
+estimatedCondCopulas = bCond.estParamCopula(
   U1 = condPseudoObs[,1], U2 = condPseudoObs[,2],
   family = 1, partition = partition)
-print(estimatedParams)
+print(estimatedCondCopulas)
 # Comparison with the true conditional parameters: 0.2, 0.5, -0.8.
 
 

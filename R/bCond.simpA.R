@@ -19,8 +19,6 @@
 #' }
 #' @param typeBoot type of bootstrap used
 #' @param nBootstrap number of bootstrap replications
-#' @param check.pars.tau uses parameter check when transforming estimated parameters
-#' to Kendall's tau (only used for the statistic \code{T2c_tau}).
 #'
 #' @return a list containing
 #' \itemize{

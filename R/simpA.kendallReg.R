@@ -76,9 +76,13 @@
 #'
 #' result = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
-#'    listPhi = list(\(x) (x), \(x) (x^2), \(x) (x^3), \(x) (x^4), \(x) (x^5),
-#'                   \(x) (cos(x)), \(x) (sin(x)),
-#'                   \(x) (as.numeric(x <= 0.4)), \(x) (sin(x) <= 0.6)))
+#'    listPhi = list(
+#'      function(x){return(x)}, function(x){return(x^2)},
+#'      function(x){return(x^3)}, function(x){return(x^4)},
+#'      function(x){return(x^5)},
+#'      function(x){return(cos(x))}, function(x){return(sin(x))},
+#'      function(x){return(as.numeric(x <= 0.4))},
+#'      function(x){return(as.numeric(x <= 0.6))}) )
 #' result$p_val
 #'
 #' # We simulate from a conditional copula
@@ -93,9 +97,13 @@
 #'
 #' result = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
-#'    listPhi = list(\(x) (x), \(x) (x^2), \(x) (x^3), \(x) (x^4), \(x) (x^5),
-#'                   \(x) (cos(x)), \(x) (sin(x)),
-#'                   \(x) (as.numeric(x <= 0.4)), \(x) (sin(x) <= 0.6)))
+#'    listPhi = list(
+#'      function(x){return(x)}, function(x){return(x^2)},
+#'      function(x){return(x^3)}, function(x){return(x^4)},
+#'      function(x){return(x^5)},
+#'      function(x){return(cos(x))}, function(x){return(sin(x))},
+#'      function(x){return(as.numeric(x <= 0.4))},
+#'      function(x){return(as.numeric(x <= 0.6))}) )
 #' result$p_val
 #'
 #' @export
@@ -103,10 +111,11 @@
 simpA.kendallReg <- function(
   X1, X2, Z,
   vectorZToEstimate = NULL,
-  listPhi = list(\(x) (x), \(x) (x^2), \(x) (x^3)),
+  listPhi = list(function(x){return(x)}, function(x){return(x^2)},
+                 function(x){return(x^3)}),
   typeEstCKT = 4,
   h_kernel,
-  Lambda = \(x) (x), Lambda_deriv = \(x) (1),
+  Lambda = function(x){return(x)}, Lambda_deriv = function(x){return(1)},
   lambda = NULL, h_lambda = h_kernel,
   Kfolds_lambda = 5, l_norm = 1
   )

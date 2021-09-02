@@ -72,7 +72,8 @@
 #'   observedX1 = X1, observedX2 = X2, observedZ = Z,
 #'   newData = newZ,
 #'   methodEstimation = "logit", h = 0.07,
-#'   listPhi = list(\(x) (x), \(x) (x^2), \(x) (x^3)) )
+#'   listPhi = list(function(x){return(x)}, function(x){return(x^2)},
+#'                  function(x){return(x^3)}) )
 #'
 #' estimatedCKT_kNN <- CKT.estimate(
 #'   observedX1 = X1, observedX2 = X2, observedZ = Z,
@@ -118,7 +119,8 @@ CKT.estimate <- function (
   observedX1, observedX2, observedZ,
   newData = observedZ, methodEstimation, h,
   listPhi = if(methodEstimation == "kendallReg")
-            {list(\(x) (x), \(x) (x^2), \(x) (x^3))} else
+            {list(function(x){return(x)}, function(x){return(x^2)},
+                  function(x){return(x^3)})} else
               {list(identity)} , ...)
 {
   if (methodEstimation %in% c("tree", "randomForest", "logit", "probit",

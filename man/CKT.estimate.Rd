@@ -12,8 +12,9 @@ CKT.estimate(
   newData = observedZ,
   methodEstimation,
   h,
-  listPhi = if (methodEstimation == "kendallReg") {     list(function(x) (x),
-    function(x) (x^2), function(x) (x^3)) } else {     list(identity) },
+  listPhi = if (methodEstimation == "kendallReg") {     list(function(x) {        
+    return(x)     }, function(x) {         return(x^2)     }, function(x) {        
+    return(x^3)     }) } else {     list(identity) },
   ...
 )
 }
@@ -75,7 +76,8 @@ estimatedCKT_GLM <- CKT.estimate(
   observedX1 = X1, observedX2 = X2, observedZ = Z,
   newData = newZ,
   methodEstimation = "logit", h = 0.07,
-  listPhi = list(\(x) (x), \(x) (x^2), \(x) (x^3)) )
+  listPhi = list(function(x){return(x)}, function(x){return(x^2)},
+                 function(x){return(x^3)}) )
 
 estimatedCKT_kNN <- CKT.estimate(
   observedX1 = X1, observedX2 = X2, observedZ = Z,

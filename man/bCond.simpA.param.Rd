@@ -10,7 +10,7 @@ bCond.simpA.param(
   X2,
   partition,
   family,
-  testStat = "bT2c",
+  testStat = "T2c_tau",
   typeBoot = "boot.NP",
   nBootstrap = 100
 )
@@ -24,6 +24,28 @@ bCond.simpA.param(
 where \code{p} is the number of conditioning events that are considered.
 partition[i,j] should be the indicator of whether the \code{i}-th observation
 belongs or not to the \code{j}-th conditioning event.}
+
+\item{family}{family of parametric copulas used}
+
+\item{testStat}{test statistic used. Possible choices are
+\itemize{
+  \item \code{T2c_par} \eqn{\sum_{box} (\theta_0 - \theta(box))^2}
+  \item \code{T2c_tau} Same as above, except that the copula family is now parametrized
+  by its Kendall's tau instead of its natural parameter.
+}}
+
+\item{typeBoot}{type of bootstrap used}
+
+\item{nBootstrap}{number of bootstrap replications}
+}
+\value{
+a list containing
+\itemize{
+    \item \code{true_stat}: the value of the test statistic computed on the whole sample
+    \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
+    test statistics.
+    \item \code{p_val}: the p-value of the test.
+}
 }
 \description{
 Test of the assumption that a conditional copulas does not vary
@@ -34,28 +56,30 @@ n = 800
 Z = stats::runif(n = n)
 CKT = 0.2 * as.numeric(Z <= 0.3) +
   0.5 * as.numeric(Z > 0.3 & Z <= 0.5) +
-  - 0.8 * as.numeric(Z > 0.5)
+  + 0.3 * as.numeric(Z > 0.5)
+family = 3
 simCopula = VineCopula::BiCopSim(N = n,
-  par = VineCopula::BiCopTau2Par(CKT, family = 1), family = 1)
+  par = VineCopula::BiCopTau2Par(CKT, family = family), family = family)
 X1 = simCopula[,1]
 X2 = simCopula[,2]
 partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 
-result = bCond.simpA.param(X1 = X1, X2 = X2,
-  partition = partition, family = 1, typeBoot = "boot.paramCond")
+result = bCond.simpA.param(X1 = X1, X2 = X2, testStat = "T2c_tau",
+  partition = partition, family = family, typeBoot = "boot.paramInd")
 print(result$p_val)
 
 n = 800
 Z = stats::runif(n = n)
 CKT = 0.1
+family = 3
 simCopula = VineCopula::BiCopSim(N = n,
-  par = VineCopula::BiCopTau2Par(CKT, family = 1), family = 1)
+  par = VineCopula::BiCopTau2Par(CKT, family = family), family = family)
 X1 = simCopula[,1]
 X2 = simCopula[,2]
 partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
 
 result = bCond.simpA.param(X1 = X1, X2 = X2,
-  partition = partition, family = 1, typeBoot = "boot.paramCond")
+  partition = partition, family = family, typeBoot = "boot.NP")
 print(result$p_val)
 
 
