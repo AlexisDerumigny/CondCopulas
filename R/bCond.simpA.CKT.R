@@ -22,7 +22,7 @@
 #'   and the other part for constructing the test statistic
 #'   using the boxes defined by the estimated tree.
 #'   The share of the data used for construction the tree is controlled by
-#'   the parameter \code{proportionTree}.
+#'   the parameter \code{propTree}.
 #' \item \code{noSplit} all of the data is used for
 #'   both the tree and the test statistic on it.
 #'   Note that p-values obtained by this method have an upward bias
@@ -30,7 +30,7 @@
 #' }
 #' Only used if \code{matrixInd} is not provided.
 #'
-#' @param propSplit share of observations used to build the tree
+#' @param propTree share of observations used to build the tree
 #' (the rest of the observations are used for the computation of the p-value).
 #' Only used if \code{matrixInd} is not provided.
 #'
@@ -45,7 +45,7 @@
 #' (Only used if \code{methodPvalue} is not \code{covMatrix}).
 #'
 #'
-#' @return a list with the following composants \itemize{
+#' @return a list with the following components \itemize{
 #' \item \code{p.value} the estimated p-value.
 #' \item \code{stat} the test statistic.
 #' \item \code{treeCKT} the estimated tree if \code{matrixInd} is not provided.
@@ -53,11 +53,14 @@
 #' if \code{methodPvalue} is not \code{covMatrix}.
 #' }
 #'
-#' @author Alexis Derumigny and Aleksey Min
+#' @author Alexis Derumigny, Jean-David Fermanian and Aleksey Min
+#'
 #' @references Derumigny, A., Fermanian, J. D., & Min, A. (2020).
 #' Testing for equality between conditional copulas
 #' given discretized conditioning events.
 #' ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
+#'
+#'
 #'
 #' @export
 #'
@@ -66,7 +69,7 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
                             minProb = 0.01, minSize = minProb * nrow(XI),
                             nPoints_xJ = 10, type.quantile = 7,
                             verbose = 2,
-                            methodTree = "noSplit", propSplit = 0.5,
+                            methodTree = "doSplit", propTree = 0.5,
                             methodPvalue = "bootNP", nBootstrap = 100)
 {
   n = nrow(XI)
@@ -74,7 +77,8 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
   if (is.null(matrixInd))
   {
     if (is.null(XJ)){
-      stop("Either `XJ` or `matrixInd` should be not null.")
+      stop("Exactly one of `XJ` or `matrixInd` should not be `NULL`. ",
+           "Currently, both are `NULL`.")
     }
     if (nrow(XI) != nrow(XJ)){
       stop("XI and XJ should have the same number of rows, ",
@@ -85,7 +89,7 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
 
     if (methodTree == "doSplit") {
       # We select some part of the observations for building the tree
-      sampleForTree = sample(1:n, size = propSplit * n)
+      sampleForTree = sample(1:n, size = propTree * n)
       sampleForStat = (1:n)[-sampleForTree]
       XItree = XI[sampleForTree, ]
       XJtree = data.frame(XJ[sampleForTree, ])
@@ -135,7 +139,8 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
     }
   } else {
     if (!is.null(XJ)){
-      stop("Only one of `XJ` or `matrixInd` should be not null.")
+      stop("Exactly one of `XJ` or `matrixInd` should not be `NULL`. ",
+           "Currently, none are `NULL`.")
     }
     if (nrow(matrixInd) != nrow(XJ)){
       stop("matrixInd and XJ should have the same number of rows, ",
