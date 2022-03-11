@@ -11,7 +11,7 @@ Description:
   simplifying assumption.
 License: CC BY-NC 4.0
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests:
     MASS,
     knitr,
