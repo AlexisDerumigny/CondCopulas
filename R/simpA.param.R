@@ -51,6 +51,7 @@
 #'    h = 0.03, kernel.name = "Epanechnikov")
 #' print(result$p_val)
 #'
+#' \donttest{
 #' set.seed(1)
 #' N = 800
 #' Z = rnorm(n = N, mean = 5, sd = 2)
@@ -64,6 +65,7 @@
 #'    X1 = X1, X2 = X2, X3 = Z, family = 1,
 #'    h = 0.08, kernel.name = "Epanechnikov")
 #' print(result$p_val)
+#' }
 #'
 #' @export
 #'

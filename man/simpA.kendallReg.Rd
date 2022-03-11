@@ -79,6 +79,8 @@ Then, this function tests the assumption
 where the coefficient corresponding to the intercept is removed.
 }
 \examples{
+
+\donttest{
 # We simulate from a conditional copula
 set.seed(1)
 N = 500
@@ -98,8 +100,7 @@ result = simpA.kendallReg(
      function(x){return(cos(x))}, function(x){return(sin(x))},
      function(x){return(as.numeric(x <= 0.4))},
      function(x){return(as.numeric(x <= 0.6))}) )
-result$p_val
-
+print(result$p_val)
 # We simulate from a conditional copula
 set.seed(1)
 N = 500
@@ -119,7 +120,8 @@ result = simpA.kendallReg(
      function(x){return(cos(x))}, function(x){return(sin(x))},
      function(x){return(as.numeric(x <= 0.4))},
      function(x){return(as.numeric(x <= 0.6))}) )
-result$p_val
+print(result$p_val)
+}
 
 }
 \references{

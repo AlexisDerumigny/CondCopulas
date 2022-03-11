@@ -1,9 +1,11 @@
 Package: CondCopulas
 Type: Package
 Title: Estimation and inference for conditional copulas models
-Version: 0.0.4
+Version: 0.0.5
 Authors@R: c(
-    person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097"))
+    person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
+    person("Jean-David", "Fermanian", , email = "Jean-David.Fermanian@ensae.fr", role = c("ctb","ths"), comment = c(ORCID = "0000-0001-5960-5555")),
+    person("Aleksey", "Min", , role = "ctb", comment = c(ORCID = "0000-0001-6928-4556"))
 	)
 Description: 
   Provides functions for the estimation of conditional copulas models,
@@ -25,5 +27,6 @@ Imports:
     tree,
     nnet,
     data.tree,
-    statmod
+    statmod,
+    pcaPP
 VignetteBuilder: knitr

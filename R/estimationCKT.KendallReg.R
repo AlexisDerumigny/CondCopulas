@@ -66,7 +66,7 @@
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)
-#' N = 800
+#' N = 400
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
