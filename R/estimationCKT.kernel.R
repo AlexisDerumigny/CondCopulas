@@ -378,6 +378,11 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
 #' finite-distance bounds and asymptotic behavior.
 #' Dependence Modeling, 7(1), 292-321.
 #'
+#' @seealso \code{\link{CKT.estimate}} for other estimators of conditional Kendall's tau.
+#' \code{\link{CKTmatrix.kernel}} for a generalization of this function
+#' when the conditioned vector is of dimension \code{d} instead of dimension \code{2} here.
+#'
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)

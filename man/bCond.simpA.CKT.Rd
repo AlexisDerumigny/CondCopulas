@@ -15,8 +15,8 @@ bCond.simpA.CKT(
   nPoints_xJ = 10,
   type.quantile = 7,
   verbose = 2,
-  methodTree = "noSplit",
-  propSplit = 0.5,
+  methodTree = "doSplit",
+  propTree = 0.5,
   methodPvalue = "bootNP",
   nBootstrap = 100
 )
@@ -57,7 +57,7 @@ is printed during the computation.}
   and the other part for constructing the test statistic
   using the boxes defined by the estimated tree.
   The share of the data used for construction the tree is controlled by
-  the parameter \code{proportionTree}.
+  the parameter \code{propTree}.
 \item \code{noSplit} all of the data is used for
   both the tree and the test statistic on it.
   Note that p-values obtained by this method have an upward bias
@@ -65,7 +65,7 @@ is printed during the computation.}
 }
 Only used if \code{matrixInd} is not provided.}
 
-\item{propSplit}{share of observations used to build the tree
+\item{propTree}{share of observations used to build the tree
 (the rest of the observations are used for the computation of the p-value).
 Only used if \code{matrixInd} is not provided.}
 
@@ -80,7 +80,7 @@ Only used if \code{matrixInd} is not provided.}
 (Only used if \code{methodPvalue} is not \code{covMatrix}).}
 }
 \value{
-a list with the following composants \itemize{
+a list with the following components \itemize{
 \item \code{p.value} the estimated p-value.
 \item \code{stat} the test statistic.
 \item \code{treeCKT} the estimated tree if \code{matrixInd} is not provided.
@@ -100,5 +100,5 @@ given discretized conditioning events.
 ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
 }
 \author{
-Alexis Derumigny and Aleksey Min
+Alexis Derumigny, Jean-David Fermanian and Aleksey Min
 }

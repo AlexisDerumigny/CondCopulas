@@ -86,3 +86,8 @@ On kernel-based estimation of conditional Kendall’s tau:
 finite-distance bounds and asymptotic behavior.
 Dependence Modeling, 7(1), 292-321.
 }
+\seealso{
+\code{\link{CKT.estimate}} for other estimators of conditional Kendall's tau.
+\code{\link{CKTmatrix.kernel}} for a generalization of this function
+when the conditioned vector is of dimension \code{d} instead of dimension \code{2} here.
+}

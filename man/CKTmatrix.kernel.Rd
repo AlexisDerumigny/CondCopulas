@@ -2,8 +2,8 @@
 % Please edit documentation in R/CKTmatrix.kernel.R
 \name{CKTmatrix.kernel}
 \alias{CKTmatrix.kernel}
-\title{Estimate the (averaging) conditional Kendall's tau matrix
-at different points}
+\title{Estimate the conditional Kendall's tau matrix
+at different conditioning points}
 \usage{
 CKTmatrix.kernel(
   dataMatrix,
@@ -17,45 +17,77 @@ CKTmatrix.kernel(
 )
 }
 \arguments{
-\item{dataMatrix}{n x d matrix of d-dimensional multivariate random variable
-of n timepoints.}
+\item{dataMatrix}{a matrix of size \code{(n,d)} containing \code{n} observations of a
+\code{d}-dimensional random vector \eqn{X}.}
 
-\item{observedZ}{vector of observed points of Z.
+\item{observedZ}{vector of observed points of a conditioning variable \eqn{Z}.
 It must have the same length as the number of rows of \code{dataMatrix}.}
 
 \item{gridZ}{points at which the conditional Kendall's tau is computed.}
 
 \item{typeMatrixCKT}{name of the matrix estimator used. Possible choices are
-"All" (no averaging),
-"AveDiag" (averaging along diagonal block elements) and
-"AveAll" (averaging all CKT's within blocks)}
+\itemize{
+   \item \code{all}: no averaging
+   \item \code{aveAll}: averaging all conditional Kendall's taus within each blocks
+   \item \code{aveDiag}: averaging along diagonal block elements
+}}
 
-\item{blockStructure}{list of groups. A group is a vector with
-variable numbers. \code{blockStructure} must be a partition of 1:d, where d is
-the amount of columns in \code{dataMatrix}.}
+\item{blockStructure}{list of vectors.
+Each vector corresponds to one group of variables
+and contains the indexes of the variables that belongs to this group.
+\code{blockStructure} must be a partition of \code{1:d},
+where \code{d} is the number of columns in \code{dataMatrix}.}
 
 \item{h}{bandwidth. It can be a real, in this case the same \code{h}
 will be used for every element of \code{gridZ}.
-If \code{h}is a vector then its elements are recycled to match the length of
+If \code{h} is a vector then its elements are recycled to match the length of
 \code{gridZ}.}
 
 \item{kernel.name}{name of the kernel used for smoothing.
-Possible choices are "Gaussian" (Gaussian kernel) and "Epa" (Epanechnikov kernel).}
+Possible choices are: \code{"Gaussian"} (Gaussian kernel)
+and \code{"Epa"} (Epanechnikov kernel).}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.}
 }
 \value{
-array with dimensions depending on \code{typeMatrixCKT}.
-If \code{typeMatrixCKT} = "all", it returns an array of dimension
-n x n x length(\code{gridZ}), giving the conditional Kendall's tau matrix
-given Z = z. Here, n is the number of rows in \code{dataMatrix}.
-If \code{typeMatrixCKT} = "aveDiag" or "aveAll" the function returns an array
-of dimension length(\code{blockStructure}) x
-length(\code{blockStructure}) x  length(\code{gridZ}), giving the block
-estimates of the conditional Kendall's tau given Z = z with ones on the
-diagonal.
+array with dimensions depending on \code{typeMatrixCKT}:
+\itemize{
+  \item If \code{typeMatrixCKT = "all"}:
+  it returns an array of dimensions \code{(n, n, length(gridZ))},
+  containing the estimated conditional Kendall's tau matrix given \eqn{Z = z}.
+  Here, \code{n} is the number of rows in \code{dataMatrix}.
+
+  \item If \code{typeMatrixCKT = "aveDiag"} or \code{"aveAll"}:
+  it returns an array of dimensions
+  \code{(length(blockStructure), length(blockStructure), length(gridZ))},
+  containing the block estimates of the conditional Kendall's tau given \eqn{Z = z}
+  with ones on the diagonal.
+}
 }
 \description{
-Estimate the (averaging) conditional Kendall's tau matrix
-at different points
+Assume that we are interested in a random vector \eqn{(X, Z)},
+where \eqn{X} is of dimension \eqn{d > 2} and \eqn{Z} is of dimension \eqn{1}.
+We want to estimate the dependence across the elements of the conditioned vector \eqn{X}
+given \eqn{Z=z}.
+This function takes in parameter observations of \eqn{(X,Z)}
+and returns kernel-based estimators of \deqn{\tau_{i,j | Z=zk}}
+which is the conditional Kendall's tau between \eqn{X_i} and \eqn{X_j}
+given to \eqn{Z=zk}, for every conditioning point \eqn{zk} in \code{gridZ}.
+}
+\details{
+If the conditional Kendall's tau matrix has a block structure,
+then improved estimation is possible by averaging over the kernel-based estimators of
+pairwise conditional Kendall's taus.
+Groups of variables composing the same blocks can be defined
+using the parameter \code{blockStructure}, and the averaging can be set on using
+the parameter \code{typeMatrixCKT=aveAll} or \code{typeMatrixCKT=aveDiag}
+for faster estimation by averaging only over diagonal elements of each block.
+}
+\seealso{
+\code{\link{CKT.kernel}} for kernel-based estimation of conditional Kendall's tau
+between two variables (i.e. the equivalent of this function
+when \eqn{X} is bivariate and \code{d=2}).
+}
+\author{
+Rutger van der Spek, Alexis Derumigny
 }

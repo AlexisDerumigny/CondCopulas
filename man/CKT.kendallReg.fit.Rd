@@ -87,7 +87,7 @@ between \eqn{X_1} and \eqn{X_2} conditionally to \eqn{Z=z},
 and \eqn{\psi_1, \dots, \psi_{p'})} are a dictionary of functions.
 To estimate \eqn{beta}, we used the penalized estimator which is defined
 as the minimizer of the following criteria
-\deqn{\dfrac{1}{2n'} \sum_{i=1}^{n'} [\Lambda(\hat\tau_{X_1, X_2 | Z = z_i})
+\deqn{\frac{1}{2n'} \sum_{i=1}^{n'} [\Lambda(\hat\tau_{X_1, X_2 | Z = z_i})
 - \sum_{j=1}^{p'} \beta_j \psi_j(z_i)]^2 + \lambda * |\beta|_1,}
 where the \eqn{z_i} are a second sample (here denoted by \code{ZToEstimate}).
 }
