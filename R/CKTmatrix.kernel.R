@@ -69,6 +69,50 @@
 #' between two variables (i.e. the equivalent of this function
 #' when \eqn{X} is bivariate and \code{d=2}).
 #'
+#' @examples
+#'
+#' # Data simulation
+#' n = 100
+#' Z = runif(n)
+#' d = 5
+#' CKT_11 = 0.8
+#' CKT_22 = 0.9
+#' CKT_12 = 0.1 + 0.5 * cos(pi * Z)
+#' data_X = matrix(nrow = n, ncol = d)
+#' for (i in 1:n){
+#'   CKT_matrix = matrix(data =
+#'     c(  1      , CKT_11   , CKT_11   , CKT_12[i], CKT_12[i] ,
+#'       CKT_11   ,   1      , CKT_11   , CKT_12[i], CKT_12[i] ,
+#'       CKT_11   , CKT_11   ,    1     , CKT_12[i], CKT_12[i] ,
+#'       CKT_12[i], CKT_12[i], CKT_12[i],   1      , CKT_22    ,
+#'       CKT_12[i], CKT_12[i], CKT_12[i], CKT_22   ,   1
+#'       ) ,
+#'      nrow = 5, ncol = 5)
+#'   sigma = sin(pi * CKT_matrix/2)
+#'   data_X[i, ] = mvtnorm::rmvnorm(n = 1, sigma = sigma)
+#' }
+#' plot(as.data.frame.matrix(data_X))
+#'
+#' # Estimation of CKT matrix
+#' h = 1.06 * sd(Z) * n^{-1/5}
+#' gridZ = c(0.2, 0.8)
+#' estMatrixAll <- CKTmatrix.kernel(
+#'   dataMatrix = data_X, observedZ = Z, gridZ = gridZ, h = h)
+#' # Averaging estimator
+#' estMatrixAve <- CKTmatrix.kernel(
+#'   dataMatrix = data_X, observedZ = Z, gridZ = gridZ,
+#'   typeMatrixCKT = "aveDiag", blockStructure = list(1:3,4:5), h = h)
+#'
+#' # The estimated CKT matrix conditionally to Z=0.2 is:
+#' estMatrixAll[ , , 1]
+#' # Using the averaging estimator,
+#' # the estimated CKT between the first group (variables 1 to 3)
+#' # and the second group (variables 4 and 5) is
+#' estMatrixAve[1, 2, 1]
+#'
+#' # True value (of CKT between variables in block 1 and 2 given Z = 0.2):
+#' 0.1 + 0.5 * cos(pi * 0.2)
+#'
 #'
 #' @author Rutger van der Spek, Alexis Derumigny
 #'

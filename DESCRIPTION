@@ -19,7 +19,8 @@ Suggests:
     MASS,
     knitr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    mvtnorm
 Imports: 
     VineCopula,
     pbapply,
