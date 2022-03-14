@@ -9,7 +9,7 @@ CKTmatrix.kernel(
   dataMatrix,
   observedZ,
   gridZ,
-  typeMatrixCKT = "all",
+  averaging = "no",
   blockStructure = NULL,
   h,
   kernel.name = "Epa",
@@ -25,11 +25,11 @@ It must have the same length as the number of rows of \code{dataMatrix}.}
 
 \item{gridZ}{points at which the conditional Kendall's tau is computed.}
 
-\item{typeMatrixCKT}{name of the matrix estimator used. Possible choices are
-\itemize{
-   \item \code{all}: no averaging
-   \item \code{aveAll}: averaging all conditional Kendall's taus within each blocks
-   \item \code{aveDiag}: averaging along diagonal block elements
+\item{averaging}{type of averaging used for fast estimation.
+Possible choices are \itemize{
+  \item \code{no}: no averaging;
+  \item \code{all}: averaging all Kendall's taus in each block;
+  \item \code{diag}: averaging along diagonal blocks elements.
 }}
 
 \item{blockStructure}{list of vectors.
@@ -50,14 +50,14 @@ and \code{"Epa"} (Epanechnikov kernel).}
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.}
 }
 \value{
-array with dimensions depending on \code{typeMatrixCKT}:
+array with dimensions depending on \code{averaging}:
 \itemize{
-  \item If \code{typeMatrixCKT = "all"}:
+  \item If \code{averaging = "np"}:
   it returns an array of dimensions \code{(n, n, length(gridZ))},
   containing the estimated conditional Kendall's tau matrix given \eqn{Z = z}.
   Here, \code{n} is the number of rows in \code{dataMatrix}.
 
-  \item If \code{typeMatrixCKT = "aveDiag"} or \code{"aveAll"}:
+  \item If \code{averaging = "all"} or \code{"diag"}:
   it returns an array of dimensions
   \code{(length(blockStructure), length(blockStructure), length(gridZ))},
   containing the block estimates of the conditional Kendall's tau given \eqn{Z = z}
@@ -80,7 +80,7 @@ then improved estimation is possible by averaging over the kernel-based estimato
 pairwise conditional Kendall's taus.
 Groups of variables composing the same blocks can be defined
 using the parameter \code{blockStructure}, and the averaging can be set on using
-the parameter \code{typeMatrixCKT=aveAll} or \code{typeMatrixCKT=aveDiag}
+the parameter \code{averaging=all}, or \code{averaging=diag}
 for faster estimation by averaging only over diagonal elements of each block.
 }
 \examples{
@@ -115,7 +115,7 @@ estMatrixAll <- CKTmatrix.kernel(
 # Averaging estimator
 estMatrixAve <- CKTmatrix.kernel(
   dataMatrix = data_X, observedZ = Z, gridZ = gridZ,
-  typeMatrixCKT = "aveDiag", blockStructure = list(1:3,4:5), h = h)
+  averaging = "diag", blockStructure = list(1:3,4:5), h = h)
 
 # The estimated CKT matrix conditionally to Z=0.2 is:
 estMatrixAll[ , , 1]
@@ -133,6 +133,8 @@ estMatrixAve[1, 2, 1]
 \code{\link{CKT.kernel}} for kernel-based estimation of conditional Kendall's tau
 between two variables (i.e. the equivalent of this function
 when \eqn{X} is bivariate and \code{d=2}).
+\code{ElliptCopulas::\link[ElliptCopulas]{KTMatrixEst}()} for the fast estimation
+of Kendall's tau matrix in the unconditional case (i.e., without Z and without smoothing).
 }
 \author{
 Rutger van der Spek, Alexis Derumigny
