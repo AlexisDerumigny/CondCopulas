@@ -168,7 +168,7 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
   {
     if(is.null(blockStructure))
     {
-      stop(paste("blockStructure not specified, when typeMatrixCKT = ", typeMatrixCKT))
+      stop(paste("blockStructure not specified, when averaging = ", averaging))
     }
     if( all.equal( sort(unname(unlist(blockStructure))) , 1:d ) != TRUE )
     {
