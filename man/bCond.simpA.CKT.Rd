@@ -48,7 +48,7 @@ see \code{stats::\link[stats]{quantile}()}.}
 
 \item{verbose}{control the text output of the procedure.
 If \code{verbose = 0}, suppress all output.
-If \code{verbose = 2}, the progress of the computation tree
+If \code{verbose = 2}, the progress of the computation
 is printed during the computation.}
 
 \item{methodTree}{method for constructing the tree
@@ -98,6 +98,13 @@ Derumigny, A., Fermanian, J. D., & Min, A. (2020).
 Testing for equality between conditional copulas
 given discretized conditioning events.
 ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
+}
+\seealso{
+\code{\link{bCond.simpA.param}} for a test of this simplifying assumption
+in a parametric framework.
+
+\code{\link{bCond.treeCKT}} provides the binary tree that is used in this function
+(if \code{matrixInd} is not provided).
 }
 \author{
 Alexis Derumigny, Jean-David Fermanian and Aleksey Min

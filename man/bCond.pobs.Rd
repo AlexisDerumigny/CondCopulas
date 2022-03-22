@@ -5,24 +5,30 @@
 \title{Computing the pseudo-observations in case of discrete
 conditioning events}
 \usage{
-bCond.pobs(X1, X2, partition)
+bCond.pobs(X, partition)
 }
 \arguments{
-\item{X1}{vector of \code{n} observations of the first conditioned variable.}
-
-\item{X2}{vector of \code{n} observations of the second conditioned variable.}
+\item{X}{matrix of size \code{n * d} observations of conditioned variables.}
 
 \item{partition}{matrix of size \code{n * p},
 where \code{p} is the number of conditioning events that are considered.
-partition[i,j] should be the indicator of whether the \code{i}-th observation
-belongs or not to the \code{j}-th conditioning event.}
+partition[i,k] should be the indicator of whether the \code{i}-th observation
+belongs or not to the \code{k}-th conditioning event.}
 }
 \value{
-a matrix containing the conditional pseudo-observations.
+a matrix of size \code{n * d}
+containing the conditional pseudo-observations \eqn{V_{i,j|A}}.
 }
 \description{
-Computing the pseudo-observations in case of discrete
-conditioning events
+Let \eqn{A_1, ..., A_p} be \eqn{p} events forming a partition of
+a probability space and \eqn{X_1, ..., X_d} be \eqn{d} random variables.
+Assume that we observe \eqn{n} i.i.d. replications of \eqn{(X_1, ..., X_d)},
+and that for each \eqn{i=1, ..., d},
+\deqn{V_{i,j|A} = F_{X_j | A_k}(X_{i,j} | A_k),}
+we also know which of the \eqn{A_k} was realized.
+This function computes the pseudo-observations
+where \eqn{k} is such that the event \eqn{A_k}
+is realized for the \eqn{i}-th observation.
 }
 \examples{
 n = 800
@@ -35,11 +41,20 @@ simCopula = VineCopula::BiCopSim(N = n,
 X1 = simCopula[,1]
 X2 = simCopula[,2]
 partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
-condPseudoObs = bCond.pobs(X1 = X1, X2 = X2, partition = partition)
+condPseudoObs = bCond.pobs(X = cbind(X1, X2),
+                           partition = partition)
 
 }
 \references{
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+}
+\seealso{
+\code{\link{bCond.estParamCopula}} for the estimation
+of a (conditional) parametric copula model in this framework.
+
+\code{\link{bCond.treeCKT}} that provides a binary tree
+based on conditional Kendall's tau
+and that can be used to derive relevant conditioning events.
 }

@@ -8,12 +8,15 @@ copula with discrete conditioning events.}
 bCond.estParamCopula(U1, U2, family, partition)
 }
 \arguments{
-\item{U1}{vector of \code{n} conditional pseudo-observations of the first conditioned variable}
+\item{U1}{vector of \code{n} conditional pseudo-observations
+of the first conditioned variable.}
 
-\item{U2}{vector of \code{n} conditional pseudo-observations of the second conditioned variable}
+\item{U2}{vector of \code{n} conditional pseudo-observations
+of the second conditioned variable.}
 
-\item{family}{the family of conditional copulas used.
-Can be a number or a vector of size p}
+\item{family}{the family of conditional copulas
+used for each conditioning event \eqn{A_k}. If not of length \eqn{p},
+it is recycled to match the number of events \eqn{p}.}
 
 \item{partition}{matrix of size \code{n * p},
 where \code{p} is the number of conditioning events that are considered.
@@ -24,11 +27,18 @@ belongs or not to the \code{j}-th conditioning event}
 a list of size \code{p} containing the \code{p} conditional copulas
 }
 \description{
+By Sklar's theorem, any conditional distribution function
+can be written as
+\deqn{F_{1,2|A}(x_1, x_2) = c_{1,2|A}(F_{1|A}(x_1), F_{2,A}(x_2)),}
+where \eqn{A} is an event and
+\eqn{c_{1,2|A}} is a copula depending on the event \eqn{A}.
+In this function, we assume that we have a partition \eqn{A_1,... A_p}
+of the probability space, and that for each \eqn{k=1,...,p},
+the conditional copula is parametric according to the following model
+\deqn{c_{1,2|Ak} = c_{\theta(Ak)},}
+for some parameter \eqn{\theta(Ak)} depending on the realized event \eqn{Ak}.
 This function uses canonical maximum likelihood to estimate
-}
-\details{
-This function is currently implemented only for one-parameter families
-of conditional copulas and for the Student family with fixed degree of freedom.
+\eqn{\theta(Ak)} and the corresponding copulas \eqn{c_{1,2|Ak}}.
 }
 \examples{
 n = 800
@@ -41,7 +51,7 @@ simCopula = VineCopula::BiCopSim(N = n,
 X1 = simCopula[,1]
 X2 = simCopula[,2]
 partition = cbind(Z <= 0.3, Z > 0.3 & Z <= 0.5, Z > 0.5)
-condPseudoObs = bCond.pobs(X1 = X1, X2 = X2, partition = partition)
+condPseudoObs = bCond.pobs(X = cbind(X1, X2), partition = partition)
 
 estimatedCondCopulas = bCond.estParamCopula(
   U1 = condPseudoObs[,1], U2 = condPseudoObs[,2],
@@ -55,4 +65,15 @@ print(estimatedCondCopulas)
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+}
+\seealso{
+\code{\link{bCond.pobs}} for the computation
+of (conditional) pseudo-observations in this framework.
+
+\code{\link{bCond.simpA.param}} for a test of the simplifying assumption
+that all these conditional copulas are equal
+(assuming they all belong to the same parametric family).
+\code{\link{bCond.simpA.CKT}} for a test of the simplifying assumption
+that all these conditional copulas are equal,
+based on the equality of conditional Kendall's tau.
 }

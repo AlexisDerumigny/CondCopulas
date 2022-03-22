@@ -10,11 +10,12 @@ Authors@R: c(
 	)
 Description: 
   Provides functions for the estimation of conditional copulas models,
-  various estimators of conditional Kendall's tau, and test procedures for the 
-  simplifying assumption.
+  various estimators of conditional Kendall's tau,
+  and test procedures for the simplifying assumption.
 License: CC BY-NC 4.0
 Encoding: UTF-8
 RoxygenNote: 7.1.2
+Roxygen: list(markdown = FALSE)
 Suggests:
     MASS,
     knitr,

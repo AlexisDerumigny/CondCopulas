@@ -53,12 +53,20 @@
 #' if \code{methodPvalue} is not \code{covMatrix}.
 #' }
 #'
-#' @author Alexis Derumigny, Jean-David Fermanian and Aleksey Min
-#'
 #' @references Derumigny, A., Fermanian, J. D., & Min, A. (2020).
 #' Testing for equality between conditional copulas
 #' given discretized conditioning events.
 #' ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
+#'
+#'
+#' @seealso \code{\link{bCond.simpA.param}} for a test of this simplifying assumption
+#' in a parametric framework.
+#'
+#' \code{\link{bCond.treeCKT}} provides the binary tree that is used in this function
+#' (if \code{matrixInd} is not provided).
+#'
+#'
+#' @author Alexis Derumigny, Jean-David Fermanian and Aleksey Min
 #'
 #'
 #'

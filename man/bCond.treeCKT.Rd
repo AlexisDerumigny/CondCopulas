@@ -35,14 +35,24 @@ see \code{stats::\link[stats]{quantile}()}.}
 
 \item{verbose}{control the text output of the procedure.
 If \code{verbose = 0}, suppress all output.
-If \code{verbose = 2}, the progress of the computation tree
+If \code{verbose = 2}, the progress of the computation
 is printed during the computation.}
 }
 \value{
 the estimated tree using the data `XI, XJ`.
 }
 \description{
-Construct a binary tree for the modeling the conditional Kendall's tau
+This function takes in parameter two matrices of observations:
+the first one contains the observations of \code{XI} (the conditioned variables)
+and the second on contains the observations of \code{XJ} (the conditioning variables).
+The goal of this procedure is to find which of the variables in \code{XJ}
+have important influence on the dependence between the components of \code{XI},
+(measured by the Kendall's tau).
+}
+\details{
+The object return by this function is a binary tree. Each leaf of this tree
+correspond to one event (or, equivalently, one subset of \eqn{R^{dim(XJ)}}),
+and the conditional Kendall's tau conditionally to it.
 }
 \examples{
 set.seed(1)
@@ -62,4 +72,12 @@ print(length(data.tree::GetAttribute(result$children[[1]], "condObs")))
 print(length(data.tree::GetAttribute(result$children[[2]], "condObs")))
 
 
+}
+\seealso{
+\code{\link{bCond.simpA.CKT}} for a test of the simplifying assumption
+that all these conditional Kendall's tau are equal.
+
+\code{\link{treeCKT2matrixInd}} for converting this tree to a matrix of indicators
+of each event. \code{\link{matrixInd2matrixCKT}} for getting the matrix of estimated
+conditional Kendall's taus for each event.
 }

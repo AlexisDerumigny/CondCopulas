@@ -41,8 +41,10 @@ belongs or not to the \code{j}-th conditioning event.}
 \value{
 a list containing
 \itemize{
-    \item \code{true_stat}: the value of the test statistic computed on the whole sample
-    \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
+    \item \code{true_stat}:
+    the value of the test statistic computed on the whole sample
+    \item \code{vect_statB}:
+    a vector of length \code{nBootstrap} containing the bootstrapped
     test statistics.
     \item \code{p_val}: the p-value of the test.
 }
@@ -88,4 +90,13 @@ print(result$p_val)
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+}
+\seealso{
+\code{\link{bCond.estParamCopula}} for the estimation
+of a (conditional) parametric copula model in this framework.
+
+\code{\link{bCond.simpA.CKT}} for a test of the simplifying assumption
+that all these conditional copulas are equal,
+based on the equality of conditional Kendall's tau
+(i.e. without any parametric assumption).
 }

@@ -22,8 +22,10 @@
 #'
 #' @return a list containing
 #' \itemize{
-#'     \item \code{true_stat}: the value of the test statistic computed on the whole sample
-#'     \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
+#'     \item \code{true_stat}:
+#'     the value of the test statistic computed on the whole sample
+#'     \item \code{vect_statB}:
+#'     a vector of length \code{nBootstrap} containing the bootstrapped
 #'     test statistics.
 #'     \item \code{p_val}: the p-value of the test.
 #' }
@@ -32,6 +34,14 @@
 #' Derumigny, A., & Fermanian, J. D. (2017).
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
+#'
+#' @seealso \code{\link{bCond.estParamCopula}} for the estimation
+#' of a (conditional) parametric copula model in this framework.
+#'
+#' \code{\link{bCond.simpA.CKT}} for a test of the simplifying assumption
+#' that all these conditional copulas are equal,
+#' based on the equality of conditional Kendall's tau
+#' (i.e. without any parametric assumption).
 #'
 #' @examples
 #' n = 800
@@ -144,14 +154,16 @@ bCond.simpA.param <- function(
 
 
 testStat_bT2c <- function(env){
-  condPobs <- bCond.pobs(X1 = env$X1, X2 = env$X2, partition = env$partition)
+  condPobs <- bCond.pobs(X = cbind(env$X1, env$X2),
+                         partition = env$partition)
 
   # Estimation of the simplified (conditional) parameter
   env$cop_0 = VineCopula::BiCopEst(u1 = condPobs[,1], u2 = condPobs[,2],
-                                     family = env$family_est , method = env$method)
+                                   family = env$family_est , method = env$method)
 
   env$cop_boxes = bCond.estParamCopula(U1 = condPobs[,1], U2 = condPobs[,2],
-                                         family = env$family_est, partition = env$partition)
+                                       family = env$family_est,
+                                       partition = env$partition)
 
   if (env$parametrization == "par"){
     env$theta_0 = env$cop_0$par
@@ -168,25 +180,29 @@ testStat_bT2c <- function(env){
 }
 
 testStat_bT2c_boot1st <- function(env){
-  condPobs_st <- bCond.pobs(X1 = env$X1_st, X2 = env$X2_st, partition = env$partition_st)
+  condPobs_st <- bCond.pobs(X = cbind(env$X1_st, env$X2_st),
+                            partition = env$partition_st)
 
   # Estimation of the simplified (conditional) parameter
   env$cop_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
-                                        family = env$family_est , method = env$method)
+                                      family = env$family_est, method = env$method)
 
   env$cop_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
-                                          family = env$family_est, partition = env$partition_st)
+                                          family = env$family_est,
+                                          partition = env$partition_st)
 
   if (env$parametrization == "par"){
     env$theta_0_st = env$cop_0_st$par
     env$theta_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$par}))
 
-    env$stat_st = sum((env$theta_boxes_st - env$theta_boxes + env$theta_0 - env$theta_0_st)^2)
+    env$stat_st = sum((env$theta_boxes_st - env$theta_boxes +
+                         env$theta_0 - env$theta_0_st)^2)
   } else if (env$parametrization == "tau"){
     env$tau_0_st = env$cop_0_st$tau
     env$tau_boxes_st = unlist(lapply(env$cop_boxes_st, function(x){x$tau}))
 
-    env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes + env$tau_0 - env$tau_0_st )^2)
+    env$stat_st = sum(( env$tau_boxes_st - env$tau_boxes +
+                          env$tau_0 - env$tau_0_st )^2)
   } else {
     stop("Unknown parametrization. Possible parametrizations are 'tau' and 'par'.")
   }
@@ -194,14 +210,16 @@ testStat_bT2c_boot1st <- function(env){
 }
 
 testStat_bT2c_boot2st <- function(env){
-  condPobs_st <- bCond.pobs(X1 = env$X1_st, X2 = env$X2_st, partition = env$partition_st)
+  condPobs_st <- bCond.pobs(X = cbind(env$X1_st, env$X2_st),
+                            partition = env$partition_st)
 
   # Estimation of the simplified (conditional) parameter
   env$cop_0_st = VineCopula::BiCopEst(u1 = condPobs_st[,1], u2 = condPobs_st[,2],
                                       family = env$family_est , method = env$method)
 
   env$cop_boxes_st = bCond.estParamCopula(U1 = condPobs_st[,1], U2 = condPobs_st[,2],
-                                          family = env$family_est, partition = env$partition_st)
+                                          family = env$family_est,
+                                          partition = env$partition_st)
 
   if (env$parametrization == "par"){
     env$theta_0_st = env$cop_0_st$par
