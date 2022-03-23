@@ -50,7 +50,7 @@
 #' print(result$p_val)
 #'
 #' set.seed(1)
-#' N = 800
+#' N = 500
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = 0.8
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -61,7 +61,7 @@
 #' result <- simpA.NP(
 #'    X1 = X1, X2 = X2, X3 = Z,
 #'    testStat = "I_chi", typeBoot = "boot.pseudoInd",
-#'    h = 0.08, kernel.name = "Epanechnikov")
+#'    h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 30)
 #' print(result$p_val)
 #'
 #' @export

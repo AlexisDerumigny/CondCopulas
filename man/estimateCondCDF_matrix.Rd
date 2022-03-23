@@ -16,8 +16,8 @@ estimateCondCDF_matrix(observedX1, newX1, matrixK3)
 such as given by \code{\link{computeKernelMatrix}}.}
 }
 \value{
-A matrix of dimensions \code{(p1 = length(newX), p3 = length(matrixK3[,1]))} of estimators
-\eqn{\hat P(X_1 \leq x_1 | X_3 = x_3)} for every possible choices
+A matrix of dimensions \code{(p1 = length(newX), p3 = length(matrixK3[,1]))}
+of estimators \eqn{\hat P(X_1 \leq x_1 | X_3 = x_3)} for every possible choices
 of \eqn{(x_1, x_3)}.
 }
 \description{

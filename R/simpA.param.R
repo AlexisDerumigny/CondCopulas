@@ -1,6 +1,6 @@
 
 
-#' Nonparametric testing of the simplifying assumption
+#' Semiparametric testing of the simplifying assumption
 #'
 #' @param X1 observed vector of the first conditionned variable
 #' @param X2 observed vector of the second conditionned variable
@@ -53,7 +53,7 @@
 #'
 #' \donttest{
 #' set.seed(1)
-#' N = 800
+#' N = 500
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = 0.8
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -63,7 +63,7 @@
 #'
 #' result <- simpA.param(
 #'    X1 = X1, X2 = X2, X3 = Z, family = 1,
-#'    h = 0.08, kernel.name = "Epanechnikov")
+#'    h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 30)
 #' print(result$p_val)
 #' }
 #'

@@ -2,7 +2,8 @@
 % Please edit documentation in R/estimationCKT.datasetPairs.R
 \name{datasetPairs}
 \alias{datasetPairs}
-\title{Construct a dataset of pairs of observations}
+\title{Construct a dataset of pairs of observations for the estimation
+of conditional Kendall's tau}
 \usage{
 datasetPairs(
   X1,
@@ -20,39 +21,55 @@ datasetPairs(
 \item{X2}{vector of observations of the second conditioned variable.}
 
 \item{Z}{vector or matrix of observations of the conditioning variable(s),
-of dimension dimZ.}
+of dimension \code{dimZ}.}
 
 \item{h}{the bandwidth. Can be a vector; in this case,
-the composants of h will be reused to match dimension of Z.}
+the components of \code{h} will be reused to match the dimension of \code{Z}.}
 
 \item{cut}{the cutting level to keep a given pair or not.
 Used only if no \code{nPairs} is provided.}
 
-\item{onlyConsecutivePairs}{if true, when only consecutive pairs are used.}
+\item{onlyConsecutivePairs}{if \code{TRUE}, only consecutive pairs are used.}
 
 \item{nPairs}{number of most relevant pairs to keep in the final datasets.
-If this is different than the default \code{NULL}, the cutting level \code{cut} is not used.}
+If this is different than the default \code{NULL},
+the cutting level \code{cut} is not used.}
 }
 \value{
-A matrix with (4+dimZ) columns and n*(n-1)/2 rows
-if \code{onlyConsecutivePairs=FALSE} and (n/2) rows else.
+A matrix with \code{(4+dimZ)} columns and \code{n*(n-1)/2} rows
+if \code{onlyConsecutivePairs=FALSE} and else \code{(n/2)} rows.
+It is structured in the following way:
 \itemize{
-    \item column 1 contains the information about the concordance of the pair (i,j) ;
-    \item column 2 to 1+dimZ contain the mean value of Z (the conditioning variables) ;
-    \item column 2+dimZ contains the value of the kernel K_h(Z_j - Z_i) ;
-    \item column 3+dimZ and 4+dimZ contain the corresponding values of i and j.
+    \item column \code{1} contains the information
+    about the concordance of the pair (i,j) ;
+
+    \item columns \code{2} to \code{1+dimZ} contain
+    the mean value of Z (the conditioning variables) ;
+
+    \item column \code{2+dimZ} contains the value of the kernel K_h(Z_j - Z_i) ;
+
+    \item column \code{3+dimZ} and \code{4+dimZ}
+    contain the corresponding values of i and j.
 }
 }
 \description{
-Construct a dataset of pairs of observations
+In (Derumigny, & Fermanian (2019)), it is described how the problem
+of estimating conditional Kendall's tau can be rewritten as a
+classification task for a dataset of pairs (of observations).
+This function computes such a dataset, that can be then used to
+estimate conditional Kendall's tau using one of the following
+functions:
+\code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.GLM}}, \code{\link{CKT.fit.nNets}},
+\code{\link{CKT.predict.kNN}}.
 }
 \examples{
 # We simulate from a conditional copula
 N = 500
 Z = rnorm(n = N, mean = 5, sd = 2)
 conditionalTau = 0.9 * pnorm(Z, mean = 5, sd = 2)
-simCopula = VineCopula::BiCopSim(N=N , family = 3,
-    par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+simCopula = VineCopula::BiCopSim(N = N , family = 3,
+    par = VineCopula::BiCopTau2Par(1 , conditionalTau) )
 X1 = qnorm(simCopula[,1])
 X2 = qnorm(simCopula[,2])
 
@@ -64,5 +81,13 @@ X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 Derumigny, A., & Fermanian, J. D. (2019).
 A classification point-of-view about conditional Kendall’s tau.
 Computational Statistics & Data Analysis, 135, 70-94.
-(Algorithm 1 for all pairs and Algorithm 8 for the case of only consecutive pairs)
+(Algorithm 1 for all pairs and Algorithm 8
+for the case of only consecutive pairs)
+}
+\seealso{
+the functions that require such a dataset of pairs
+to do the estimation of conditional Kendall's tau:
+\code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.GLM}}, \code{\link{CKT.fit.nNets}},
+\code{\link{CKT.predict.kNN}}, and \code{\link{CKT.fit.randomForest}}.
 }

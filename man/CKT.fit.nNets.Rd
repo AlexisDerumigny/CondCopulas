@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimationCKT.classif.nNet.R
 \name{CKT.fit.nNets}
 \alias{CKT.fit.nNets}
-\title{Estimation of conditional Kendall's taus by model averaging of Neural Networks}
+\title{Estimation of conditional Kendall's taus by model averaging of neural networks}
 \usage{
 CKT.fit.nNets(
   datasetPairs,
@@ -26,14 +26,32 @@ as provided by \code{\link{datasetPairs}}.}
 \itemize{
     \item \code{0}: nothing printed at all.
     \item \code{1}: a message is printed at the convergence of each neural network.
-    \item \code{2}: each optimization of each network is printed in detail.
+    \item \code{2}: details are printed for each optimization of each network.
 }}
 }
 \value{
-a list of the fitted neural networks
+\code{CKT.fit.nNets} returns a list of the fitted neural networks
 }
 \description{
-Estimation of conditional Kendall's taus by model averaging of Neural Networks
+Let \eqn{X_1} and \eqn{X_2} be two random variables.
+The goal of this function is to estimate the conditional Kendall's tau
+(a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+for a conditioning variable \eqn{Z}.
+Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+is defined as:
+\deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+\deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+In other words, conditional Kendall's tau is the difference
+between the probabilities of observing concordant and discordant pairs
+from the conditional law of \deqn{(X_1, X_2) | Z=z.}
+This function estimates conditional Kendall's tau using
+\strong{neural networks}. This is possible by the relationship between
+estimation of conditional Kendall's tau and classification problems
+(see Derumigny and Fermanian (2019)): estimation of conditional Kendall's tau
+is equivalent to the prediction of concordance in the space of pairs
+of observations.
 }
 \examples{
 # We simulate from a conditional copula
@@ -48,7 +66,17 @@ X2 = qnorm(simCopula[,2])
 
 newZ = seq(2,10,by = 0.1)
 datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
+
 fitCKT_nets <- CKT.fit.nNets(datasetPairs = datasetP)
+estimatedCKT_nNets <- CKT.predict.nNets(
+  fit = fitCKT_nNets, newZ = matrix(newZ, ncol = 1))
+
+# Comparison between true Kendall's tau (in black)
+# and estimated Kendall's tau (in red)
+trueConditionalTau = -0.9 + 1.8 * pnorm(newZ, mean = 5, sd = 2)
+plot(newZ, trueConditionalTau , col="black",
+   type = "l", ylim = c(-1, 1))
+lines(newZ, estimatedCKT_nNets, col = "red")
 
 
 }
@@ -57,4 +85,11 @@ Derumigny, A., & Fermanian, J. D. (2019).
 A classification point-of-view about conditional Kendall’s tau.
 Computational Statistics & Data Analysis, 135, 70-94.
 (Algorithm 7)
+}
+\seealso{
+See also other estimators of conditional Kendall's tau:
+\code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.GLM}}, \code{\link{CKT.predict.kNN}},
+\code{\link{CKT.kernel}}, \code{\link{CKT.kendallReg.fit}},
+and the more general wrapper \code{\link{CKT.estimate}}.
 }

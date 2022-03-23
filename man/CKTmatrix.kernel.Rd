@@ -52,7 +52,7 @@ and \code{"Epa"} (Epanechnikov kernel).}
 \value{
 array with dimensions depending on \code{averaging}:
 \itemize{
-  \item If \code{averaging = "np"}:
+  \item If \code{averaging = "no"}:
   it returns an array of dimensions \code{(n, n, length(gridZ))},
   containing the estimated conditional Kendall's tau matrix given \eqn{Z = z}.
   Here, \code{n} is the number of rows in \code{dataMatrix}.

@@ -4,16 +4,35 @@
 #' Prediction of conditional Kendall's tau using nearest neighbors
 #'
 #'
+#' Let \eqn{X_1} and \eqn{X_2} be two random variables.
+#' The goal of this function is to estimate the conditional Kendall's tau
+#' (a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+#' for a conditioning variable \eqn{Z}.
+#' Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+#' is defined as:
+#' \deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+#' \deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+#' where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+#' are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+#' In other words, conditional Kendall's tau is the difference
+#' between the probabilities of observing concordant and discordant pairs
+#' from the conditional law of \deqn{(X_1, X_2) | Z=z.}
+#' This function estimates conditional Kendall's tau using a
+#' \strong{nearest neighbors}. This is possible by the relationship between
+#' estimation of conditional Kendall's tau and classification problems
+#' (see Derumigny and Fermanian (2019)): estimation of conditional Kendall's tau
+#' is equivalent to the prediction of concordance in the space of pairs
+#' of observations.
 #'
 #' @param datasetPairs the matrix of pairs and corresponding values of the kernel
 #' as provided by \code{\link{datasetPairs}}.
 #'
 #' @param designMatrix the matrix of predictors.
-#' They must have the same number of variables as \code{newData} and
+#' They must have the same number of variables as \code{newZ} and
 #' the same number of observations as \code{inputMatrix},
 #' i.e. there should be one "multivariate observation" of the predictor for each pair.
 #'
-#' @param newData the matrix of predictors for which we want to
+#' @param newZ the matrix of predictors for which we want to
 #' estimate the conditional Kendall's taus at these values.
 #'
 #' @param number_nn vector of numbers of nearest neighbors to use.
@@ -47,9 +66,9 @@
 #' @return  a list with two components
 #' \itemize{
 #'     \item \code{estimatedCKT} the estimated conditional Kendall's tau, a vector of
-#'     the same size as the number of rows in \code{newData};
+#'     the same size as the number of rows in \code{newZ};
 #'     \item \code{vect_k_chosen} the locally selected number of nearest neighbors,
-#'     a vector of the same size as the number of rows in \code{newData}.
+#'     a vector of the same size as the number of rows in \code{newZ}.
 #' }
 #'
 #' @references
@@ -57,6 +76,13 @@
 #' A classification point-of-view about conditional Kendall’s tau.
 #' Computational Statistics & Data Analysis, 135, 70-94.
 #' (Algorithm 5)
+#'
+#' @seealso See also other estimators of conditional Kendall's tau:
+#' \code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+#' \code{\link{CKT.fit.nNets}}, \code{\link{CKT.fit.randomForest}},
+#' \code{\link{CKT.fit.GLM}}, \code{\link{CKT.kernel}},
+#' \code{\link{CKT.kendallReg.fit}},
+#' and the more general wrapper \code{\link{CKT.estimate}}.
 #'
 #'
 #' @examples
@@ -74,7 +100,7 @@
 #' datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 #' estimatedCKT_knn <- CKT.predict.kNN(
 #'   datasetPairs = datasetP,
-#'   newData = matrix(newZ,ncol = 1),
+#'   newZ = matrix(newZ,ncol = 1),
 #'   number_nn = c(50,80, 100, 120,200),
 #'   partition = 8)
 #'
@@ -89,7 +115,7 @@
 #'
 CKT.predict.kNN <- function(datasetPairs,
                             designMatrix = datasetPairs[,2:(ncol(datasetPairs)-3),drop=FALSE],
-                            newData,
+                            newZ,
                             number_nn, weightsVariables = 1, normLp = 2,
                             constantA = 1, partition = NULL,
                             verbose = 1, lengthVerbose = 100,
@@ -99,18 +125,18 @@ CKT.predict.kNN <- function(datasetPairs,
 
     estimatedCKT = CKT.predict.kNN.1(
       datasetPairs = datasetPairs, designMatrix = designMatrix,
-      newData = newData, number_nn = number_nn,
+      newZ = newZ, number_nn = number_nn,
       weightsVariables = weightsVariables, normLp = normLp,
       verbose = verbose-1, lengthVerbose = lengthVerbose, methodSort = methodSort)
 
     return (list(estimatedCKT = estimatedCKT))
   }
 
-  matrixKNN = matrix(nrow = NROW(newData), ncol = length(number_nn))
+  matrixKNN = matrix(nrow = NROW(newZ), ncol = length(number_nn))
   for (i_nn in 1:length(number_nn)){
     matrixKNN[, i_nn] = CKT.predict.kNN.1(
       datasetPairs = datasetPairs, designMatrix = designMatrix,
-      newData = newData, number_nn = number_nn[i_nn],
+      newZ = newZ, number_nn = number_nn[i_nn],
       weightsVariables = weightsVariables, normLp = normLp,
       verbose = verbose, lengthVerbose = lengthVerbose, methodSort = methodSort)
   }
@@ -130,11 +156,11 @@ CKT.predict.kNN <- function(datasetPairs,
 #' as provided by \code{\link{datasetPairs}}.
 #'
 #' @param designMatrix the matrix of predictors that will be used for the nearest neighbors
-#' They must have the same number of variables as \code{newData} and
+#' They must have the same number of variables as \code{newZ} and
 #' the same number of observations as \code{inputMatrix},
 #' i.e. there should be one "multivariate observation" of the predictor for each pair.
 #'
-#' @param newData the matrix of predictors for which we want to
+#' @param newZ the matrix of predictors for which we want to
 #' estimate the conditional Kendall's taus at these values.
 #'
 #' @param number_nn number of nearest neighbors to use.
@@ -154,7 +180,7 @@ CKT.predict.kNN <- function(datasetPairs,
 #' and \code{partial.sort} uses a partial sorting algorithm.
 #' This parameter should not matter except for the computation time.
 #'
-#' @return a vector of size \code{nrow(newData)} of estimated conditional Kendall's taus
+#' @return a vector of size \code{nrow(newZ)} of estimated conditional Kendall's taus
 #' corresponding to each (multivariate) predictor.
 #'
 #' @references
@@ -178,7 +204,7 @@ CKT.predict.kNN <- function(datasetPairs,
 #' datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 #' estimatedCKT_knn <- CKT.predict.kNN.1(
 #'   datasetPairs = datasetP,
-#'   newData = matrix(newZ,ncol = 1),
+#'   newZ = matrix(newZ,ncol = 1),
 #'   number_nn = 100)
 #'
 #' # Comparison between true Kendall's tau (in black)
@@ -194,28 +220,28 @@ CKT.predict.kNN <- function(datasetPairs,
 #'
 CKT.predict.kNN.1 <- function(datasetPairs,
                               designMatrix,
-                              newData,
+                              newZ,
                               number_nn, weightsVariables = 1, normLp = 2,
                               verbose = 1, lengthVerbose = 100,
                               methodSort = "partial.sort")
 {
   n_data = nrow(designMatrix)
-  n_newData = nrow(newData)
+  n_newZ = nrow(newZ)
   pPrime = ncol(designMatrix)
 
   if (n_data != nrow(datasetPairs)){
     stop("designMatrix and datasetPairs should have the same number of rows.")
   } else if (pPrime != ncol(designMatrix)){
-    stop("designMatrix and newData should have the same number of columns.")
+    stop("designMatrix and newZ should have the same number of columns.")
   }
 
   weightsVar = rep(weightsVariables, length.out = pPrime)
-  prediction = rep(NA, n_newData)
+  prediction = rep(NA, n_newZ)
 
   prt = proc.time()
-  for (i_data in 1:n_newData)
+  for (i_data in 1:n_newZ)
   {
-    pointToEstimate = newData[i_data, ]
+    pointToEstimate = newZ[i_data, ]
     distance = rep(0, n_data)
     for (i_var in 1:pPrime)
     {
@@ -239,7 +265,7 @@ CKT.predict.kNN.1 <- function(datasetPairs,
     if ((verbose>0) & i_data%%lengthVerbose == 0)
     {
       prt2 = proc.time()
-      cat(i_data) ; cat(" out of ") ; cat(n_newData)
+      cat(i_data) ; cat(" out of ") ; cat(n_newZ)
       cat("  ") ; cat((prt2-prt)[3]) ; cat("s \n")
       prt = proc.time()
     }
@@ -286,7 +312,7 @@ CKT.predict.kNN.1 <- function(datasetPairs,
 #' Computational Statistics & Data Analysis, 135, 70-94.
 #' (Algorithm 6)
 #'
-#' @keywords internal
+#' @noRd
 #'
 CKT.adaptkNN <- function(matrixKNN, vect_k,
                          constantA = 1, partition = NULL, verbose = 0)

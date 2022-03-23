@@ -232,8 +232,8 @@ boot.paramCond <- function(env, FUN_trueStat, FUN_stat_st)
   if (env$family == 2) {
 
     theta_xJ_n = estimateParCondCopula_ZIJ(
-        Z1_J = env$Z1_J, Z2_J = env$Z2_J, U3 = env$U3,
-        newU3 = env$U3, family = 1, h = env$h, method = "itau")
+        Z1_J = env$Z1_J, Z2_J = env$Z2_J, observedX3 = env$U3,
+        newX3 = env$U3, family = 1, h = env$h, method = "itau")
 
     for (iBootstrap in 1:env$nBootstrap) {
       # Resampling to create the bootstrapped sample
@@ -254,8 +254,8 @@ boot.paramCond <- function(env, FUN_trueStat, FUN_stat_st)
     }
   } else if (env$family == 3) {
     theta_xJ_n = estimateParCondCopula_ZIJ(
-      Z1_J = env$Z1_J, Z2_J = env$Z2_J, U3 = env$U3,
-      newU3 = env$U3, family = env$family, h = env$h, method = "mle")
+      Z1_J = env$Z1_J, Z2_J = env$Z2_J, observedX3 = env$U3,
+      newX3 = env$U3, family = env$family, h = env$h, method = "mle")
 
     for (iBootstrap in 1:env$nBootstrap) {
       # Resampling to create the bootstrapped sample
@@ -276,8 +276,8 @@ boot.paramCond <- function(env, FUN_trueStat, FUN_stat_st)
     }
   } else {
     theta_xJ_n = estimateParCondCopula_ZIJ(
-      Z1_J = env$Z1_J, Z2_J = env$Z2_J, U3 = env$U3,
-      newU3 = env$U3, family = env$family, h = env$h, method = "mle")
+      Z1_J = env$Z1_J, Z2_J = env$Z2_J, observedX3 = env$U3,
+      newX3 = env$U3, family = env$family, h = env$h, method = "mle")
 
     for (iBootstrap in 1:env$nBootstrap) {
       # Resampling to create the bootstrapped sample

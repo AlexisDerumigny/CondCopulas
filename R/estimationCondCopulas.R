@@ -97,26 +97,30 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' This function computes an estimate of the conditional parameters
 #' of a conditional parametric copula model.
 #'
-#' We assume that we have a three-dimensional vector (X1, X2, X3).
-#' We are interested in the estimation of the conditional copula of (X1, X2) given X3.
-#' This function takes in parameter three vectors of observations of X1, X2, X3,
-#' and a vector of conditioning points \code{newX3}
-#' and compute estimators of the corresponding parametric conditional copulas.
+#' We assume that we have a three-dimensional vector \eqn{(X_1, X_2, X_3)}.
+#' We are interested in the estimation of the conditional copula
+#' of \eqn{(X_1, X_2)} given \eqn{X_3}.
+#' This function takes in parameter three vectors of observations of \eqn{X_1, X_2, X_3},
+#' and a vector of conditioning points \code{newX3};
+#' it then computes estimators of the corresponding parametric conditional copulas.
 #'
-#' @param observedX1 a vector of n observations of the first variable
-#' @param observedX2 a vector of n observations of the second variable
-#' @param observedX3 a vector of n observations of the conditioning variable
+#' @param observedX1 a vector of \code{n} observations of the first variable
+#' @param observedX2 a vector of \code{n} observations of the second variable
+#' @param observedX3 a vector of \code{n} observations of the conditioning variable
 #'
-#' @param newX3 a vector of new observations of X3
+#' @param newX3 a vector of new observations of \eqn{X3}
+#'
 #' @param family an integer indicating the parametric family of copulas to be used,
-#' following the conventions of the package \code{VineCopula}.
+#' following the conventions of the package \code{\link{VineCopula}}.
+#'
 #' @param method the method of estimation of the conditional parameters.
 #' Can be \code{"mle"} for maximum likelihood estimation
 #' or \code{"itau"} for estimation by inversion of Kendall's tau.
+#'
 #' @param h bandwidth to be chosen
 #'
 #' @return a vector of size \code{length(newX3)} containing
-#' the estimated conditional copula parameters for each value of newU3.
+#' the estimated conditional copula parameters for each value of \code{newX3}.
 #'
 #'
 #' @references
@@ -127,7 +131,7 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' @examples
 #'
 #' # We simulate from a conditional copula
-#' N = 5000
+#' N = 500
 #'
 #' X3 = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = 0.9 * pnorm(X3, mean = 5, sd = 2)
@@ -164,6 +168,7 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
   U2 = stats::ecdf(observedX2)(observedX2)
   U3 = stats::ecdf(observedX3)(observedX3)
   newU3 = stats::ecdf(observedX3)(newX3)
+
   # Computation of the kernel
   matrixK3 = computeKernelMatrix(observedX = U3, newX = U3, kernel = "Epanechnikov", h = h)
 
@@ -173,7 +178,7 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
   Z2_J = estimateCondCDF_vec(observedX1 = U2, newX1 = U2, matrixK3 = matrixK3)
 
   theta_xJ = estimateParCondCopula_ZIJ(
-    Z1_J = Z1_J, Z2_J = Z2_J, U3 = U3, newU3 = newU3,
+    Z1_J = Z1_J, Z2_J = Z2_J, observedX3 = U3, newX3 = newU3,
     family = family, method = method, h = h)
 
   return (theta_xJ)
@@ -182,42 +187,31 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
 
 #' Estimation of a parametric conditional copula using conditional pseudos-observations
 #'
-#' This is an auxiliary function that is called when conditional pseudos-observations
-#' are already available to estimate a parametric conditional copula.
+#' The function \code{estimateParCondCopula_ZIJ} is an auxiliary function
+#' that is called when conditional pseudos-observations are already
+#' available when one wants to estimate a parametric conditional copula.
 #'
 #' @param Z1_J the conditional pseudos-observations of the first variable,
 #' i.e. \eqn{\hat F_{1|J}( x_{i,1} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.
+#'
 #' @param Z2_J the conditional pseudos-observations of the second variable,
 #' i.e. \eqn{\hat F_{2|J}( x_{i,2} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.
-#' @param U3 the pseudos-observations of the conditional variable.
-#' @param newU3 new observations of the conditioning variable on which we would like
-#' to estimate the conditional parameter
-#' @param family the family of conditional copulas used.
-#' @param method method of estimation for the parametric conditional copula.
-#' @param h the bandwidth.
-#'
-#' @return a vector of size \code{length(newX3)} containing
-#' the estimated conditional copula parameters for each value of newU3.
 #'
 #'
-#' @references
-#' Derumigny, A., & Fermanian, J. D. (2017).
-#' About tests of the “simplifying” assumption for conditional copulas.
-#' Dependence Modeling, 5(1), 154-197.
-#'
+#' @rdname estimateParCondCopula
 #' @export
 #'
-estimateParCondCopula_ZIJ <- function (Z1_J, Z2_J, U3,
-                                       newU3, family, method, h)
+estimateParCondCopula_ZIJ <- function (Z1_J, Z2_J, observedX3,
+                                       newX3, family, method, h)
 {
 
   # Computation of conditional parameters
-  nNewPoints = length(newU3)
+  nNewPoints = length(newX3)
   theta_xJ = rep(NA, nNewPoints)
 
   for (i in 1:nNewPoints)
   {
-    diff = abs(U3 - newU3[i])/h
+    diff = abs(observedX3 - newX3[i])/h
     # To do later: implement other kernels
     weights = 3/4 * (1-diff^2)/h * as.numeric(diff < 1)
     theta_xJ[i] =
@@ -230,7 +224,7 @@ estimateParCondCopula_ZIJ <- function (Z1_J, Z2_J, U3,
     if (!is.finite(theta_xJ[i]) | !is.numeric(theta_xJ[i]))
     {
       warnings(paste0("Problem of estimation in estimationParCondCopulas",
-                      ". For newU3 =", newU3[i],
+                      ". For newX3 =", newX3[i],
                       " , theta(xJ) is estimated by", theta_xJ[i]))
     }
   }

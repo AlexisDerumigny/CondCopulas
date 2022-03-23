@@ -75,8 +75,8 @@ computeKernelMatrix <- function(observedX, newX, kernel, h)
 #' \eqn{\big(K_h(X3[i] - U3[j])\big)_{i,j}}
 #' such as given by \code{\link{computeKernelMatrix}}.
 #'
-#' @return A matrix of dimensions \code{(p1 = length(newX), p3 = length(matrixK3[,1]))} of estimators
-#' \eqn{\hat P(X_1 \leq x_1 | X_3 = x_3)} for every possible choices
+#' @return A matrix of dimensions \code{(p1 = length(newX), p3 = length(matrixK3[,1]))}
+#' of estimators \eqn{\hat P(X_1 \leq x_1 | X_3 = x_3)} for every possible choices
 #' of \eqn{(x_1, x_3)}.
 #'
 #' @examples
@@ -111,28 +111,6 @@ estimateCondCDF_matrix <- function(observedX1, newX1, matrixK3)
   return (matrix_mn_1)
 }
 
-#
-# To do later
-# #' Compute kernel-based conditional marginal (multivariate) cdfs
-# #'
-# #' This function computes an estimate of the conditional (marginal) cdf
-# #' of X = \eqn{{X_1, ..., X_p}} given a conditioning vector of variables, X = \eqn{{X_{p+1},
-# #' ..., X_d}}.
-# #'
-# #' @param ObservedX A numeric matrix of p observations of \eqn{ X_i \in {X_1, X_2, ..., X_p}} of
-# #' sample size \code{n}.
-# #' @param newX A numeric matrix of p new point of \eqn{ X_i \in {X_1, X_2, ..., X_p}} of
-# #' sample size \code{p1}
-# #' @param HDmatrixK A matrix of kernel values, such as given by \code{\link{computeKernelMatrixHD}}.
-# #'
-# #' @return
-# #'
-# #' @keywords internal
-# #'
-# estimateCondCDF_matrixHD <- function(observedX, newX, HDmatrixK)
-# {
-#
-# }
 
 #' Compute kernel-based conditional marginal (univariate) cdfs
 #'

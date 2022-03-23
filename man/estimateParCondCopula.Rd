@@ -2,6 +2,7 @@
 % Please edit documentation in R/estimationCondCopulas.R
 \name{estimateParCondCopula}
 \alias{estimateParCondCopula}
+\alias{estimateParCondCopula_ZIJ}
 \title{Estimation of parametric conditional copulas}
 \usage{
 estimateParCondCopula(
@@ -13,44 +14,57 @@ estimateParCondCopula(
   method = "mle",
   h
 )
+
+estimateParCondCopula_ZIJ(Z1_J, Z2_J, observedX3, newX3, family, method, h)
 }
 \arguments{
-\item{observedX1}{a vector of n observations of the first variable}
+\item{observedX1}{a vector of \code{n} observations of the first variable}
 
-\item{observedX2}{a vector of n observations of the second variable}
+\item{observedX2}{a vector of \code{n} observations of the second variable}
 
-\item{observedX3}{a vector of n observations of the conditioning variable}
+\item{observedX3}{a vector of \code{n} observations of the conditioning variable}
 
-\item{newX3}{a vector of new observations of X3}
+\item{newX3}{a vector of new observations of \eqn{X3}}
 
 \item{family}{an integer indicating the parametric family of copulas to be used,
-following the conventions of the package \code{VineCopula}.}
+following the conventions of the package \code{\link{VineCopula}}.}
 
 \item{method}{the method of estimation of the conditional parameters.
 Can be \code{"mle"} for maximum likelihood estimation
 or \code{"itau"} for estimation by inversion of Kendall's tau.}
 
 \item{h}{bandwidth to be chosen}
+
+\item{Z1_J}{the conditional pseudos-observations of the first variable,
+i.e. \eqn{\hat F_{1|J}( x_{i,1} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.}
+
+\item{Z2_J}{the conditional pseudos-observations of the second variable,
+i.e. \eqn{\hat F_{2|J}( x_{i,2} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.}
 }
 \value{
 a vector of size \code{length(newX3)} containing
-the estimated conditional copula parameters for each value of newU3.
+the estimated conditional copula parameters for each value of \code{newX3}.
 }
 \description{
 This function computes an estimate of the conditional parameters
 of a conditional parametric copula model.
+
+The function \code{estimateParCondCopula_ZIJ} is an auxiliary function
+that is called when conditional pseudos-observations are already
+available when one wants to estimate a parametric conditional copula.
 }
 \details{
-We assume that we have a three-dimensional vector (X1, X2, X3).
-We are interested in the estimation of the conditional copula of (X1, X2) given X3.
-This function takes in parameter three vectors of observations of X1, X2, X3,
-and a vector of conditioning points \code{newX3}
-and compute estimators of the corresponding parametric conditional copulas.
+We assume that we have a three-dimensional vector \eqn{(X_1, X_2, X_3)}.
+We are interested in the estimation of the conditional copula
+of \eqn{(X_1, X_2)} given \eqn{X_3}.
+This function takes in parameter three vectors of observations of \eqn{X_1, X_2, X_3},
+and a vector of conditioning points \code{newX3};
+it then computes estimators of the corresponding parametric conditional copulas.
 }
 \examples{
 
 # We simulate from a conditional copula
-N = 5000
+N = 500
 
 X3 = rnorm(n = N, mean = 5, sd = 2)
 conditionalTau = 0.9 * pnorm(X3, mean = 5, sd = 2)

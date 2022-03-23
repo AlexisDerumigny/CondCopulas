@@ -2,7 +2,7 @@
 % Please edit documentation in R/simpA.param.R
 \name{simpA.param}
 \alias{simpA.param}
-\title{Nonparametric testing of the simplifying assumption}
+\title{Semiparametric testing of the simplifying assumption}
 \usage{
 simpA.param(
   X1,
@@ -57,7 +57,7 @@ a list containing
 }
 }
 \description{
-Nonparametric testing of the simplifying assumption
+Semiparametric testing of the simplifying assumption
 }
 \examples{
 # We simulate from a conditional copula
@@ -77,7 +77,7 @@ print(result$p_val)
 
 \donttest{
 set.seed(1)
-N = 800
+N = 500
 Z = rnorm(n = N, mean = 5, sd = 2)
 conditionalTau = 0.8
 simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -87,7 +87,7 @@ X2 = qnorm(simCopula[,2], mean = - Z)
 
 result <- simpA.param(
    X1 = X1, X2 = X2, X3 = Z, family = 1,
-   h = 0.08, kernel.name = "Epanechnikov")
+   h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 30)
 print(result$p_val)
 }
 

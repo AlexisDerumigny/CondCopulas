@@ -2,6 +2,7 @@
 % Please edit documentation in R/estimationCKT.classif.tree.R
 \name{CKT.fit.randomForest}
 \alias{CKT.fit.randomForest}
+\alias{CKT.predict.randomForest}
 \title{Fit a Random Forest that can be used for the estimation of conditional Kendall's tau.}
 \usage{
 CKT.fit.randomForest(
@@ -16,6 +17,8 @@ CKT.fit.randomForest(
   verbose = FALSE,
   nMaxDepthAllowed = 10
 )
+
+CKT.predict.randomForest(fit, newZ)
 }
 \arguments{
 \item{datasetPairs}{the matrix of pairs and corresponding values of the kernel
@@ -23,7 +26,7 @@ as provided by \code{\link{datasetPairs}}.}
 
 \item{designMatrix}{the matrix of predictor to be used for the fitting of the tree}
 
-\item{n}{the original sample size of your dataset}
+\item{n}{the original sample size of the dataset}
 
 \item{nTree}{number of trees of the Random Forest.}
 
@@ -41,6 +44,11 @@ See \code{tree::\link[tree]{tree.control}()} for more details.}
 
 \item{nMaxDepthAllowed}{the maximum number of errors of type
 "the tree cannot be fitted" or "is too deep" before stopping the procedure.}
+
+\item{fit}{result of a call to \code{CKT.fit.randomForest}.}
+
+\item{newZ}{new matrix of observations, with the same number of variables.
+and same names as the \code{designMatrix} that was used to fit the Random Forest.}
 }
 \value{
 a list with two components
@@ -51,9 +59,31 @@ a list with two components
     \item \code{list_variables} a list of size \code{nTree}
     composed of the (predictor) variables for each tree.
 }
+
+\code{CKT.predict.randomForest} returns
+a vector of (predicted) conditional Kendall's taus of the same size
+as the number of rows of the newZ.
 }
 \description{
-Fit a Random Forest that can be used for the estimation of conditional Kendall's tau.
+Let \eqn{X_1} and \eqn{X_2} be two random variables.
+The goal of this function is to estimate the conditional Kendall's tau
+(a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+for a conditioning variable \eqn{Z}.
+Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+is defined as:
+\deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+\deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+In other words, conditional Kendall's tau is the difference
+between the probabilities of observing concordant and discordant pairs
+from the conditional law of \deqn{(X_1, X_2) | Z=z.}
+These functions estimate and predict conditional Kendall's tau using a
+\strong{random forest}. This is possible by the relationship between
+estimation of conditional Kendall's tau and classification problems
+(see Derumigny and Fermanian (2019)): estimation of conditional Kendall's tau
+is equivalent to the prediction of concordance in the space of pairs
+of observations.
 }
 \examples{
 # We simulate from a conditional copula
@@ -69,6 +99,14 @@ X2 = qnorm(simCopula[,2])
 datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 est_RF = CKT.fit.randomForest(datasetPairs = datasetP, n = N,
   mindev = 0.008)
+
+newZ = seq(1,10,by = 0.1)
+prediction = CKT.predict.randomForest(fit = est_RF,
+   newZ = data.frame(x=newZ))
+# Comparison between true Kendall's tau (in red)
+# and estimated Kendall's tau (in black)
+plot(newZ, prediction, type = "l", ylim = c(-1,1))
+lines(newZ, -0.9 + 1.8 * pnorm(newZ, mean = 5, sd = 2), col="red")
 
 }
 \references{

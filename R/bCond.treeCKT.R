@@ -43,6 +43,10 @@
 #' of each event. \code{\link{matrixInd2matrixCKT}} for getting the matrix of estimated
 #' conditional Kendall's taus for each event.
 #'
+#' \code{\link{CKT.estimate}} for the estimation of
+#' pointwise conditional Kendall's tau,
+#' i.e. assuming a continuous conditioning variable \eqn{Z}.
+#'
 #'
 #' @examples
 #' set.seed(1)

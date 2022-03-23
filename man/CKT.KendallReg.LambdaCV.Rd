@@ -9,7 +9,7 @@ CKT.KendallReg.LambdaCV(
   observedX2,
   observedZ,
   ZToEstimate,
-  designMatrixZ,
+  designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   typeEstCKT = 4,
   h_lambda,
   Lambda = identity,
@@ -53,6 +53,39 @@ procedure to choose \code{lambda}.}
 l_norm=1 corresponds to the sum of absolute values of differences
 between predicted and estimated conditional Kendall's tau
 while l_norm=2 corresponds to the sum of squares of differences.}
+
+\item{matrixSignsPairs}{the results of a call to
+\code{\link{computeMatrixSignPairs}} (if already computed).
+If \code{NULL} (the default value), the \code{matrixSignsPairs}
+will be computed again from the data.}
+
+\item{progressBars}{should progress bars be displayed?
+Possible values are
+\itemize{
+   \item \code{"none"}: no progress bar at all.
+
+   \item \code{"global"}: only one global progress bar (default behavior)
+
+   \item \code{"eachStep"}: uses a global progress bar + one progress bar
+   for each kernel smoothing step.
+}}
+}
+\value{
+A list with the following components
+\itemize{
+  \item \code{lambdaCV}: the chosen value of the
+  penalization parameters \code{lambda}.
+
+  \item \code{vectorLambda}: a vector containing the values of
+  \code{lambda} that have been compared.
+
+  \item \code{vectorMSEMean}: the estimated MSE for each value of
+  \code{lambda} in \code{vectorLambda}
+
+  \item \code{vectorMSESD}: the estimated standard deviation of the
+  MSE for each \code{lambda}. It can be used to construct confidence
+  intervals for estimates of the MSE given by \code{vectorMSEMean}.
+}
 }
 \description{
 In this model, three variables \eqn{X_1}, \eqn{X_2} and \eqn{Z} are observed.
@@ -72,9 +105,31 @@ as the minimizer of the following criteria
 This function chooses the penalization parameter \eqn{lambda}
 by cross-validation.
 }
+\examples{
+# We simulate from a conditional copula
+set.seed(1)
+N = 400
+Z = rnorm(n = N, mean = 5, sd = 2)
+conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
+simCopula = VineCopula::BiCopSim(N=N , family = 1,
+    par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+X1 = qnorm(simCopula[,1])
+X2 = qnorm(simCopula[,2])
+
+newZ = seq(2, 10, by = 0.1)
+result <- CKT.KendallReg.LambdaCV(
+   observedX1 = X1, observedX2 = X2, observedZ = Z,
+   ZToEstimate = newZ, h_lambda = 2)
+
+plot(x = result$vectorLambda, y = result$vectorMSEMean,
+     type = "l", log = "x")
+
+}
 \references{
 Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 Journal of Multivariate Analysis, 178, 104610.
 }
-\keyword{internal}
+\seealso{
+the main fitting function \code{\link{CKT.kendallReg.fit}}.
+}

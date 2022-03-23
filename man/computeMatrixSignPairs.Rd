@@ -4,7 +4,7 @@
 \alias{computeMatrixSignPairs}
 \title{Compute the matrix of signs of pairs}
 \usage{
-computeMatrixSignPairs(vectorX1, vectorX2, typeEstCKT)
+computeMatrixSignPairs(vectorX1, vectorX2, typeEstCKT = 4)
 }
 \arguments{
 \item{vectorX1}{vector of observed data (first coordinate)}
@@ -16,14 +16,25 @@ computeMatrixSignPairs(vectorX1, vectorX2, typeEstCKT)
  - 1 \{ (X_{i,1} - X_{j,1}) * (X_{i,2} - X_{j,2}) < 0 \},}
  where \eqn{1} is the indicator function.
 
-For typeEstCKT = 1 (resp. typeEstCKT = 3)
-a negatively biased (resp. positively) matrix is given.}
+For \code{typeEstCKT = 1} (respectively \code{typeEstCKT = 3})
+a negatively biased (respectively positively) matrix is given.}
 }
 \value{
-an \eqn{n * n} matrix with the signs of each pair
+an \code{n * n} matrix with the signs of each pair
 of observations.
 }
 \description{
-Compute the matrix of signs of pairs
+Compute a matrix giving the concordance or discordance
+of each pair of observations.
 }
-\keyword{internal}
+\examples{
+# We simulate from a conditional copula
+N = 500
+Z = rnorm(n = N, mean = 5, sd = 2)
+conditionalTau = 0.9 * pnorm(Z, mean = 5, sd = 2)
+simCopula = VineCopula::BiCopSim(N = N , family = 3,
+    par = VineCopula::BiCopTau2Par(1 , conditionalTau) )
+matrixPairs = computeMatrixSignPairs(vectorX1 = simCopula[,1],
+                                     vectorX2 = simCopula[,2])
+
+}

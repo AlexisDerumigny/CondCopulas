@@ -22,20 +22,22 @@ testStat_T2c <- function(env)
   # Estimation by conditional CMLE
   if (env$family == 2) {
     env$theta_0 = VineCopula::BiCopEst(u1 = env$Z1, u2 = env$Z2,
-                                   family = 1 , method = "itau")$par
+                                       family = 1 , method = "itau")$par
 
-    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2,
-                                             U3 = env$U3, newU3 = env$grid$nodes,
-                                             family = 1 , method = "itau",
-                                             h = env$h)
+    env$theta_xJ = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1, Z2_J = env$Z2,
+      observedX3 = env$U3, newX3 = env$grid$nodes,
+      family = 1 , method = "itau",
+      h = env$h)
   } else {
     env$theta_0 = VineCopula::BiCopEst(u1 = env$Z1, u2 = env$Z2,
                                        family = env$family , method = "mle")$par
 
-    env$theta_xJ = estimateParCondCopula_ZIJ(Z1_J = env$Z1, Z2_J = env$Z2,
-                                             U3 = env$U3, newU3 = env$grid$nodes,
-                                             family = env$family , method = "mle",
-                                             h = env$h)
+    env$theta_xJ = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1, Z2_J = env$Z2,
+      observedX3 = env$U3, newX3 = env$grid$nodes,
+      family = env$family , method = "mle",
+      h = env$h)
   }
 
   env$true_stat = sum( env$grid$weights * (env$theta_0 - env$theta_xJ)^2)
@@ -65,20 +67,22 @@ testStat_T2c_boot1st <- function(env)
   # Estimation by conditional CMLE
   if (env$family == 2) {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                       family = 1 , method = "itau")$par
+                                          family = 1 , method = "itau")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
-                                             U3 = env$U3_st, newU3 = env$grid$nodes,
-                                             family = 1 , method = "itau",
-                                             h = env$h)
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1_st, Z2_J = env$Z2_st,
+      observedX3 = env$U3_st, newX3 = env$grid$nodes,
+      family = 1 , method = "itau",
+      h = env$h)
   } else {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
-                                       family = env$family , method = "mle")$par
+                                          family = env$family , method = "mle")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
-                                             U3 = env$U3_st, newU3 = env$grid$nodes,
-                                             family = env$family , method = "mle",
-                                             h = env$h)
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1_st, Z2_J = env$Z2_st,
+      observedX3 = env$U3_st, newX3 = env$grid$nodes,
+      family = env$family , method = "mle",
+      h = env$h)
   }
 
   env$stat_st = sum(env$grid$weights *
@@ -111,18 +115,20 @@ testStat_T2c_boot2st <- function(env)
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
                                           family = 1 , method = "itau")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
-                                                U3 = env$U3_st, newU3 = env$grid$nodes,
-                                                family = 1 , method = "itau",
-                                                h = env$h)
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1_st, Z2_J = env$Z2_st,
+      observedX3 = env$U3_st, newX3 = env$grid$nodes,
+      family = 1 , method = "itau",
+      h = env$h)
   } else {
     env$theta_0_st = VineCopula::BiCopEst(u1 = env$Z1_st, u2 = env$Z2_st,
                                           family = env$family , method = "mle")$par
 
-    env$theta_xJ_st = estimateParCondCopula_ZIJ(Z1_J = env$Z1_st, Z2_J = env$Z2_st,
-                                                U3 = env$U3_st, newU3 = env$grid$nodes,
-                                                family = env$family , method = "mle",
-                                                h = env$h)
+    env$theta_xJ_st = estimateParCondCopula_ZIJ(
+      Z1_J = env$Z1_st, Z2_J = env$Z2_st,
+      observedX3 = env$U3_st, newX3 = env$grid$nodes,
+      family = env$family , method = "mle",
+      h = env$h)
   }
 
   env$stat_st = sum(env$grid$weights *

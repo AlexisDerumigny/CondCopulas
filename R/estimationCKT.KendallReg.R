@@ -2,7 +2,7 @@
 
 #' Fit Kendall's regression, a GLM-type model for conditional Kendall's tau
 #'
-#' This function fits a regression-like model for the
+#' The function \code{CKT.kendallReg.fit} fits a regression-type model for the
 #' conditional Kendall's tau between two variables \eqn{X_1} and \eqn{X_2}
 #' conditionally to some predictors Z.
 #' More precisely, it fits the model
@@ -18,41 +18,58 @@
 #' - \sum_{j=1}^{p'} \beta_j \psi_j(z_i)]^2 + \lambda * |\beta|_1,}
 #' where the \eqn{z_i} are a second sample (here denoted by \code{ZToEstimate}).
 #'
-#' @param observedX1 a vector of n observations of the first variable \eqn{X_1}.
-#' @param observedX2 a vector of n observations of the second variable \eqn{X_2}.
-#' @param observedZ a vector of n observations of the conditioning variable,
-#' or a matrix with n rows of observations of the conditioning vector
+#' @param observedX1 a vector of \code{n} observations of the first variable \eqn{X_1}.
+#'
+#' @param observedX2 a vector of \code{n} observations of the second variable \eqn{X_2}.
+#'
+#' @param observedZ a vector of \code{n} observations of the conditioning variable,
+#' or a matrix with \code{n} rows of observations of the conditioning vector
 #' (if \eqn{Z} is multivariate).
-#' @param ZToEstimate the new data of observations of Z at which
-#' the conditional Kendall's tau should be estimated.
-#' @param designMatrixZ the transformation of the ZToEstimate that
+#'
+#' @param ZToEstimate the intermediary dataset of observations of \eqn{Z}
+#' at which the conditional Kendall's tau should be estimated.
+#'
+#' @param designMatrixZ the transformation of the \code{ZToEstimate} that
 #' will be used as predictors. By default, no transformation is applied.
+#'
 #' @param h_kernel bandwidth used for the first step of kernel smoothing.
+#'
 #' @param Lambda the function to be applied on conditional Kendall's tau.
 #' By default, the identity function is used.
+#'
 #' @param Lambda_inv the functional inverse of \code{Lambda}.
 #' By default, the identity function is used.
+#'
 #' @param lambda the regularization parameter. If \code{NULL},
 #' then it is chosen by K-fold cross validation.
+#' Internally, cross-validation is performed by the function
+#' \code{\link{CKT.KendallReg.LambdaCV}}.
+#'
 #' @param Kfolds_lambda the number of folds used in the cross-validation
 #' procedure to choose \code{lambda}.
+#'
 #' @param h_lambda the smoothing bandwidth used in the cross-validation
 #' procedure to choose \code{lambda}.
-#' @param newData the new observations of the conditioning variable.
+#'
+#' @param newZ the new observations of the conditioning variable.
 #'
 #' @param l_norm type of norm used for selection of the optimal lambda by cross-validation.
-#' l_norm=1 corresponds to the sum of absolute values of differences
+#' \code{l_norm=1} corresponds to the sum of absolute values of differences
 #' between predicted and estimated conditional Kendall's tau
-#' while l_norm=2 corresponds to the sum of squares of differences.
+#' while \code{l_norm=2} corresponds to the sum of squares of differences.
 #'
 #' @param ... other arguments to be passed to \code{\link{CKT.kernel}}
 #' for the first step (kernel-based) estimator of conditional Kendall's tau.
 #'
-#' @return A list with components:
+#'
+#' @return The function \code{CKT.kendallReg.fit} returns
+#' a list with the following components:
 #' \itemize{
-#'     \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newData}.
+#'     \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newZ}.
+#'
 #'     \item \code{fit}: the fitted model, of S3 class glmnet
 #'     (see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+#'
 #'     \item \code{lambda}: the value of the penalized parameter used.
 #'     (i.e. either the one supplied by the user or
 #'     the one determined by cross-validation)
@@ -62,6 +79,12 @@
 #' Derumigny, A., & Fermanian, J. D. (2020).
 #' On Kendall’s regression.
 #' Journal of Multivariate Analysis, 178, 104610.
+#'
+#' @seealso See also other estimators of conditional Kendall's tau:
+#' \code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+#' \code{\link{CKT.fit.nNets}}, \code{\link{CKT.predict.kNN}},
+#' \code{\link{CKT.kernel}}, \code{\link{CKT.fit.GLM}},
+#' and the more general wrapper \code{\link{CKT.estimate}}.
 #'
 #' @examples
 #' # We simulate from a conditional copula
@@ -96,7 +119,7 @@
 CKT.kendallReg.fit <- function(
   observedX1, observedX2, observedZ, ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
-  newData = designMatrixZ,
+  newZ = designMatrixZ,
   h_kernel,
   Lambda = identity, Lambda_inv = identity,
   lambda = NULL, Kfolds_lambda = 10, l_norm = 1, h_lambda = h_kernel, ...)
@@ -105,7 +128,7 @@ CKT.kendallReg.fit <- function(
     observedX1 = observedX1, observedX2 = observedX2,
     observedZ = observedZ, newZ = ZToEstimate, h = h_kernel, ...)
 
-  stopifnot(ncol(designMatrixZ) == ncol(newData), ncol(designMatrixZ) > 1)
+  stopifnot(ncol(designMatrixZ) == ncol(newZ), ncol(designMatrixZ) > 1)
   stopifnot(NROW(ZToEstimate) == nrow(designMatrixZ))
 
   whichFinite = which( is.finite(kernelEstCKT$estimatedCKT))
@@ -129,8 +152,9 @@ CKT.kendallReg.fit <- function(
     lambda <- resultCV$lambdaCV
   }
 
-  estimatedCKT = CKT.kendallReg.predict(fit = fit, newData = newData,
+  estimatedCKT = CKT.kendallReg.predict(fit = fit, newZ = newZ,
                                         lambda = lambda, Lambda_inv = Lambda_inv)
+
   return (list(estimatedCKT = estimatedCKT,
                fit = fit, lambda = lambda))
 }
@@ -138,33 +162,25 @@ CKT.kendallReg.fit <- function(
 
 #' Predict conditional Kendall's tau using Kendall's regression
 #'
-#' Uses new data of the conditioning variable Z to predict
-#' the corresponding conditional Kendall's tau between two variables
-#' \eqn{X_1} and \eqn{X_2} given \eqn{Z=z} using some new
-#' values of \eqn{Z}
+#' The function \code{CKT.kendallReg.predict} predicts
+#' the conditional Kendall's tau between two variables
+#' \eqn{X_1} and \eqn{X_2} given \eqn{Z=z} for some new
+#' values of \eqn{z}.
 #'
 #' @param fit the fitted model, obtained by a call
-#' to \code{\link{CKT.kendallReg.fit}}
+#' to \code{CKT.kendallReg.fit}.
 #'
-#' @param newData the new observations of the conditioning variable
-#' @param lambda value or vector of values of the penalty parameters with
-#' which to predict using the penalized linear model. By default, it uses
-#' the sequence used to fit the model.
-#' @param Lambda_inv the functional inverse of the transformation \eqn{Lambda}
-#' used to fit the Kendall's regression.
-#'
-#' @references
-#' Derumigny, A., & Fermanian, J. D. (2020).
-#' On Kendall’s regression.
-#' Journal of Multivariate Analysis, 178, 104610.
+#' @param newZ the new observations of the conditioning variable.
 #'
 #' @importFrom glmnet glmnet
 #'
-#' @return the predicted values
+#' @return \code{CKT.kendallReg.predict} returns
+#' the predicted values of conditional Kendall's tau.
 #'
+#' @rdname CKT.kendallReg.fit
 #' @export
-CKT.kendallReg.predict <- function(fit, newData, lambda = NULL, Lambda_inv = identity){
-  return (Lambda_inv(glmnet::predict.glmnet(fit, newx = newData,
+CKT.kendallReg.predict <- function(fit, newZ, lambda = NULL, Lambda_inv = identity){
+  return (Lambda_inv(glmnet::predict.glmnet(fit, newx = newZ,
                                             s = lambda, type = "response")))
 }
 
@@ -190,38 +206,102 @@ CKT.kendallReg.predict <- function(fit, newData, lambda = NULL, Lambda_inv = ide
 #' by cross-validation.
 #'
 #' @param observedX1 a vector of n observations of the first variable \eqn{X_1}.
+#'
 #' @param observedX2 a vector of n observations of the second variable \eqn{X_2}.
+#'
 #' @param observedZ a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
 #' (if \eqn{Z} is multivariate).
+#'
 #' @param ZToEstimate the new data of observations of Z at which
 #' the conditional Kendall's tau should be estimated.
+#'
 #' @param designMatrixZ the transformation of the ZToEstimate that
 #' will be used as predictors. By default, no transformation is applied.
+#'
 #' @param Lambda the function to be applied on conditional Kendall's tau.
 #' By default, the identity function is used.
+#'
 #' @param Kfolds_lambda the number of folds used in the cross-validation
 #' procedure to choose \code{lambda}.
+#'
 #' @param h_lambda the smoothing bandwidth used in the cross-validation
 #' procedure to choose \code{lambda}.
+#'
 #' @param typeEstCKT type of estimation of the conditional Kendall's tau.
+#'
 #' @param l_norm type of norm used for selection of the optimal lambda.
 #' l_norm=1 corresponds to the sum of absolute values of differences
 #' between predicted and estimated conditional Kendall's tau
 #' while l_norm=2 corresponds to the sum of squares of differences.
+#'
 #' @param kernel.name name of the kernel. Possible choices are
 #' "Gaussian" (Gaussian kernel) and "Epa" (Epanechnikov kernel).
+#'
+#' @param matrixSignsPairs the results of a call to
+#' \code{\link{computeMatrixSignPairs}} (if already computed).
+#' If \code{NULL} (the default value), the \code{matrixSignsPairs}
+#' will be computed again from the data.
+#'
+#' @param progressBars should progress bars be displayed?
+#' Possible values are
+#' \itemize{
+#'    \item \code{"none"}: no progress bar at all.
+#'
+#'    \item \code{"global"}: only one global progress bar (default behavior)
+#'
+#'    \item \code{"eachStep"}: uses a global progress bar + one progress bar
+#'    for each kernel smoothing step.
+#' }
+#'
+#' @return A list with the following components
+#' \itemize{
+#'   \item \code{lambdaCV}: the chosen value of the
+#'   penalization parameters \code{lambda}.
+#'
+#'   \item \code{vectorLambda}: a vector containing the values of
+#'   \code{lambda} that have been compared.
+#'
+#'   \item \code{vectorMSEMean}: the estimated MSE for each value of
+#'   \code{lambda} in \code{vectorLambda}
+#'
+#'   \item \code{vectorMSESD}: the estimated standard deviation of the
+#'   MSE for each \code{lambda}. It can be used to construct confidence
+#'   intervals for estimates of the MSE given by \code{vectorMSEMean}.
+#' }
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
 #' On Kendall’s regression.
 #' Journal of Multivariate Analysis, 178, 104610.
 #'
-#' @keywords internal
+#' @seealso the main fitting function \code{\link{CKT.kendallReg.fit}}.
+#'
+#' @examples
+#' # We simulate from a conditional copula
+#' set.seed(1)
+#' N = 400
+#' Z = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
+#' simCopula = VineCopula::BiCopSim(N=N , family = 1,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+#' X1 = qnorm(simCopula[,1])
+#' X2 = qnorm(simCopula[,2])
+#'
+#' newZ = seq(2, 10, by = 0.1)
+#' result <- CKT.KendallReg.LambdaCV(
+#'    observedX1 = X1, observedX2 = X2, observedZ = Z,
+#'    ZToEstimate = newZ, h_lambda = 2)
+#'
+#' plot(x = result$vectorLambda, y = result$vectorMSEMean,
+#'      type = "l", log = "x")
+#'
+#' @export
 #'
 CKT.KendallReg.LambdaCV <- function(
   observedX1, observedX2,
-  observedZ, ZToEstimate, designMatrixZ,
+  observedZ, ZToEstimate,
+  designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   typeEstCKT = 4, h_lambda, Lambda = identity, kernel.name = "Epa",
   Kfolds_lambda = 10, l_norm = 1, matrixSignsPairs = NULL,
   progressBars = "global")
@@ -333,9 +413,9 @@ CKT.KendallReg.LambdaCV <- function(
   vectorMSEMean = apply(matrixDiffLambda, MARGIN = 2, FUN = mean, na.rm = TRUE)
   vectorMSESD = apply(matrixDiffLambda, MARGIN = 2, FUN = stats::sd, na.rm = TRUE)
   lambdaCV = vectorLambda[which.min(vectorMSEMean)]
-  return(list(lambdaCV = lambdaCV,
-              vectorLambda = vectorLambda, matrixDiffLambda = matrixDiffLambda,
-              vectorMSEMean = vectorMSEMean, vectorMSESD = vectorMSESD ) )
+
+  return(list(lambdaCV = lambdaCV, vectorLambda = vectorLambda,
+              vectorMSEMean = vectorMSEMean, vectorMSESD = vectorMSESD) )
 }
 
 

@@ -2,6 +2,7 @@
 % Please edit documentation in R/estimationCKT.KendallReg.R
 \name{CKT.kendallReg.fit}
 \alias{CKT.kendallReg.fit}
+\alias{CKT.kendallReg.predict}
 \title{Fit Kendall's regression, a GLM-type model for conditional Kendall's tau}
 \usage{
 CKT.kendallReg.fit(
@@ -10,7 +11,7 @@ CKT.kendallReg.fit(
   observedZ,
   ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
-  newData = designMatrixZ,
+  newZ = designMatrixZ,
   h_kernel,
   Lambda = identity,
   Lambda_inv = identity,
@@ -20,23 +21,25 @@ CKT.kendallReg.fit(
   h_lambda = h_kernel,
   ...
 )
+
+CKT.kendallReg.predict(fit, newZ, lambda = NULL, Lambda_inv = identity)
 }
 \arguments{
-\item{observedX1}{a vector of n observations of the first variable \eqn{X_1}.}
+\item{observedX1}{a vector of \code{n} observations of the first variable \eqn{X_1}.}
 
-\item{observedX2}{a vector of n observations of the second variable \eqn{X_2}.}
+\item{observedX2}{a vector of \code{n} observations of the second variable \eqn{X_2}.}
 
-\item{observedZ}{a vector of n observations of the conditioning variable,
-or a matrix with n rows of observations of the conditioning vector
+\item{observedZ}{a vector of \code{n} observations of the conditioning variable,
+or a matrix with \code{n} rows of observations of the conditioning vector
 (if \eqn{Z} is multivariate).}
 
-\item{ZToEstimate}{the new data of observations of Z at which
-the conditional Kendall's tau should be estimated.}
+\item{ZToEstimate}{the intermediary dataset of observations of \eqn{Z}
+at which the conditional Kendall's tau should be estimated.}
 
-\item{designMatrixZ}{the transformation of the ZToEstimate that
+\item{designMatrixZ}{the transformation of the \code{ZToEstimate} that
 will be used as predictors. By default, no transformation is applied.}
 
-\item{newData}{the new observations of the conditioning variable.}
+\item{newZ}{the new observations of the conditioning variable.}
 
 \item{h_kernel}{bandwidth used for the first step of kernel smoothing.}
 
@@ -47,35 +50,46 @@ By default, the identity function is used.}
 By default, the identity function is used.}
 
 \item{lambda}{the regularization parameter. If \code{NULL},
-then it is chosen by K-fold cross validation.}
+then it is chosen by K-fold cross validation.
+Internally, cross-validation is performed by the function
+\code{\link{CKT.KendallReg.LambdaCV}}.}
 
 \item{Kfolds_lambda}{the number of folds used in the cross-validation
 procedure to choose \code{lambda}.}
 
 \item{l_norm}{type of norm used for selection of the optimal lambda by cross-validation.
-l_norm=1 corresponds to the sum of absolute values of differences
+\code{l_norm=1} corresponds to the sum of absolute values of differences
 between predicted and estimated conditional Kendall's tau
-while l_norm=2 corresponds to the sum of squares of differences.}
+while \code{l_norm=2} corresponds to the sum of squares of differences.}
 
 \item{h_lambda}{the smoothing bandwidth used in the cross-validation
 procedure to choose \code{lambda}.}
 
 \item{...}{other arguments to be passed to \code{\link{CKT.kernel}}
 for the first step (kernel-based) estimator of conditional Kendall's tau.}
+
+\item{fit}{the fitted model, obtained by a call
+to \code{CKT.kendallReg.fit}.}
 }
 \value{
-A list with components:
+The function \code{CKT.kendallReg.fit} returns
+a list with the following components:
 \itemize{
-    \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newData}.
+    \item \code{estimatedCKT}: the estimated CKT at the new data points \code{newZ}.
+
     \item \code{fit}: the fitted model, of S3 class glmnet
     (see \code{glmnet::\link[glmnet]{glmnet}} for more details).
+
     \item \code{lambda}: the value of the penalized parameter used.
     (i.e. either the one supplied by the user or
     the one determined by cross-validation)
 }
+
+\code{CKT.kendallReg.predict} returns
+the predicted values of conditional Kendall's tau.
 }
 \description{
-This function fits a regression-like model for the
+The function \code{CKT.kendallReg.fit} fits a regression-type model for the
 conditional Kendall's tau between two variables \eqn{X_1} and \eqn{X_2}
 conditionally to some predictors Z.
 More precisely, it fits the model
@@ -90,6 +104,11 @@ as the minimizer of the following criteria
 \deqn{\frac{1}{2n'} \sum_{i=1}^{n'} [\Lambda(\hat\tau_{X_1, X_2 | Z = z_i})
 - \sum_{j=1}^{p'} \beta_j \psi_j(z_i)]^2 + \lambda * |\beta|_1,}
 where the \eqn{z_i} are a second sample (here denoted by \code{ZToEstimate}).
+
+The function \code{CKT.kendallReg.predict} predicts
+the conditional Kendall's tau between two variables
+\eqn{X_1} and \eqn{X_2} given \eqn{Z=z} for some new
+values of \eqn{z}.
 }
 \examples{
 # We simulate from a conditional copula
@@ -124,4 +143,11 @@ lines(newZ, estimatedCKT_kendallReg$estimatedCKT, col = "red")
 Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 Journal of Multivariate Analysis, 178, 104610.
+}
+\seealso{
+See also other estimators of conditional Kendall's tau:
+\code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.nNets}}, \code{\link{CKT.predict.kNN}},
+\code{\link{CKT.kernel}}, \code{\link{CKT.fit.GLM}},
+and the more general wrapper \code{\link{CKT.estimate}}.
 }

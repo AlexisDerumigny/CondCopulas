@@ -1,44 +1,74 @@
 
 
-#' Construct a dataset of pairs of observations
+#' Construct a dataset of pairs of observations for the estimation
+#' of conditional Kendall's tau
 #'
+#' In (Derumigny, & Fermanian (2019)), it is described how the problem
+#' of estimating conditional Kendall's tau can be rewritten as a
+#' classification task for a dataset of pairs (of observations).
+#' This function computes such a dataset, that can be then used to
+#' estimate conditional Kendall's tau using one of the following
+#' functions:
+#' \code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+#' \code{\link{CKT.fit.GLM}}, \code{\link{CKT.fit.nNets}},
+#' \code{\link{CKT.predict.kNN}}.
 #'
 #' @param X1 vector of observations of the first conditioned variable.
+#'
 #' @param X2 vector of observations of the second conditioned variable.
+#'
 #' @param Z vector or matrix of observations of the conditioning variable(s),
-#' of dimension dimZ.
+#' of dimension \code{dimZ}.
 #'
 #' @param h the bandwidth. Can be a vector; in this case,
-#' the composants of h will be reused to match dimension of Z.
+#' the components of \code{h} will be reused to match the dimension of \code{Z}.
+#'
 #' @param cut the cutting level to keep a given pair or not.
 #' Used only if no \code{nPairs} is provided.
-#' @param onlyConsecutivePairs if true, when only consecutive pairs are used.
-#        else every pair is used.
-#' @param nPairs number of most relevant pairs to keep in the final datasets.
-#' If this is different than the default \code{NULL}, the cutting level \code{cut} is not used.
 #'
-#' @return A matrix with (4+dimZ) columns and n*(n-1)/2 rows
-#' if \code{onlyConsecutivePairs=FALSE} and (n/2) rows else.
+#' @param onlyConsecutivePairs if \code{TRUE}, only consecutive pairs are used.
+#  else every pair is used.
+
+#' @param nPairs number of most relevant pairs to keep in the final datasets.
+#' If this is different than the default \code{NULL},
+#' the cutting level \code{cut} is not used.
+#'
+#' @return A matrix with \code{(4+dimZ)} columns and \code{n*(n-1)/2} rows
+#' if \code{onlyConsecutivePairs=FALSE} and else \code{(n/2)} rows.
+#' It is structured in the following way:
 #' \itemize{
-#'     \item column 1 contains the information about the concordance of the pair (i,j) ;
-#'     \item column 2 to 1+dimZ contain the mean value of Z (the conditioning variables) ;
-#'     \item column 2+dimZ contains the value of the kernel K_h(Z_j - Z_i) ;
-#'     \item column 3+dimZ and 4+dimZ contain the corresponding values of i and j.
+#'     \item column \code{1} contains the information
+#'     about the concordance of the pair (i,j) ;
+#'
+#'     \item columns \code{2} to \code{1+dimZ} contain
+#'     the mean value of Z (the conditioning variables) ;
+#'
+#'     \item column \code{2+dimZ} contains the value of the kernel K_h(Z_j - Z_i) ;
+#'
+#'     \item column \code{3+dimZ} and \code{4+dimZ}
+#'     contain the corresponding values of i and j.
 #' }
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2019).
 #' A classification point-of-view about conditional Kendall’s tau.
 #' Computational Statistics & Data Analysis, 135, 70-94.
-#' (Algorithm 1 for all pairs and Algorithm 8 for the case of only consecutive pairs)
+#' (Algorithm 1 for all pairs and Algorithm 8
+#' for the case of only consecutive pairs)
+#'
+#' @seealso the functions that require such a dataset of pairs
+#' to do the estimation of conditional Kendall's tau:
+#' \code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+#' \code{\link{CKT.fit.GLM}}, \code{\link{CKT.fit.nNets}},
+#' \code{\link{CKT.predict.kNN}}, and \code{\link{CKT.fit.randomForest}}.
 #'
 #' @examples
 #' # We simulate from a conditional copula
 #' N = 500
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = 0.9 * pnorm(Z, mean = 5, sd = 2)
-#' simCopula = VineCopula::BiCopSim(N=N , family = 3,
-#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+#' simCopula = VineCopula::BiCopSim(N = N , family = 3,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau) )
 #' X1 = qnorm(simCopula[,1])
 #' X2 = qnorm(simCopula[,2])
 #'
@@ -126,7 +156,8 @@ datasetPairs <- function(X1, X2, Z, h, cut = 0.9,
   }
   if (!is.null(nPairs)) {
     if (nPairs < nrow(datasetPairs)) {
-      cut = stats::quantile(x = datasetPairs[, dimZ+2], probs = nPairs / nrow(datasetPairs))
+      cut = stats::quantile(x = datasetPairs[, dimZ+2],
+                            probs = nPairs / nrow(datasetPairs))
     } else {
       warning("nPairs larger or equal to the created number of pairs: ",
               nPairs, " , ", nrow(datasetPairs),
@@ -158,7 +189,8 @@ datasetPairs <- function(X1, X2, Z, h, cut = 0.9,
 #'
 #' @return the corresponding dataset of pairs
 #'
-#' @keywords internal
+#' @noRd
+#'
 datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
 {
   n = length(X1)
@@ -291,7 +323,11 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
 
 #' Compute the matrix of signs of pairs
 #'
+#' Compute a matrix giving the concordance or discordance
+#' of each pair of observations.
+#'
 #' @param vectorX1 vector of observed data (first coordinate)
+#'
 #' @param vectorX2 vector of observed data (second coordinate)
 #'
 #' @param typeEstCKT if typeEstCKT = 2 or 4, compute the matrix whose term (i,j) is :
@@ -299,15 +335,25 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
 #'  - 1 \{ (X_{i,1} - X_{j,1}) * (X_{i,2} - X_{j,2}) < 0 \},}
 #'  where \eqn{1} is the indicator function.
 #'
-#' For typeEstCKT = 1 (resp. typeEstCKT = 3)
-#' a negatively biased (resp. positively) matrix is given.
+#' For \code{typeEstCKT = 1} (respectively \code{typeEstCKT = 3})
+#' a negatively biased (respectively positively) matrix is given.
 #'
-#' @return an \eqn{n * n} matrix with the signs of each pair
+#' @return an \code{n * n} matrix with the signs of each pair
 #' of observations.
 #'
-#' @keywords internal
+#' @examples
+#' # We simulate from a conditional copula
+#' N = 500
+#' Z = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = 0.9 * pnorm(Z, mean = 5, sd = 2)
+#' simCopula = VineCopula::BiCopSim(N = N , family = 3,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau) )
+#' matrixPairs = computeMatrixSignPairs(vectorX1 = simCopula[,1],
+#'                                      vectorX2 = simCopula[,2])
 #'
-computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT)
+#' @export
+#'
+computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT = 4)
 {
   if (length(vectorX1) != length(vectorX2)) {
     stop(paste0("vectorX1 and vectorX2 have different lengths: ",
@@ -333,7 +379,7 @@ computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT)
       signVector = (vectorX1[i] - vectorX1[(i+1):n]) *
         (vectorX2[i] - vectorX2[(i+1):n])
       matrixSignsPairs[i,(i+1):n] =
-        as.numeric( signVector > 0) -as.numeric( signVector < 0)
+        as.numeric( signVector > 0) - as.numeric( signVector < 0)
       matrixSignsPairs[(i+1):n,i] = matrixSignsPairs[i,(i+1):n]
 
     }

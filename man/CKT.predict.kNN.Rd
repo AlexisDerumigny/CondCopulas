@@ -7,7 +7,7 @@
 CKT.predict.kNN(
   datasetPairs,
   designMatrix = datasetPairs[, 2:(ncol(datasetPairs) - 3), drop = FALSE],
-  newData,
+  newZ,
   number_nn,
   weightsVariables = 1,
   normLp = 2,
@@ -23,11 +23,11 @@ CKT.predict.kNN(
 as provided by \code{\link{datasetPairs}}.}
 
 \item{designMatrix}{the matrix of predictors.
-They must have the same number of variables as \code{newData} and
+They must have the same number of variables as \code{newZ} and
 the same number of observations as \code{inputMatrix},
 i.e. there should be one "multivariate observation" of the predictor for each pair.}
 
-\item{newData}{the matrix of predictors for which we want to
+\item{newZ}{the matrix of predictors for which we want to
 estimate the conditional Kendall's taus at these values.}
 
 \item{number_nn}{vector of numbers of nearest neighbors to use.
@@ -63,13 +63,31 @@ This parameter should not matter except for the computation time.}
 a list with two components
 \itemize{
     \item \code{estimatedCKT} the estimated conditional Kendall's tau, a vector of
-    the same size as the number of rows in \code{newData};
+    the same size as the number of rows in \code{newZ};
     \item \code{vect_k_chosen} the locally selected number of nearest neighbors,
-    a vector of the same size as the number of rows in \code{newData}.
+    a vector of the same size as the number of rows in \code{newZ}.
 }
 }
 \description{
-Prediction of conditional Kendall's tau using nearest neighbors
+Let \eqn{X_1} and \eqn{X_2} be two random variables.
+The goal of this function is to estimate the conditional Kendall's tau
+(a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+for a conditioning variable \eqn{Z}.
+Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+is defined as:
+\deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+\deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+In other words, conditional Kendall's tau is the difference
+between the probabilities of observing concordant and discordant pairs
+from the conditional law of \deqn{(X_1, X_2) | Z=z.}
+This function estimates conditional Kendall's tau using a
+\strong{nearest neighbors}. This is possible by the relationship between
+estimation of conditional Kendall's tau and classification problems
+(see Derumigny and Fermanian (2019)): estimation of conditional Kendall's tau
+is equivalent to the prediction of concordance in the space of pairs
+of observations.
 }
 \examples{
 # We simulate from a conditional copula
@@ -86,7 +104,7 @@ newZ = seq(2,10,by = 0.1)
 datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 estimatedCKT_knn <- CKT.predict.kNN(
   datasetPairs = datasetP,
-  newData = matrix(newZ,ncol = 1),
+  newZ = matrix(newZ,ncol = 1),
   number_nn = c(50,80, 100, 120,200),
   partition = 8)
 
@@ -103,4 +121,12 @@ Derumigny, A., & Fermanian, J. D. (2019).
 A classification point-of-view about conditional Kendall’s tau.
 Computational Statistics & Data Analysis, 135, 70-94.
 (Algorithm 5)
+}
+\seealso{
+See also other estimators of conditional Kendall's tau:
+\code{\link{CKT.fit.tree}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.nNets}}, \code{\link{CKT.fit.randomForest}},
+\code{\link{CKT.fit.GLM}}, \code{\link{CKT.kernel}},
+\code{\link{CKT.kendallReg.fit}},
+and the more general wrapper \code{\link{CKT.estimate}}.
 }

@@ -2,8 +2,9 @@
 % Please edit documentation in R/estimationCKT.kernelCV.R
 \name{CKT.hCV.l1out}
 \alias{CKT.hCV.l1out}
-\title{Leave-one-out cross validation for choosing the bandwidth
-for kernel-based range_h of conditional Kendall's tau}
+\alias{CKT.hCV.Kfolds}
+\title{Choose the bandwidth for kernel estimation of
+conditional Kendall's tau using cross-validation}
 \usage{
 CKT.hCV.l1out(
   observedX1,
@@ -15,45 +16,105 @@ CKT.hCV.l1out(
   typeEstCKT = 4,
   kernel.name = "Epa",
   progressBar = TRUE,
-  verbose = TRUE
+  verbose = FALSE
+)
+
+CKT.hCV.Kfolds(
+  range_h,
+  matrixSignsPairs,
+  observedZ,
+  ZToEstimate,
+  typeEstCKT = 4,
+  kernel.name = "Epa",
+  Kfolds = 5,
+  progressBar = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
-\item{observedX1}{a vector of n observations of the first variable}
+\item{observedX1}{a vector of \code{n} observations of the first variable}
 
-\item{observedX2}{a vector of n observations of the second variable}
+\item{observedX2}{a vector of \code{n} observations of the second variable}
 
-\item{observedZ}{a vector of n observations of the conditioning variable,
-or a matrix with n rows of observations of the conditioning vector}
+\item{observedZ}{observedZ vector of observed values of Z.
+If Z is multivariate, then this is a matrix whose rows correspond
+to the observations of Z}
 
 \item{range_h}{vector containing possible values for the bandwidth.}
 
 \item{matrixSignsPairs}{square matrix of signs of all pairs,
-produced by computeMatrixSignPairs.}
+produced by \code{\link{computeMatrixSignPairs}}.}
 
 \item{nPairs}{number of pairs used in the cross-validation criteria.}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.}
 
 \item{kernel.name}{name of the kernel used for smoothing.
-Possible choices are "Gaussian" (Gaussian kernel) and "Epa" (Epanechnikov kernel).}
+Possible choices are \code{"Gaussian"} (Gaussian kernel)
+and \code{"Epa"} (Epanechnikov kernel).}
 
-\item{progressBar}{if TRUE, a progressbar for each h is displayed
+\item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
 to show the progress of the computation.}
 
-\item{verbose}{if TRUE, print the score of each h during the procedure.}
+\item{verbose}{if \code{TRUE}, print the score of each h during the procedure.}
+
+\item{ZToEstimate}{vector of fixed conditioning values at which
+the difference between the two conditional Kendall's tau should be computed.
+Can also be a matrix whose lines are the conditioning vectors at which
+the difference between the two conditional Kendall's tau should be computed.}
+
+\item{Kfolds}{number of subsamples used.}
 }
 \value{
-A list with components:
+Both functions return a list with two components:
 \itemize{
     \item \code{hCV}: the chosen bandwidth
     \item \code{scores}: vector of the same length as range_h giving the
-    value of the CV criteria for each of the h tested
+    value of the CV criteria for each of the h tested.
+    Lower score indicates a better fit.
 }
 }
 \description{
-Leave-one-out cross validation for choosing the bandwidth
-for kernel-based range_h of conditional Kendall's tau
+Let \eqn{X_1} and \eqn{X_2} be two random variables.
+The goal here is to estimate the conditional Kendall's tau
+(a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+for a conditioning variable \eqn{Z}.
+Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+is defined as:
+\deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+\deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+For this, a kernel-based estimator is used, as described in
+(Derumigny & Fermanian (2019)).
+These functions aims at finding the best bandwidth \code{h} among a given
+\code{range_h} by cross-validation. They use either:
+\itemize{
+   \item \strong{leave-one-out} cross-validation:
+   function \code{CKT.hCV.l1out}
+
+   \item or \strong{K-folds} cross-validation:
+   function \code{CKT.hCV.Kfolds}
+}
+}
+\examples{
+# We simulate from a conditional copula
+set.seed(1)
+N = 300
+Z = rnorm(n = N, mean = 5, sd = 2)
+conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
+simCopula = VineCopula::BiCopSim(N=N , family = 1,
+    par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+X1 = qnorm(simCopula[,1])
+X2 = qnorm(simCopula[,2])
+
+newZ = seq(2,10,by = 0.1)
+range_h = 3:10
+matrixSignsPairs = computeMatrixSignPairs(vectorX1 = X1, vectorX2 = X2)
+resultCV <- CKT.hCV.Kfolds(range_h = range_h,
+  matrixSignsPairs = matrixSignsPairs, observedZ = Z, ZToEstimate = newZ)
+plot(range_h, resultCV$scores, type = "b")
+
 }
 \references{
 Derumigny, A., & Fermanian, J. D. (2019).
@@ -61,4 +122,8 @@ On kernel-based estimation of conditional Kendall’s tau:
 finite-distance bounds and asymptotic behavior.
 Dependence Modeling, 7(1), 292-321.
 Page 296, Equation (4).
+}
+\seealso{
+\code{\link{CKT.kernel}} for the corresponding
+estimator of conditional Kendall's tau by kernel smoothing.
 }

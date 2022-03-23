@@ -35,7 +35,8 @@ given by argument \code{methodCV} to choose the best bandwidth
 before doing the estimation.}
 
 \item{kernel.name}{name of the kernel used for smoothing.
-Possible choices are "Gaussian" (Gaussian kernel) and "Epa" (Epanechnikov kernel).}
+Possible choices are \code{"Gaussian"} (Gaussian kernel)
+and \code{"Epa"} (Epanechnikov kernel).}
 
 \item{methodCV}{method used for the cross-validation.
 Possible choices are \code{leave-one-out} and \code{Kfolds}.}
@@ -47,14 +48,25 @@ if \code{methodCV = "Kfolds"}.}
 if \code{methodCV = "leave-one-out"}.}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.
-Default is 4. 1 and 3 produced biased estimator while 2 does not attain the full range
-[-1,1].}
+Default is 4. 1 and 3 produced biased estimator
+while 2 does not attain the full range \eqn{[-1,1]}.}
 
-\item{progressBar}{if TRUE, a progressbar for each h is displayed
+\item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
 to show the progress of the computation.}
 }
 \description{
-Estimation of conditional Kendall's tau using kernel smoothing
+Let \eqn{X_1} and \eqn{X_2} be two random variables.
+The goal of this function is to estimate the conditional Kendall's tau
+(a dependence measure) between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+for a conditioning variable \eqn{Z}.
+Conditional Kendall's tau between \eqn{X_1} and \eqn{X_2} given \eqn{Z=z}
+is defined as:
+\deqn{P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) > 0 | Z_1 = Z_2 = z)}
+\deqn{- P( (X_{1,1} - X_{2,1})(X_{1,2} - X_{2,2}) < 0 | Z_1 = Z_2 = z),}
+where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
+are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
+For this, a kernel-based estimator is used, as described in
+(Derumigny,& Fermanian (2019)).
 }
 \examples{
 # We simulate from a conditional copula
@@ -87,7 +99,12 @@ finite-distance bounds and asymptotic behavior.
 Dependence Modeling, 7(1), 292-321.
 }
 \seealso{
-\code{\link{CKT.estimate}} for other estimators of conditional Kendall's tau.
+\code{\link{CKT.estimate}} for other estimators
+of conditional Kendall's tau.
 \code{\link{CKTmatrix.kernel}} for a generalization of this function
-when the conditioned vector is of dimension \code{d} instead of dimension \code{2} here.
+when the conditioned vector is of dimension \code{d}
+instead of dimension \code{2} here.
+
+See \code{\link{CKT.hCV.l1out}} for manual selection of the bandwidth
+by leave-one-out or K-folds cross-validation.
 }
