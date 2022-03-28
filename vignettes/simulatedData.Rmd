@@ -108,6 +108,7 @@ ggplot(dataCondQuantiles, aes(x = pX, y = qX2, color = valX3, group = as.factor(
   ylab("Value of the conditional quantile") + scale_color_continuous(name = "Conditioning\nvalue x3")
 
 ```
+
 # Visualization of the conditional dependence
 
 First, we do a scatterplot of $(X_1, X_2)$ where the color of the points is determined by the value of $X_3$.
@@ -151,8 +152,8 @@ comparison = data.frame(
   CKT   = c(BiCopPar2Tau(copFamily12_3, vecEstimatedThetas) , trueCKT12_3),
   id    = rep(1:2,each=length(newX3)))
 
-ggplot(data = comparison, aes(x = x3, y = param, color = as.factor(id), group = as.factor(id))) +
-  geom_line() +
+ggplot(data = comparison) +
+  geom_line(aes(x = x3, y = param, color = as.factor(id), group = as.factor(id))) +
   scale_color_discrete(labels = c("Estimated parameter", "True parameter"), name="") + 
   xlab("Conditioning value x3") +
   ylab(expression(paste("Conditional parameter ",theta,"(x3)"))) + 

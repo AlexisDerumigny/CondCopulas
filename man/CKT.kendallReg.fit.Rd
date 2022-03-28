@@ -150,4 +150,9 @@ See also other estimators of conditional Kendall's tau:
 \code{\link{CKT.fit.nNets}}, \code{\link{CKT.predict.kNN}},
 \code{\link{CKT.kernel}}, \code{\link{CKT.fit.GLM}},
 and the more general wrapper \code{\link{CKT.estimate}}.
+
+See also the test of the simplifying assumption that a
+conditional copula does not depend on the value of the
+conditioning variable using the nullity of Kendall's regression
+coefficients: \code{\link{simpA.kendallReg}}.
 }

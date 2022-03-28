@@ -32,7 +32,8 @@ boot.NP.bCond <- function(env, FUN_trueStat, FUN_stat_st)
   }
 
   env$p_val = NA
-  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) , silent = TRUE)
+  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) ,
+      silent = TRUE)
 }
 
 
@@ -44,12 +45,14 @@ boot.paramInd.bCond <- function(env, FUN_trueStat, FUN_stat_st)
   for (iBootstrap in 1:env$nBootstrap)
   {
     if (env$family == 2) {
-      simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
-                                          par = env$cop_0$par, par2 = 4)
+      simCopule_st = VineCopula::BiCopSim(
+        N = env$n , family = env$family,
+        par = env$cop_0$par, par2 = 4)
     }
     else {
-      simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
-                                          par = env$cop_0$par)
+      simCopule_st = VineCopula::BiCopSim(
+        N = env$n , family = env$family,
+        par = env$cop_0$par)
     }
     env$X1_st = simCopule_st[,1]
     env$X2_st = simCopule_st[,2]
@@ -63,7 +66,8 @@ boot.paramInd.bCond <- function(env, FUN_trueStat, FUN_stat_st)
   }
 
   env$p_val = NA
-  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) , silent = TRUE)
+  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) ,
+      silent = TRUE)
 }
 
 
@@ -84,10 +88,12 @@ boot.paramCond.bCond <- function(env, FUN_trueStat, FUN_stat_st)
       where_box = as.logical(env$partition_st[,box])
       if (env$family == 2) {
         simCopule_st[where_box,] = VineCopula::BiCopSim(
-          N = nobs_box, family = env$family, par = env$cop_boxes[[box]]$par, par2 = 4)
+          N = nobs_box, family = env$family,
+          par = env$cop_boxes[[box]]$par, par2 = 4)
       } else {
         simCopule_st[where_box,] = VineCopula::BiCopSim(
-          N = nobs_box, family = env$family, par = env$cop_boxes[[box]]$par)
+          N = nobs_box, family = env$family,
+          par = env$cop_boxes[[box]]$par)
       }
     }
 
@@ -99,6 +105,7 @@ boot.paramCond.bCond <- function(env, FUN_trueStat, FUN_stat_st)
   }
 
   env$p_val = NA
-  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) , silent = TRUE)
+  try(env$p_val <-  1-stats::ecdf(env$vect_statB)(env$true_stat) ,
+      silent = TRUE)
 }
 

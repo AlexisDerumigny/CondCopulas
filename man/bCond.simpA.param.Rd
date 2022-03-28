@@ -99,4 +99,16 @@ of a (conditional) parametric copula model in this framework.
 that all these conditional copulas are equal,
 based on the equality of conditional Kendall's tau
 (i.e. without any parametric assumption).
+
+Tests of the simplifying assumption for conditional copulas with a continuous
+conditioning variable:
+\itemize{
+  \item \code{\link{simpA.NP}} in a nonparametric setting
+  \item \code{\link{simpA.param}} in a (semi)parametric setting,
+  where the conditional copula belongs to a parametric family,
+  but the conditional margins are estimated arbitrarily through
+  kernel smoothing
+  \item \code{\link{simpA.kendallReg}}: test based on the constancy of
+  conditional Kendall's tau
+}
 }

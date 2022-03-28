@@ -18,15 +18,53 @@ simpA.NP(
 )
 }
 \arguments{
-\item{X1}{observed vector of the first conditionned variable}
+\item{X1}{vector of \code{n} observations of the first conditioned variable}
 
-\item{X2}{observed vector of the second conditionned variable}
+\item{X2}{vector of \code{n} observations of the second conditioned variable}
 
-\item{X3}{observed vector of the conditioning variable}
+\item{X3}{vector of \code{n} observations  of the conditioning variable}
 
-\item{testStat}{name of the test statistic to be used}
+\item{testStat}{name of the test statistic to be used.
+Possible values are
+\itemize{
+   \item \code{T1_CvM_Cs3}: Equation (3) of (Derumigny & Fermanian, 2017) with
+   the simplified copula estimated by Equation (6) and the weight
+   \eqn{w(u_1, u_2, u_3) = \hat{F}_1(u_1) \hat{F}_2(u_2) \hat{F}_3(u_3)}.
 
-\item{typeBoot}{the type of bootstrap to be used}
+   \item \code{T1_CvM_Cs4}: Equation (3) of (Derumigny & Fermanian, 2017) with
+   the simplified copula estimated by Equation (7) and the weight
+   \eqn{w(u_1, u_2, u_3) = \hat{F}_1(u_1) \hat{F}_2(u_2) \hat{F}_3(u_3)}.
+
+   \item \code{T1_KS_Cs3}: Equation (4) of (Derumigny & Fermanian, 2017) with
+   the simplified copula estimated by Equation (6).
+
+   \item \code{T1_KS_Cs4}: Equation (4) of (Derumigny & Fermanian, 2017) with
+   the simplified copula estimated by Equation (7).
+
+   \item \code{tilde_T0_CvM}: Equation (10) of (Derumigny & Fermanian, 2017).
+
+   \item \code{tilde_T0_KS}: Equation (9) of (Derumigny & Fermanian, 2017).
+
+   \item \code{I_chi}: Equation (13) of (Derumigny & Fermanian, 2017).
+
+   \item \code{I_2n}: Equation (15) of (Derumigny & Fermanian, 2017).
+}}
+
+\item{typeBoot}{the type of bootstrap to be used
+(see Derumigny and Fermanian, 2017, p.165).
+Possible values are
+\itemize{
+   \item \code{boot.NP}: usual (Efron's) non-parametric bootstrap
+
+   \item \code{boot.pseudoInd}: pseudo-independent bootstrap
+
+   \item \code{boot.pseudoInd.sameX3}: pseudo-independent bootstrap
+   without resampling on \eqn{X_3}
+
+   \item \code{boot.pseudoNP}: pseudo-non-parametric bootstrap
+
+   \item \code{boot.cond}: conditional bootstrap
+}}
 
 \item{h}{the bandwidth used for kernel smoothing}
 
@@ -45,19 +83,23 @@ quadrature points and the type of interpolation.}
 \value{
 a list containing
 \itemize{
-    \item \code{true_stat}: the value of the test statistic computed on the whole sample
-    \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
-    test statistics.
+    \item \code{true_stat}: the value of the test statistic
+    computed on the whole sample
+    \item \code{vect_statB}: a vector of length \code{nBootstrap}
+    containing the bootstrapped test statistics.
     \item \code{p_val}: the p-value of the test.
 }
 }
 \description{
-Nonparametric testing of the simplifying assumption
+This function tests the ``simplifying assumption'' that a conditional
+copula \deqn{C_{1,2|3}(u_1, u_2 | X_3 = x_3)} does not depend on the
+value of the conditioning variable \eqn{x_3} in a nonparametric setting,
+where the conditional copula is estimated by kernel smoothing.
 }
 \examples{
 # We simulate from a conditional copula
 set.seed(1)
-N = 800
+N = 500
 Z = rnorm(n = N, mean = 5, sd = 2)
 conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
 simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -68,7 +110,11 @@ X2 = qnorm(simCopula[,2], mean = - Z)
 result <- simpA.NP(
    X1 = X1, X2 = X2, X3 = Z,
    testStat = "I_chi", typeBoot = "boot.pseudoInd",
-   h = 0.03, kernel.name = "Epanechnikov")
+   h = 0.03, kernel.name = "Epanechnikov", nBootstrap = 10)
+
+# In practice, it is recommended to use at least nBootstrap = 100
+# with nBootstrap = 200 being a good choice.
+
 print(result$p_val)
 
 set.seed(1)
@@ -83,7 +129,7 @@ X2 = qnorm(simCopula[,2], mean = - Z)
 result <- simpA.NP(
    X1 = X1, X2 = X2, X3 = Z,
    testStat = "I_chi", typeBoot = "boot.pseudoInd",
-   h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 30)
+   h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 10)
 print(result$p_val)
 
 }
@@ -91,4 +137,21 @@ print(result$p_val)
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+}
+\seealso{
+Other tests of the simplifying assumption:
+\itemize{
+  \item \code{\link{simpA.param}} in a (semi)parametric setting,
+  where the conditional copula belongs to a parametric family,
+  but the conditional margins are estimated arbitrarily through
+  kernel smoothing
+  \item \code{\link{simpA.kendallReg}}: test based on the constancy of
+  conditional Kendall's tau
+
+  \item the counterparts of these tests in the discrete conditioning setting:
+  \code{\link{bCond.simpA.CKT}}
+  (test based on conditional Kendall's tau)
+  \code{\link{bCond.simpA.param}}
+  (test assuming a parametric form for the conditional copula)
+}
 }

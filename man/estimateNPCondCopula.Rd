@@ -69,3 +69,10 @@ Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
 }
+\seealso{
+\code{\link{estimateParCondCopula}} for estimating a conditional
+copula in a parametric setting ( = where the conditional copula is assumed to
+belong to a parametric class).
+\code{\link{simpA.NP}} for a test that this conditional copula is
+constant with respect to the value \eqn{x_3} of the conditioning variable.
+}

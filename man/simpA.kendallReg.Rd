@@ -53,10 +53,11 @@ in order to get a value for \code{lambda}.}
 \item{Kfolds_lambda}{the number of subsests used for the cross-validation
 in order to get a value for \code{lambda}.}
 
-\item{l_norm}{type of norm used for selection of the optimal lambda by cross-validation.
-l_norm=1 corresponds to the sum of absolute values of differences
-between predicted and estimated conditional Kendall's tau
-while l_norm=2 corresponds to the sum of squares of differences.}
+\item{l_norm}{type of norm used for selection of the optimal lambda
+by cross-validation. \code{l_norm=1} corresponds to the sum of
+absolute values of differences between predicted and estimated
+conditional Kendall's tau while \code{l_norm=2} corresponds to
+the sum of squares of differences.}
 }
 \value{
 a list containing
@@ -83,7 +84,7 @@ where the coefficient corresponding to the intercept is removed.
 \donttest{
 # We simulate from a conditional copula
 set.seed(1)
-N = 500
+N = 300
 Z = runif(n = N, min = 0, max = 1)
 conditionalTau = -0.9 + 1.8 * Z
 simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -101,9 +102,10 @@ result = simpA.kendallReg(
      function(x){return(as.numeric(x <= 0.4))},
      function(x){return(as.numeric(x <= 0.6))}) )
 print(result$p_val)
+
 # We simulate from a conditional copula
 set.seed(1)
-N = 500
+N = 300
 Z = runif(n = N, min = 0, max = 1)
 conditionalTau = -0.3
 simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -129,4 +131,23 @@ Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 Journal of Multivariate Analysis, 178, 104610.
 (page 7)
+}
+\seealso{
+The function to fit Kendall's regression:
+\code{\link{CKT.kendallReg.fit}}.
+
+Other tests of the simplifying assumption:
+\itemize{
+  \item \code{\link{simpA.NP}} in a nonparametric setting
+  \item \code{\link{simpA.param}} in a (semi)parametric setting,
+  where the conditional copula belongs to a parametric family,
+  but the conditional margins are estimated arbitrarily through
+  kernel smoothing
+
+  \item the counterparts of these tests in the discrete conditioning setting:
+  \code{\link{bCond.simpA.CKT}}
+  (test based on conditional Kendall's tau)
+  \code{\link{bCond.simpA.param}}
+  (test assuming a parametric form for the conditional copula)
+}
 }

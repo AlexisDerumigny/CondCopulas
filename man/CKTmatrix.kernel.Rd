@@ -73,8 +73,6 @@ This function takes in parameter observations of \eqn{(X,Z)}
 and returns kernel-based estimators of \deqn{\tau_{i,j | Z=zk}}
 which is the conditional Kendall's tau between \eqn{X_i} and \eqn{X_j}
 given to \eqn{Z=zk}, for every conditioning point \eqn{zk} in \code{gridZ}.
-}
-\details{
 If the conditional Kendall's tau matrix has a block structure,
 then improved estimation is possible by averaging over the kernel-based estimators of
 pairwise conditional Kendall's taus.
@@ -133,8 +131,6 @@ estMatrixAve[1, 2, 1]
 \code{\link{CKT.kernel}} for kernel-based estimation of conditional Kendall's tau
 between two variables (i.e. the equivalent of this function
 when \eqn{X} is bivariate and \code{d=2}).
-\code{ElliptCopulas::\link[ElliptCopulas]{KTMatrixEst}()} for the fast estimation
-of Kendall's tau matrix in the unconditional case (i.e., without Z and without smoothing).
 }
 \author{
 Rutger van der Spek, Alexis Derumigny

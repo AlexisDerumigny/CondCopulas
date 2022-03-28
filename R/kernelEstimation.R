@@ -116,7 +116,6 @@ estimateCondCDF_matrix <- function(observedX1, newX1, matrixK3)
 #'
 #' This function computes an estimate of the conditional (marginal) cdf
 #' of X1 given a conditioning variable X3.
-#'
 #' This function is supposed to be used with \code{\link{computeKernelMatrix}}.
 #' Assume that we observe a sample \eqn{(X_{i,1}, X_{i,3}), i=1, \dots, n}.
 #' We want to estimate the conditional cdf of \eqn{X_1} given \eqn{X_3 = x_3}

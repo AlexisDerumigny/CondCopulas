@@ -86,6 +86,11 @@
 #' \code{\link{CKT.kernel}}, \code{\link{CKT.fit.GLM}},
 #' and the more general wrapper \code{\link{CKT.estimate}}.
 #'
+#' See also the test of the simplifying assumption that a
+#' conditional copula does not depend on the value of the
+#' conditioning variable using the nullity of Kendall's regression
+#' coefficients: \code{\link{simpA.kendallReg}}.
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)

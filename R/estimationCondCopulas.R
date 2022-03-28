@@ -26,6 +26,12 @@
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
 #'
+#' @seealso \code{\link{estimateParCondCopula}} for estimating a conditional
+#' copula in a parametric setting ( = where the conditional copula is assumed to
+#' belong to a parametric class).
+#' \code{\link{simpA.NP}} for a test that this conditional copula is
+#' constant with respect to the value \eqn{x_3} of the conditioning variable.
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' N = 500
@@ -94,19 +100,22 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 
 #' Estimation of parametric conditional copulas
 #'
-#' This function computes an estimate of the conditional parameters
-#' of a conditional parametric copula model.
+#' The function \code{estimateParCondCopula} computes an estimate
+#' of the conditional parameters in a conditional parametric copula model, i.e.
+#' \deqn{C_{X_1, X_2 | X_3 = x_3} = C_{\theta(x_3)},}
+#' for some parametric family \eqn{(C_\theta)}, some conditional
+#' parameter \eqn{\theta(x_3)}, and a three-dimensional random
+#' vector \eqn{(X_1, X_2, X_3)}. Remember that \eqn{C_{X_1,X_2 | X_3 = x_3}}
+#' denotes the conditional copula of \eqn{X_1} and \eqn{X_2} given \eqn{X_3 = x_3}.
 #'
-#' We assume that we have a three-dimensional vector \eqn{(X_1, X_2, X_3)}.
-#' We are interested in the estimation of the conditional copula
-#' of \eqn{(X_1, X_2)} given \eqn{X_3}.
-#' This function takes in parameter three vectors of observations of \eqn{X_1, X_2, X_3},
-#' and a vector of conditioning points \code{newX3};
-#' it then computes estimators of the corresponding parametric conditional copulas.
+#' @param observedX1 a vector of \code{n} observations
+#' of the first conditioned variable
 #'
-#' @param observedX1 a vector of \code{n} observations of the first variable
-#' @param observedX2 a vector of \code{n} observations of the second variable
-#' @param observedX3 a vector of \code{n} observations of the conditioning variable
+#' @param observedX2 a vector of \code{n} observations
+#' of the second conditioned variable
+#'
+#' @param observedX3 a vector of \code{n} observations
+#' of the conditioning variable
 #'
 #' @param newX3 a vector of new observations of \eqn{X3}
 #'
@@ -127,6 +136,13 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' Derumigny, A., & Fermanian, J. D. (2017).
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
+#'
+#' @seealso \code{\link{estimateNPCondCopula}} for estimating a conditional
+#' copula in a nonparametric setting ( = without parametric assumption on the
+#' conditional copula).
+#' \code{\link{simpA.param}} for a test that this conditional copula is
+#' constant with respect to the value \eqn{x_3} of the conditioning variable.
+#'
 #'
 #' @examples
 #'

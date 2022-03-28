@@ -113,13 +113,14 @@
 #'
 #' @export
 #'
-CKT.predict.kNN <- function(datasetPairs,
-                            designMatrix = datasetPairs[,2:(ncol(datasetPairs)-3),drop=FALSE],
-                            newZ,
-                            number_nn, weightsVariables = 1, normLp = 2,
-                            constantA = 1, partition = NULL,
-                            verbose = 1, lengthVerbose = 100,
-                            methodSort = "partial.sort")
+CKT.predict.kNN <- function(
+  datasetPairs,
+  designMatrix = datasetPairs[,2:(ncol(datasetPairs)-3),drop=FALSE],
+  newZ,
+  number_nn, weightsVariables = 1, normLp = 2,
+  constantA = 1, partition = NULL,
+  verbose = 1, lengthVerbose = 100,
+  methodSort = "partial.sort")
 {
   if (length(number_nn) == 1){
 
@@ -357,7 +358,7 @@ CKT.adaptkNN <- function(matrixKNN, vect_k,
         if (distance_ij > limitAccept)
         {
           if (verbose>0) {
-            cat(i_k) ; cat("  "); cat(order_k[i_k]) ; cat("  ");
+            cat(i_k) ; cat("  ") ; cat(order_k[i_k]) ; cat("  ")
             cat(prettyNum(distance_ij)); cat("  ")
             cat(prettyNum(limitAccept)); cat("\n")
           }

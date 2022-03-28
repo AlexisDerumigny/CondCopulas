@@ -45,10 +45,11 @@
 #' @param Kfolds_lambda the number of subsests used for the cross-validation
 #' in order to get a value for \code{lambda}.
 #'
-#' @param l_norm type of norm used for selection of the optimal lambda by cross-validation.
-#' l_norm=1 corresponds to the sum of absolute values of differences
-#' between predicted and estimated conditional Kendall's tau
-#' while l_norm=2 corresponds to the sum of squares of differences.
+#' @param l_norm type of norm used for selection of the optimal lambda
+#' by cross-validation. \code{l_norm=1} corresponds to the sum of
+#' absolute values of differences between predicted and estimated
+#' conditional Kendall's tau while \code{l_norm=2} corresponds to
+#' the sum of squares of differences.
 #'
 #'
 #' @return a list containing
@@ -63,12 +64,31 @@
 #' Journal of Multivariate Analysis, 178, 104610.
 #' (page 7)
 #'
+#' @seealso The function to fit Kendall's regression:
+#' \code{\link{CKT.kendallReg.fit}}.
+#'
+#' Other tests of the simplifying assumption:
+#' \itemize{
+#'   \item \code{\link{simpA.NP}} in a nonparametric setting
+#'   \item \code{\link{simpA.param}} in a (semi)parametric setting,
+#'   where the conditional copula belongs to a parametric family,
+#'   but the conditional margins are estimated arbitrarily through
+#'   kernel smoothing
+#'
+#'   \item the counterparts of these tests in the discrete conditioning setting:
+#'   \code{\link{bCond.simpA.CKT}}
+#'   (test based on conditional Kendall's tau)
+#'   \code{\link{bCond.simpA.param}}
+#'   (test assuming a parametric form for the conditional copula)
+#' }
+#'
+#'
 #' @examples
 #'
 #' \donttest{
 #' # We simulate from a conditional copula
 #' set.seed(1)
-#' N = 500
+#' N = 300
 #' Z = runif(n = N, min = 0, max = 1)
 #' conditionalTau = -0.9 + 1.8 * Z
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -86,9 +106,10 @@
 #'      function(x){return(as.numeric(x <= 0.4))},
 #'      function(x){return(as.numeric(x <= 0.6))}) )
 #' print(result$p_val)
+#'
 #' # We simulate from a conditional copula
 #' set.seed(1)
-#' N = 500
+#' N = 300
 #' Z = runif(n = N, min = 0, max = 1)
 #' conditionalTau = -0.3
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -120,7 +141,7 @@ simpA.kendallReg <- function(
   Lambda = function(x){return(x)}, Lambda_deriv = function(x){return(1)},
   lambda = NULL, h_lambda = h_kernel,
   Kfolds_lambda = 5, l_norm = 1
-  )
+)
 {
   if (is.null(vectorZToEstimate)){
     nprime = 100
@@ -191,8 +212,8 @@ simpA.kendallReg <- function(
 
 
 
-
-# Compute the Wald-type test statistic related to the hypothesis $\beta = 0$ against $\beta != 0$
+# Compute the Wald-type test statistic related to
+# the hypothesis $\beta = 0$ against $\beta != 0$
 # vectorZ is the vector of Z in the database of length n
 # vectorZToEstimate is the vector of z'_i
 # vector_hat_CKT_NP is the vector of the nonparametric estimators of the CKT at every z'_i
@@ -209,14 +230,15 @@ computeWn = function(
   pprime = length(inputMatrix[1,])
 
   if (length(vector_hat_CKT_NP) != nprime) {
-    stop(paste0( "vector_hat_CKT_NP and vectorZToEstimate do not have the same length : ",
-                 length(vector_hat_CKT_NP), " and ", nprime) )
+    stop("vector_hat_CKT_NP and vectorZToEstimate ",
+         "do not have the same length : ",
+         length(vector_hat_CKT_NP), " and ", nprime)
   } else if ( (dim(matrixSignsPairs)[1] != n) || (dim(matrixSignsPairs)[2] != n) ) {
-    stop(paste0("Wrong dimensions for matrixSignsPairs : ",
-                paste0(dim(matrixSignsPairs), collapse =" "), " instead of ", n, " ", n))
+    stop("Wrong dimensions for matrixSignsPairs : ",
+         paste0(dim(matrixSignsPairs), collapse =" "), " instead of ", n, " ", n)
   } else if ( length(inputMatrix[,1]) !=  nprime) {
-    stop(paste0("Wrong nrow for inputMatrix : ",
-                length(inputMatrix[,1]), " instead of ", nprime) )
+    stop("Wrong nrow for inputMatrix : ",
+         length(inputMatrix[,1]), " instead of ", nprime)
   }
 
   # 1 - Computation of G_n(z'_i) for all i
@@ -225,18 +247,22 @@ computeWn = function(
   if (progressBar){
     Gn_zipr = pbapply::pbapply(
       X = vectorZToEstimate_arr, MARGIN = 1,
-      FUN = function(pointZ) {compute_vect_Gn_zipr(pointZ, vectorZ, h,
-                                                   kernel.name, matrixSignsPairsSymmetrized) } )
+      FUN = function(pointZ) {compute_vect_Gn_zipr(
+        pointZ, vectorZ, h,
+        kernel.name, matrixSignsPairsSymmetrized) } )
   } else {
     Gn_zipr = apply(
       X = vectorZToEstimate_arr, MARGIN = 1,
-      FUN = function(pointZ) {compute_vect_Gn_zipr(pointZ, vectorZ, h,
-                                                   kernel.name, matrixSignsPairsSymmetrized) } )
+      FUN = function(pointZ) {compute_vect_Gn_zipr(
+        pointZ, vectorZ, h,
+        kernel.name, matrixSignsPairsSymmetrized) } )
   }
 
 
-  # compute_vect_Gn_zipr(vectorZ = vectorZ, h = h, vectorZToEstimate = vectorZToEstimate,
-  # kernel.name = kernel.name, matrixSignsPairs = matrixSignsPairs)
+  # compute_vect_Gn_zipr(vectorZ = vectorZ,
+  #                      h = h, vectorZToEstimate = vectorZToEstimate,
+  #                      kernel.name = kernel.name,
+  #                      matrixSignsPairs = matrixSignsPairs)
 
   # 2 - Computation of H_(i,i) under the hypothesis that all z'_i are distinct
   vect_H_ii = rep(NA, nprime)
@@ -264,23 +290,28 @@ computeWn = function(
     matrix_Vn = matrix_Vn + vect_H_ii[iprime] *
       ( t( t( inputMatrix[iprime, ] ) ) %*% t( inputMatrix[iprime, ] ) )
   }
-  matrix_Vn_completed = inv_matrix_Sigma_npr %*% matrix_Vn %*% inv_matrix_Sigma_npr
+  matrix_Vn_completed =
+    inv_matrix_Sigma_npr %*% matrix_Vn %*% inv_matrix_Sigma_npr
 
   # 5 - Computation of W_n
   W_n = n * h * t(vector_hat_beta[-1]) %*%
     matrix_Vn_completed %*% t( t(vector_hat_beta[-1]) )
 
   return (list(W_n = W_n, Gn_zipr = Gn_zipr,
-               vect_H_ii = vect_H_ii, matrix_Sigma_npr = matrix_Sigma_npr,
-               matrix_Vn = matrix_Vn, matrix_Vn_completed = matrix_Vn_completed))
+               vect_H_ii = vect_H_ii,
+               matrix_Sigma_npr = matrix_Sigma_npr,
+               matrix_Vn = matrix_Vn,
+               matrix_Vn_completed = matrix_Vn_completed))
 }
 
 
 # Compute a series of points to estimate
 # vecteurZrealised is a vector of observations of Z
 # length.out is the length of the output
-# percentage is the percentage of coverture of the interval from which the new Z are given.
-computeVectorZToEstimate = function(vecteurZrealised, length.out, percentage)
+# percentage is the percentage of "coverage"
+# of the interval from which the new Z are given.
+computeVectorZToEstimate = function(vecteurZrealised,
+                                    length.out, percentage)
 {
   minZ = min(vecteurZrealised)
   maxZ = max(vecteurZrealised)
@@ -320,7 +351,9 @@ compute_vect_Gn_zipr = function(pointZ, vectorZ, h,
   # Gn_zipr[iprime] = 0
   # for (k in 1:n)
   # {
-  # Gn_zipr[iprime] = Gn_zipr[iprime] + listWeights[k] * (matrixSignsPairsSymmetrized[k,-k] %*% matrixWeights[-k,-k] %*% matrixSignsPairsSymmetrized[-k,k])
+  # Gn_zipr[iprime] = Gn_zipr[iprime] +
+  # listWeights[k] * (matrixSignsPairsSymmetrized[k,-k] %*%
+  # matrixWeights[-k,-k] %*% matrixSignsPairsSymmetrized[-k,k])
   # }
   # }
 }

@@ -18,11 +18,14 @@ estimateParCondCopula(
 estimateParCondCopula_ZIJ(Z1_J, Z2_J, observedX3, newX3, family, method, h)
 }
 \arguments{
-\item{observedX1}{a vector of \code{n} observations of the first variable}
+\item{observedX1}{a vector of \code{n} observations
+of the first conditioned variable}
 
-\item{observedX2}{a vector of \code{n} observations of the second variable}
+\item{observedX2}{a vector of \code{n} observations
+of the second conditioned variable}
 
-\item{observedX3}{a vector of \code{n} observations of the conditioning variable}
+\item{observedX3}{a vector of \code{n} observations
+of the conditioning variable}
 
 \item{newX3}{a vector of new observations of \eqn{X3}}
 
@@ -46,20 +49,17 @@ a vector of size \code{length(newX3)} containing
 the estimated conditional copula parameters for each value of \code{newX3}.
 }
 \description{
-This function computes an estimate of the conditional parameters
-of a conditional parametric copula model.
+The function \code{estimateParCondCopula} computes an estimate
+of the conditional parameters in a conditional parametric copula model, i.e.
+\deqn{C_{X_1, X_2 | X_3 = x_3} = C_{\theta(x_3)},}
+for some parametric family \eqn{(C_\theta)}, some conditional
+parameter \eqn{\theta(x_3)}, and a three-dimensional random
+vector \eqn{(X_1, X_2, X_3)}. Remember that \eqn{C_{X_1,X_2 | X_3 = x_3}}
+denotes the conditional copula of \eqn{X_1} and \eqn{X_2} given \eqn{X_3 = x_3}.
 
 The function \code{estimateParCondCopula_ZIJ} is an auxiliary function
 that is called when conditional pseudos-observations are already
 available when one wants to estimate a parametric conditional copula.
-}
-\details{
-We assume that we have a three-dimensional vector \eqn{(X_1, X_2, X_3)}.
-We are interested in the estimation of the conditional copula
-of \eqn{(X_1, X_2)} given \eqn{X_3}.
-This function takes in parameter three vectors of observations of \eqn{X_1, X_2, X_3},
-and a vector of conditioning points \code{newX3};
-it then computes estimators of the corresponding parametric conditional copulas.
 }
 \examples{
 
@@ -96,4 +96,11 @@ conditionalTauNewX3
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+}
+\seealso{
+\code{\link{estimateNPCondCopula}} for estimating a conditional
+copula in a nonparametric setting ( = without parametric assumption on the
+conditional copula).
+\code{\link{simpA.param}} for a test that this conditional copula is
+constant with respect to the value \eqn{x_3} of the conditioning variable.
 }

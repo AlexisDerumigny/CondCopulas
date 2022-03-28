@@ -2,18 +2,58 @@
 
 #' Semiparametric testing of the simplifying assumption
 #'
-#' @param X1 observed vector of the first conditionned variable
-#' @param X2 observed vector of the second conditionned variable
-#' @param X3 observed vector of the conditioning variable
+#' This function tests the ``simplifying assumption'' that a conditional
+#' copula \deqn{C_{1,2|3}(u_1, u_2 | X_3 = x_3)} does not depend on the
+#' value of the conditioning variable \eqn{x_3} in a semiparametric setting,
+#' where the conditional copula is of the form
+#' \deqn{C_{1,2|3}(u_1, u_2 | X_3 = x_3) = C_{\theta(x_3)}(u_1,u_2),}
+#' for all \eqn{0 <= u_1, u_2 <= 1} and all \eqn{x_3}.
+#' Here, \eqn{(C_\theta)} is a known family of copula and \eqn{\theta(x_3)}
+#' is an unknown conditional dependence parameter.
+#' In this setting, the simplifying assumption can be rewritten as
+#' \strong{``\eqn{\theta(x_3)} does not depend on \eqn{x_3}, i.e. is a constant
+#' function of \eqn{x_3}''}.
 #'
-#' @param testStat name of the test statistic to be used
-#' @param typeBoot the type of bootstrap to be used
+#' @param X1 vector of \code{n} observations of the first conditioned variable
+#'
+#' @param X2 vector of \code{n} observations of the second conditioned variable
+#'
+#' @param X3 vector of \code{n} observations  of the conditioning variable
+#'
+#' @param testStat name of the test statistic to be used.
+#' The only choice implemented yet is \code{'T2c'}.
+#'
+#' @param typeBoot the type of bootstrap to be used.
+#' (see Derumigny and Fermanian, 2017, p.165).
+#' Possible values are
+#' \itemize{
+#'    \item \code{"boot.NP"}: usual (Efron's) non-parametric bootstrap
+#'
+#'    \item \code{"boot.pseudoInd"}: pseudo-independent bootstrap
+#'
+#'    \item \code{"boot.pseudoInd.sameX3"}: pseudo-independent bootstrap
+#'    without resampling on \eqn{X_3}
+#'
+#'    \item \code{"boot.pseudoNP"}: pseudo-non-parametric bootstrap
+#'
+#'    \item \code{"boot.cond"}: conditional bootstrap
+#'
+#'    \item \code{"boot.paramInd"}: parametric independent bootstrap
+#'
+#'    \item \code{"boot.paramCond"}: parametric conditional bootstrap
+#' }
+#'
+#'
 #' @param nBootstrap number of bootstrap replications
+#'
 #' @param h the bandwidth used for kernel smoothing
+#'
 #' @param kernel.name the name of the kernel
+#'
 #' @param truncVal the value of truncation for the integral,
 #' i.e. the integrals are computed from \code{truncVal} to \code{1-truncVal}
 #' instead of from 0 to 1.
+#'
 #' @param numericalInt parameters to be given to
 #' \code{statmod::\link[statmod]{gauss.quad}}, including the number of
 #' quadrature points and the type of interpolation.
@@ -24,9 +64,10 @@
 #'
 #' @return a list containing
 #' \itemize{
-#'     \item \code{true_stat}: the value of the test statistic computed on the whole sample
-#'     \item \code{vect_statB}: a vector of length \code{nBootstrap} containing the bootstrapped
-#'     test statistics.
+#'     \item \code{true_stat}: the value of the test statistic
+#'     computed on the whole sample
+#'     \item \code{vect_statB}: a vector of length \code{nBootstrap}
+#'     containing the bootstrapped test statistics.
 #'     \item \code{p_val}: the p-value of the test.
 #' }
 #'
@@ -35,10 +76,23 @@
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
 #'
+#' @seealso Other tests of the simplifying assumption:
+#' \itemize{
+#'   \item \code{\link{simpA.NP}} in a nonparametric setting
+#'   \item \code{\link{simpA.kendallReg}}: test based on the constancy of
+#'   conditional Kendall's tau
+#'
+#'   \item the counterparts of these tests in the discrete conditioning setting:
+#'   \code{\link{bCond.simpA.CKT}}
+#'   (test based on conditional Kendall's tau)
+#'   \code{\link{bCond.simpA.param}}
+#'   (test assuming a parametric form for the conditional copula)
+#' }
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)
-#' N = 800
+#' N = 500
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -48,8 +102,10 @@
 #'
 #' result <- simpA.param(
 #'    X1 = X1, X2 = X2, X3 = Z, family = 1,
-#'    h = 0.03, kernel.name = "Epanechnikov")
+#'    h = 0.03, kernel.name = "Epanechnikov", nBootstrap = 5)
 #' print(result$p_val)
+#' # In practice, it is recommended to use at least nBootstrap = 100
+#' # with nBootstrap = 200 being a good choice.
 #'
 #' \donttest{
 #' set.seed(1)
@@ -63,7 +119,7 @@
 #'
 #' result <- simpA.param(
 #'    X1 = X1, X2 = X2, X3 = Z, family = 1,
-#'    h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 30)
+#'    h = 0.08, kernel.name = "Epanechnikov", nBootstrap = 5)
 #' print(result$p_val)
 #' }
 #'
@@ -139,8 +195,8 @@ simpA.param <- function(
       }
     },
 
-    stop("Unknown test statistic name. Possible choice are: ",
-         "'T2c'.")
+    stop("Unknown test statistic name. Possible choice is: ",
+         "'T2c' (only implemented for the moment).")
   )
 
   env <- environment()

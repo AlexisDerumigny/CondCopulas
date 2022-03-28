@@ -69,7 +69,7 @@ datasetP = datasetPairs(X1 = X1, X2 = X2, Z = Z, h = 0.07, cut = 0.9)
 
 fitCKT_nets <- CKT.fit.nNets(datasetPairs = datasetP)
 estimatedCKT_nNets <- CKT.predict.nNets(
-  fit = fitCKT_nNets, newZ = matrix(newZ, ncol = 1))
+  fit = fitCKT_nets, newZ = matrix(newZ, ncol = 1))
 
 # Comparison between true Kendall's tau (in black)
 # and estimated Kendall's tau (in red)

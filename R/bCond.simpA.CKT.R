@@ -65,6 +65,18 @@
 #' \code{\link{bCond.treeCKT}} provides the binary tree that is used in this function
 #' (if \code{matrixInd} is not provided).
 #'
+#' Tests of the simplifying assumption for conditional copulas with a continuous
+#' conditioning variable:
+#' \itemize{
+#'   \item \code{\link{simpA.NP}} in a nonparametric setting
+#'   \item \code{\link{simpA.param}} in a (semi)parametric setting,
+#'   where the conditional copula belongs to a parametric family,
+#'   but the conditional margins are estimated arbitrarily through
+#'   kernel smoothing
+#'   \item \code{\link{simpA.kendallReg}}: test based on the constancy of
+#'   conditional Kendall's tau
+#' }
+#'
 #'
 #' @author Alexis Derumigny, Jean-David Fermanian and Aleksey Min
 #'
