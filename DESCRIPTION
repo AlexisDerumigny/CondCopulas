@@ -1,7 +1,7 @@
 Package: CondCopulas
 Type: Package
-Title: Estimation and inference for conditional copulas models
-Version: 0.0.6
+Title: Estimation and Inference for Conditional Copula Models
+Version: 0.1.0
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
     person("Jean-David", "Fermanian", , email = "Jean-David.Fermanian@ensae.fr", role = c("ctb","ths"), comment = c(ORCID = "0000-0001-5960-5555")),
@@ -12,7 +12,7 @@ Description:
   Provides functions for the estimation of conditional copulas models,
   various estimators of conditional Kendall's tau,
   and test procedures for the simplifying assumption.
-License: CC BY-NC 4.0
+License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = FALSE)
@@ -33,3 +33,5 @@ Imports:
     statmod,
     pcaPP
 VignetteBuilder: knitr
+BugReports: https://github.com/AlexisDerumigny/CondCopulas/issues
+URL: https://github.com/AlexisDerumigny/CondCopulas
