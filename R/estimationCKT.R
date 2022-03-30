@@ -105,6 +105,17 @@
 #' Journal of Multivariate Analysis, 178, 104610.
 #' \doi{10.1016/j.jmva.2020.104610}
 #'
+#' @usage
+#' CKT.estimate(
+#'   observedX1, observedX2, observedZ,
+#'   newZ = observedZ, methodEstimation, h,
+#'   listPhi = if(methodEstimation == "kendallReg")
+#'                {list( function(x){return(x)}   ,
+#'                       function(x){return(x^2)} ,
+#'                       function(x){return(x^3)} )
+#'                } else {list(identity)} ,
+#'   ...)
+#'
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)

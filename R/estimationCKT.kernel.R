@@ -400,6 +400,16 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
 #' Dependence Modeling, 7(1), 292-321.
 #' \doi{10.1515/demo-2019-0016}
 #'
+#' @return a list with two components
+#' \itemize{
+#'    \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
+#'    containing the values of the estimated conditional Kendall's tau.
+#'
+#'    \item \code{finalh} the bandwidth \code{h} that was finally used
+#'    for kernel smoothing (either the one specified by the user
+#'    or the one chosen by cross-validation if multiple bandwidths were given.)
+#' }
+#'
 #' @seealso \code{\link{CKT.estimate}} for other estimators
 #' of conditional Kendall's tau.
 #' \code{\link{CKTmatrix.kernel}} for a generalization of this function

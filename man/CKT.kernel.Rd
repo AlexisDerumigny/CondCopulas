@@ -54,6 +54,17 @@ while 2 does not attain the full range \eqn{[-1,1]}.}
 \item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
 to show the progress of the computation.}
 }
+\value{
+a list with two components
+\itemize{
+   \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
+   containing the values of the estimated conditional Kendall's tau.
+
+   \item \code{finalh} the bandwidth \code{h} that was finally used
+   for kernel smoothing (either the one specified by the user
+   or the one chosen by cross-validation if multiple bandwidths were given.)
+}
+}
 \description{
 Let \eqn{X_1} and \eqn{X_2} be two random variables.
 The goal of this function is to estimate the conditional Kendall's tau

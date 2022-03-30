@@ -6,17 +6,14 @@
 between two variables X1 and X2 given Z = z}
 \usage{
 CKT.estimate(
-  observedX1,
-  observedX2,
-  observedZ,
-  newZ = observedZ,
-  methodEstimation,
-  h,
-  listPhi = if (methodEstimation == "kendallReg") {     list(function(x) {        
-    return(x)     }, function(x) {         return(x^2)     }, function(x) {        
-    return(x^3)     }) } else {     list(identity) },
-  ...
-)
+  observedX1, observedX2, observedZ,
+  newZ = observedZ, methodEstimation, h,
+  listPhi = if(methodEstimation == "kendallReg")
+               {list( function(x){return(x)}   ,
+                      function(x){return(x^2)} ,
+                      function(x){return(x^3)} )
+               } else {list(identity)} ,
+  ...)
 }
 \arguments{
 \item{observedX1}{a vector of \eqn{n} observations of the first variable}
