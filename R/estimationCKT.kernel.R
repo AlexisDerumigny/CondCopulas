@@ -146,16 +146,16 @@ CKT.kernelPointwise.univariate <- function(matrixSignsPairs, vectorZ,
 #' at a fixed multivariate point Z = pointZ
 #'
 #' @param matrixSignsPairs square matrix of signs of all pairs,
-#' produced by computeMatrixSignPairs.
+#' produced by \code{computeMatrixSignPairs}.
 #' @param vectorZ vector of observed points of Z.
-#' It shall have the same length as the number of rows of matrixSignsPairs.
+#' It shall have the same length as the number of rows of \code{matrixSignsPairs}.
 #' @param h bandwidth
 #' @param pointZ point at which the conditional Kendall's tau is computed.
 #' @param typeEstCKT type of estimation of the conditional Kendall's tau.
 #' @param kernel.name name of the kernel used for smoothing.
 #'
 #' @return an estimator of the conditional Kendall's tau
-#' of X1 and X2 given Z = z.
+#' of \eqn{X_1} and \eqn{X_2} given \eqn{Z = z}.
 #'
 #' @noRd
 #'
@@ -433,7 +433,7 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
 #' newZ = seq(2,10,by = 0.1)
 #' estimatedCKT_kernel <- CKT.kernel(
 #'    observedX1 = X1, observedX2 = X2, observedZ = Z,
-#'    newZ = newZ, h = 0.07, kernel.name = "Epa")$estCKT
+#'    newZ = newZ, h = 0.1, kernel.name = "Epa")$estimatedCKT
 #'
 #' # Comparison between true Kendall's tau (in black)
 #' # and estimated Kendall's tau (in red)
