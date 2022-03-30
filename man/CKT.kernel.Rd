@@ -93,7 +93,7 @@ X2 = qnorm(simCopula[,2])
 newZ = seq(2,10,by = 0.1)
 estimatedCKT_kernel <- CKT.kernel(
    observedX1 = X1, observedX2 = X2, observedZ = Z,
-   newZ = newZ, h = 0.07, kernel.name = "Epa")$estCKT
+   newZ = newZ, h = 0.1, kernel.name = "Epa")$estimatedCKT
 
 # Comparison between true Kendall's tau (in black)
 # and estimated Kendall's tau (in red)

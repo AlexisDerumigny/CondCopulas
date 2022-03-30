@@ -1,5 +1,5 @@
-We fixed the documentation concerning the return values of 'CKT.kernel.Rd'. 
-We also added the DOI in the DESCRIPTION file.
+We fixed the documentation concerning the return values of 'CKT.kernel'. 
+We also added the DOIs and arXiv identifier in the DESCRIPTION file.
 
 
 ## Test environments
