@@ -97,6 +97,7 @@ Derumigny, A., & Fermanian, J. D. (2019).
 On kernel-based estimation of conditional Kendall’s tau:
 finite-distance bounds and asymptotic behavior.
 Dependence Modeling, 7(1), 292-321.
+\doi{10.1515/demo-2019-0016}
 }
 \seealso{
 \code{\link{CKT.estimate}} for other estimators

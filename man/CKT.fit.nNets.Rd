@@ -85,6 +85,7 @@ Derumigny, A., & Fermanian, J. D. (2019).
 A classification point-of-view about conditional Kendall’s tau.
 Computational Statistics & Data Analysis, 135, 70-94.
 (Algorithm 7)
+\doi{10.1016/j.csda.2019.01.013}
 }
 \seealso{
 See also other estimators of conditional Kendall's tau:

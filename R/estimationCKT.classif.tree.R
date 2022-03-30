@@ -38,6 +38,7 @@
 #' A classification point-of-view about conditional Kendall’s tau.
 #' Computational Statistics & Data Analysis, 135, 70-94.
 #' (Section 3.2)
+#' \doi{10.1016/j.csda.2019.01.013}
 #'
 #' @seealso See also other estimators of conditional Kendall's tau:
 #' \code{\link{CKT.fit.nNets}}, \code{\link{CKT.fit.randomForest}},
@@ -166,6 +167,7 @@ CKT.predict.tree <- function(fit, newZ){
 #' A classification point-of-view about conditional Kendall’s tau.
 #' Computational Statistics & Data Analysis, 135, 70-94.
 #' (Algorithm 4)
+#' \doi{10.1016/j.csda.2019.01.013}
 #'
 #' @examples
 #' # We simulate from a conditional copula

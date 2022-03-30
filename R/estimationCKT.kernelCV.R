@@ -71,6 +71,7 @@
 #' finite-distance bounds and asymptotic behavior.
 #' Dependence Modeling, 7(1), 292-321.
 #' Page 296, Equation (4).
+#' \doi{10.1515/demo-2019-0016}
 #'
 #' @examples
 #' # We simulate from a conditional copula

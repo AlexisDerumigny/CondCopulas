@@ -73,6 +73,12 @@ print(length(data.tree::GetAttribute(result$children[[2]], "condObs")))
 
 
 }
+\references{
+Derumigny, A., Fermanian, J. D., & Min, A. (2020).
+Testing for equality between conditional copulas
+given discretized conditioning events.
+ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
+}
 \seealso{
 \code{\link{bCond.simpA.CKT}} for a test of the simplifying assumption
 that all these conditional Kendall's tau are equal.

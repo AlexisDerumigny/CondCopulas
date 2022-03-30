@@ -63,6 +63,7 @@
 #' On Kendall’s regression.
 #' Journal of Multivariate Analysis, 178, 104610.
 #' (page 7)
+#' \doi{10.1016/j.jmva.2020.104610}
 #'
 #' @seealso The function to fit Kendall's regression:
 #' \code{\link{CKT.kendallReg.fit}}.

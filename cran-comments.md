@@ -1,3 +1,5 @@
+We also added the DOI in the DESCRIPTION file.
+
 
 ## Test environments
 

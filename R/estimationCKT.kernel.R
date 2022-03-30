@@ -141,6 +141,7 @@ CKT.kernelPointwise.univariate <- function(matrixSignsPairs, vectorZ,
 }
 
 
+
 #' Estimate the conditional Kendall's tau of X1 and X2
 #' at a fixed multivariate point Z = pointZ
 #'
@@ -397,6 +398,7 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
 #' On kernel-based estimation of conditional Kendall’s tau:
 #' finite-distance bounds and asymptotic behavior.
 #' Dependence Modeling, 7(1), 292-321.
+#' \doi{10.1515/demo-2019-0016}
 #'
 #' @seealso \code{\link{CKT.estimate}} for other estimators
 #' of conditional Kendall's tau.

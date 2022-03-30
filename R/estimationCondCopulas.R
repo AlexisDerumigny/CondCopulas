@@ -25,6 +25,7 @@
 #' Derumigny, A., & Fermanian, J. D. (2017).
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
+#' \doi{10.1515/demo-2017-0011}
 #'
 #' @seealso \code{\link{estimateParCondCopula}} for estimating a conditional
 #' copula in a parametric setting ( = where the conditional copula is assumed to
@@ -136,6 +137,7 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' Derumigny, A., & Fermanian, J. D. (2017).
 #' About tests of the “simplifying” assumption for conditional copulas.
 #' Dependence Modeling, 5(1), 154-197.
+#' \doi{10.1515/demo-2017-0011}
 #'
 #' @seealso \code{\link{estimateNPCondCopula}} for estimating a conditional
 #' copula in a nonparametric setting ( = without parametric assumption on the

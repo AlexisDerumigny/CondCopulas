@@ -92,15 +92,18 @@
 #' Derumigny, A., & Fermanian, J. D. (2019a).
 #' A classification point-of-view about conditional Kendall’s tau.
 #' Computational Statistics & Data Analysis, 135, 70-94.
+#' \doi{10.1016/j.csda.2019.01.013}
 #'
 #' Derumigny, A., & Fermanian, J. D. (2019b).
 #' On kernel-based estimation of conditional Kendall’s tau:
 #' finite-distance bounds and asymptotic behavior.
 #' Dependence Modeling, 7(1), 292-321.
+#' \doi{10.1515/demo-2019-0016}
 #'
 #' Derumigny, A., & Fermanian, J. D. (2020).
 #' On Kendall’s regression.
 #' Journal of Multivariate Analysis, 178, 104610.
+#' \doi{10.1016/j.jmva.2020.104610}
 #'
 #' @examples
 #' # We simulate from a conditional copula

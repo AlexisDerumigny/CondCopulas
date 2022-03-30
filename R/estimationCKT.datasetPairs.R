@@ -55,6 +55,7 @@
 #' Computational Statistics & Data Analysis, 135, 70-94.
 #' (Algorithm 1 for all pairs and Algorithm 8
 #' for the case of only consecutive pairs)
+#' \doi{10.1016/j.csda.2019.01.013}
 #'
 #' @seealso the functions that require such a dataset of pairs
 #' to do the estimation of conditional Kendall's tau:

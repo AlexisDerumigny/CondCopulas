@@ -96,6 +96,7 @@ conditionalTauNewX3
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 Dependence Modeling, 5(1), 154-197.
+\doi{10.1515/demo-2017-0011}
 }
 \seealso{
 \code{\link{estimateNPCondCopula}} for estimating a conditional

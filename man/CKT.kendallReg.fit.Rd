@@ -143,6 +143,7 @@ lines(newZ, estimatedCKT_kendallReg$estimatedCKT, col = "red")
 Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 Journal of Multivariate Analysis, 178, 104610.
+\doi{10.1016/j.jmva.2020.104610}
 }
 \seealso{
 See also other estimators of conditional Kendall's tau:
