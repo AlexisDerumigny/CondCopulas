@@ -122,7 +122,7 @@
 CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
                              averaging = "no", blockStructure = NULL,
                              h, kernel.name = "Epa",
-                             typeEstCKT = 4)
+                             typeEstCKT = "wdm")
 {
   d = ncol( dataMatrix )
   n = nrow( dataMatrix )
@@ -133,43 +133,62 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
     stop("The length of observedZ and the number of rows in dataMatrix must be equal.")
   }
 
-  arrayWeights = array(data = NA , dim = c(n ,n , nz) )
-  matrixWeights = matrix(data = NA, nrow = n, ncol = nz)
-  for(i in 1:length(gridZ))
-  {
-    matrixWeights[,i] = computeWeights.univariate(vectorZ = observedZ,
-                                                  h = h,
-                                                  pointZ = gridZ[i],
-                                                  kernel.name = kernel.name,
-                                                  normalization = TRUE)
-    arrayWeights[,,i] = matrixWeights[,i] %*% t(matrixWeights[,i])
+  if(typeEstCKT == "wdm"){
+    matrixWeights = matrix(data = NA, nrow = n, ncol = nz)
+    for(i in 1:nz)
+    {
+      matrixWeights[,i] = computeWeights.univariate(vectorZ = observedZ,
+                                                    h = h,
+                                                    pointZ = gridZ[i],
+                                                    kernel.name = kernel.name,
+                                                    normalization = TRUE)
+    }
+  } else {
+    arrayWeights = array(data = NA , dim = c(n, n , nz) )
+    matrixWeights = matrix(data = NA, nrow = n, ncol = nz)
+    for(i in 1:nz)
+    {
+      matrixWeights[,i] = computeWeights.univariate(vectorZ = observedZ,
+                                                    h = h,
+                                                    pointZ = gridZ[i],
+                                                    kernel.name = kernel.name,
+                                                    normalization = TRUE)
+      arrayWeights[,,i] = matrixWeights[,i] %*% t(matrixWeights[,i])
+    }
   }
 
 
   if(averaging == "no")
   {
     estimate = array(data = 1 , dim = c(d , d , nz))
-    for(j1 in 2:d)
-    {
-      for(j2 in 1:(j1-1))
+    if (typeEstCKT == "wdm"){
+      for (iz in 1:nz){
+        estimate[,, iz] = wdm::wdm(x = dataMatrix, weights = matrixWeights[,iz],
+                                   method = "kendall")
+      }
+    } else {
+      for(j1 in 2:d)
       {
-        vectorX1 = dataMatrix[ , j1]
-        vectorX2 = dataMatrix[ , j2]
-        matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
-                                             vectorX2 = vectorX2,
-                                             typeEstCKT = typeEstCKT)
-        estimate[j1,j2,] = apply(X = arrayWeights , MARGIN = 3 ,
-                                 FUN = function(x){return(sum(x*matrixSigns))})
-        estimate[j2,j1,] = estimate[j1,j2,]
+        for(j2 in 1:(j1-1))
+        {
+          vectorX1 = dataMatrix[ , j1]
+          vectorX2 = dataMatrix[ , j2]
+          matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
+                                               vectorX2 = vectorX2,
+                                               typeEstCKT = typeEstCKT)
+          estimate[j1,j2,] = apply(X = arrayWeights , MARGIN = 3 ,
+                                   FUN = function(x){return(sum(x*matrixSigns))})
+          estimate[j2,j1,] = estimate[j1,j2,]
+        }
       }
     }
+
   } else if(averaging == "diag")
   {
     if(is.null(blockStructure))
     {
       stop(paste("blockStructure not specified, when averaging = ", averaging))
-    }
-    if( all.equal( sort(unname(unlist(blockStructure))) , 1:d ) != TRUE )
+    } else if( all.equal( sort(unname(unlist(blockStructure))) , 1:d ) != TRUE )
     {
       stop("blockStructure must be a partition.")
     }
@@ -179,7 +198,6 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
     {
       for (g2 in 1:(g1-1))
       {
-
         diagSize = min(length(blockStructure[[g1]]),
                        length(blockStructure[[g2]]) )
         matrixBlockCKT = matrix(NA, nrow = diagSize , ncol = nz)
@@ -187,12 +205,19 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
         {
           vectorX1 = dataMatrix[ , blockStructure[[g1]][j] ]
           vectorX2 = dataMatrix[ , blockStructure[[g2]][j] ]
-          matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
-                                               vectorX2 = vectorX2,
-                                               typeEstCKT = typeEstCKT)
-          matrixBlockCKT[j,] = apply(X = arrayWeights , MARGIN = 3,
-                                     FUN = function(x)
-                                     {return(sum(x * matrixSigns))})
+          if (typeEstCKT == "wdm"){
+            for (iz in 1:nz){
+              matrixBlockCKT[j,iz] = wdm::wdm(x = vectorX1, y = vectorX2,
+                                              weights = matrixWeights[,iz], method = "kendal")
+            }
+          } else {
+            matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
+                                                 vectorX2 = vectorX2,
+                                                 typeEstCKT = typeEstCKT)
+            matrixBlockCKT[j,] = apply(X = arrayWeights , MARGIN = 3,
+                                       FUN = function(x)
+                                       {return(sum(x * matrixSigns))})
+          }
         }
         blockCKT = apply(X = matrixBlockCKT , MARGIN = 2 , mean)
         estimate[g1 , g2 ,] = blockCKT
@@ -205,8 +230,7 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
     if(is.null(blockStructure))
     {
       stop(paste("blockStructure not specified, when averaging = ", averaging))
-    }
-    if( all.equal( sort(unname(unlist(blockStructure))) , 1:d ) != TRUE )
+    } else if( all.equal( sort(unname(unlist(blockStructure))) , 1:d ) != TRUE )
     {
       stop("blockStructure must be a partition.")
     }
@@ -224,12 +248,20 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
           {
             vectorX1 = dataMatrix[ , blockStructure[[g1]][j1] ]
             vectorX2 = dataMatrix[ , blockStructure[[g2]][j2] ]
-            matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
-                                                 vectorX2 = vectorX2,
-                                                 typeEstCKT = typeEstCKT)
-            arrayBlockCKT[j1,j2,] = apply(X = arrayWeights , MARGIN = 3,
-                                          FUN = function(x)
-                                          {return(sum(x * matrixSigns))})
+            if (typeEstCKT == "wdm"){
+              for (iz in 1:nz){
+                arrayBlockCKT[j1,j2,iz] = wdm::wdm(
+                  x = vectorX1, y = vectorX2,
+                  weights = matrixWeights[,iz], method = "kendal")
+              }
+            } else {
+              matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
+                                                   vectorX2 = vectorX2,
+                                                   typeEstCKT = typeEstCKT)
+              arrayBlockCKT[j1,j2,] = apply(X = arrayWeights , MARGIN = 3,
+                                            FUN = function(x)
+                                            {return(sum(x * matrixSigns))})
+            }
           }
         }
         blockCKT = apply(X = arrayBlockCKT , MARGIN = 3 , mean)

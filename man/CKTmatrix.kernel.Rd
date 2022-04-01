@@ -13,7 +13,7 @@ CKTmatrix.kernel(
   blockStructure = NULL,
   h,
   kernel.name = "Epa",
-  typeEstCKT = 4
+  typeEstCKT = "wdm"
 )
 }
 \arguments{

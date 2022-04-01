@@ -14,7 +14,7 @@ CKT.kernel(
   methodCV = "Kfolds",
   Kfolds = 5,
   nPairs = 10 * length(observedX1),
-  typeEstCKT = 4,
+  typeEstCKT = "wdm",
   progressBar = TRUE
 )
 }
@@ -48,8 +48,19 @@ if \code{methodCV = "Kfolds"}.}
 if \code{methodCV = "leave-one-out"}.}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.
-Default is 4. 1 and 3 produced biased estimator
-while 2 does not attain the full range \eqn{[-1,1]}.}
+Possible choices are \itemize{
+  \item \code{1} and \code{3} produced biased estimators.
+  \code{2} does not attain the full range \eqn{[-1,1]}.
+  Therefore these 3 choices are not recommended for applications on real data.
+
+  \item \code{4} is an improved version of \code{1,2,3} that has less bias
+  and attains the full range \eqn{[-1,1]}.
+
+  \item \code{"wdm"} is the default version and produces the same results
+  as \code{4} when they are no ties in the data.
+}
+
+while .}
 
 \item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
 to show the progress of the computation.}

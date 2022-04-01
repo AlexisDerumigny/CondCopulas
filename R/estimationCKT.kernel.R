@@ -104,6 +104,7 @@ computeWeights.multivariate <- function(matrixZ, h, pointZ,
 #' Estimate the conditional Kendall's tau of X1 and X2
 #' at a fixed univariate point Z = pointZ
 #'
+#' @param X1,X2 vectors of observations of the conditioned variables
 #' @param matrixSignsPairs square matrix of signs of all pairs,
 #' produced by computeMatrixSignPairs.
 #' @param vectorZ vector of observed points of Z.
@@ -118,24 +119,31 @@ computeWeights.multivariate <- function(matrixZ, h, pointZ,
 #'
 #' @noRd
 #'
-CKT.kernelPointwise.univariate <- function(matrixSignsPairs, vectorZ,
+CKT.kernelPointwise.univariate <- function(X1, X2, matrixSignsPairs, vectorZ,
                                            h, pointZ, kernel.name, typeEstCKT)
 {
   listWeights = computeWeights.univariate(vectorZ, h, pointZ, kernel.name)
-  matrixWeights = outer(listWeights, listWeights)
 
-  switch (
-    typeEstCKT,
-    # 1
-    { estimate = 4 * sum(matrixWeights * matrixSignsPairs) - 1 } ,
-    # 2
-    { estimate = sum(matrixWeights * matrixSignsPairs) },
-    # 3
-    { estimate = 1 - 4 * sum(matrixWeights * matrixSignsPairs) },
-    # 4
-    { estimate = sum(matrixWeights * matrixSignsPairs) / (1 - sum(listWeights^2)) },
-    {stop(paste0("typeEstCKT: ", typeEstCKT, " is not in {1,2,3,4}" ) ) }
-  )
+  if(typeEstCKT == "wdm"){
+
+    estimate = wdm::wdm(x = X1, y = X2, weights = listWeights, method = "kendall")
+
+  } else {
+    matrixWeights = outer(listWeights, listWeights)
+
+    switch (
+      typeEstCKT,
+      # 1
+      { estimate = 4 * sum(matrixWeights * matrixSignsPairs) - 1 } ,
+      # 2
+      { estimate = sum(matrixWeights * matrixSignsPairs) },
+      # 3
+      { estimate = 1 - 4 * sum(matrixWeights * matrixSignsPairs) },
+      # 4
+      { estimate = sum(matrixWeights * matrixSignsPairs) / (1 - sum(listWeights^2)) },
+      {stop(paste0("typeEstCKT: ", typeEstCKT, " is not in {1,2,3,4}" ) ) }
+    )
+  }
 
   return(estimate)
 }
@@ -145,6 +153,7 @@ CKT.kernelPointwise.univariate <- function(matrixSignsPairs, vectorZ,
 #' Estimate the conditional Kendall's tau of X1 and X2
 #' at a fixed multivariate point Z = pointZ
 #'
+#' @param X1,X2 vectors of observations of the conditioned variables
 #' @param matrixSignsPairs square matrix of signs of all pairs,
 #' produced by \code{computeMatrixSignPairs}.
 #' @param vectorZ vector of observed points of Z.
@@ -159,7 +168,7 @@ CKT.kernelPointwise.univariate <- function(matrixSignsPairs, vectorZ,
 #'
 #' @noRd
 #'
-CKT.kernelPointwise.multivariate <- function(matrixSignsPairs, matrixZ,
+CKT.kernelPointwise.multivariate <- function(X1, X2, matrixSignsPairs, matrixZ,
                                              h, pointZ, kernel.name, typeEstCKT)
 {
   if (kernel.name == "Epa"){
@@ -179,25 +188,31 @@ CKT.kernelPointwise.multivariate <- function(matrixSignsPairs, matrixZ,
   }
 
 
-  matrixWeights = outer(listWeights, listWeights)
+  if(typeEstCKT == "wdm"){
 
-  switch (
-    typeEstCKT,
-    # 1
-    { estimate =
-      4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) - 1 } ,
-    # 2
-    { estimate =sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
-    # 3
-    { estimate =
-      1 - 4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
-    # 4
-    { estimate =
-      sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) /
-      (1 - sum(listWeights^2)) },
+    estimate = wdm::wdm(x = X1, y = X2, weights = listWeights, method = "kendall")
 
-    {stop(paste0("typeEstCKT: ", typeEstCKT, " is not in {1,2,3,4}" ) ) }
-  )
+  } else {
+    matrixWeights = outer(listWeights, listWeights)
+
+    switch (
+      typeEstCKT,
+      # 1
+      { estimate =
+        4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) - 1 } ,
+      # 2
+      { estimate =sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
+      # 3
+      { estimate =
+        1 - 4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
+      # 4
+      { estimate =
+        sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) /
+        (1 - sum(listWeights^2)) },
+
+      {stop(paste0("typeEstCKT: ", typeEstCKT, " is not in {1,2,3,4}" ) ) }
+    )
+  }
   # if(! is.finite(estimate) ) {print(whichNonZero) ; print(listWeights) ; print(pointZ)}
   return(estimate)
 }
@@ -210,6 +225,8 @@ CKT.kernelPointwise.multivariate <- function(matrixSignsPairs, matrixZ,
 #' Estimate the conditional Kendall's tau of X1 and X2
 #' at different points
 #'
+#'
+#' @param X1,X2 vectors of observations of the conditioned variables
 #' @param matrixSignsPairs square matrix of signs of all pairs,
 #' produced by computeMatrixSignPairs.
 #'
@@ -232,16 +249,18 @@ CKT.kernelPointwise.multivariate <- function(matrixSignsPairs, matrixZ,
 #'
 #' @noRd
 #'
-CKT.kernel.univariate <- function(matrixSignsPairs, observedZ,
+CKT.kernel.univariate <- function(X1, X2, matrixSignsPairs, observedZ,
                                   h, ZToEstimate,
                                   kernel.name = "Epa", typeEstCKT = 4,
                                   progressBar = TRUE)
 {
-  if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
-    stop("matrixSignsPairs must be a square matrix.")
-  } else if (nrow(matrixSignsPairs) != length(observedZ)){
-    stop(paste0("observedZ must have the same length ",
-                "as the number of rows of matrixSignsPairs."))
+  if (typeEstCKT != "wdm"){
+    if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
+      stop("matrixSignsPairs must be a square matrix.")
+    } else if (nrow(matrixSignsPairs) != length(observedZ)){
+      stop(paste0("observedZ must have the same length ",
+                  "as the number of rows of matrixSignsPairs."))
+    }
   }
 
   n_prime = length(ZToEstimate)
@@ -255,14 +274,14 @@ CKT.kernel.univariate <- function(matrixSignsPairs, observedZ,
     estimates = pbapply::pbapply(
       X = array(1:n_prime), MARGIN = 1,
       FUN = function(i) {CKT.kernelPointwise.univariate(
-        pointZ = ZToEstimate[i], matrixSignsPairs = matrixSignsPairs,
+        X1 = X1, X2 = X2, pointZ = ZToEstimate[i], matrixSignsPairs = matrixSignsPairs,
         h = h_vect[i], vectorZ = observedZ,
         kernel.name = kernel.name, typeEstCKT = typeEstCKT) } )
   } else {
     estimates = apply(
       X = array(1:n_prime), MARGIN = 1,
       FUN = function(i) {CKT.kernelPointwise.univariate(
-        pointZ = ZToEstimate[i], matrixSignsPairs = matrixSignsPairs,
+        X1 = X1, X2 = X2, pointZ = ZToEstimate[i], matrixSignsPairs = matrixSignsPairs,
         h = h_vect[i], vectorZ = observedZ,
         kernel.name = kernel.name, typeEstCKT = typeEstCKT) } )
   }
@@ -274,6 +293,8 @@ CKT.kernel.univariate <- function(matrixSignsPairs, observedZ,
 #' Estimate the conditional Kendall's tau of X1 and X2
 #' at different points
 #'
+#'
+#' @param X1,X2 vectors of observations of the conditioned variables
 #' @param matrixSignsPairs square matrix of signs of all pairs,
 #' produced by computeMatrixSignPairs.
 #'
@@ -297,19 +318,21 @@ CKT.kernel.univariate <- function(matrixSignsPairs, observedZ,
 #'
 #' @noRd
 #'
-CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
+CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
                                     h, ZToEstimate,
                                     kernel.name = "Epa", typeEstCKT = 4,
                                     progressBar = TRUE)
 {
-  if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
-    stop("matrixSignsPairs must be a square matrix.")
-  } else if (nrow(matrixSignsPairs) != nrow(observedZ)){
-    stop(paste0("observedZ and matrixSignsPairs must have",
-                "the same number of rows."))
-  } else if (ncol(observedZ) != ncol(ZToEstimate)){
-    stop(paste0("observedZ and ZToEstimate must have",
-                "the same number of columns."))
+  if (typeEstCKT != "wdm"){
+    if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
+      stop("matrixSignsPairs must be a square matrix.")
+    } else if (nrow(matrixSignsPairs) != nrow(observedZ)){
+      stop(paste0("observedZ and matrixSignsPairs must have",
+                  "the same number of rows."))
+    } else if (ncol(observedZ) != ncol(ZToEstimate)){
+      stop(paste0("observedZ and ZToEstimate must have",
+                  "the same number of columns."))
+    }
   }
 
   dim_Z = ncol(observedZ)
@@ -325,14 +348,14 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
     estimates = pbapply::pbapply(
       X = array(1:n_prime), MARGIN = 1,
       FUN = function(i) {CKT.kernelPointwise.multivariate(
-        pointZ = ZToEstimate[i,], matrixSignsPairs = matrixSignsPairs,
+        X1 = X1, X2 = X2, pointZ = ZToEstimate[i,], matrixSignsPairs = matrixSignsPairs,
         h = h_vect[i], matrixZ = observedZ,
         kernel.name = kernel.name, typeEstCKT = typeEstCKT) } )
   } else {
     estimates = apply(
       X = 1:n_prime, MARGIN = 1,
       FUN = function(i) {CKT.kernelPointwise.multivariate(
-        pointZ = ZToEstimate[i,], matrixSignsPairs = matrixSignsPairs,
+        X1 = X1, X2 = X2, pointZ = ZToEstimate[i,], matrixSignsPairs = matrixSignsPairs,
         h = h_vect[i], matrixZ = observedZ,
         kernel.name = kernel.name, typeEstCKT = typeEstCKT) } )
   }
@@ -369,8 +392,19 @@ CKT.kernel.multivariate <- function(matrixSignsPairs, observedZ,
 #' the conditional Kendall's tau should be estimated.
 #'
 #' @param typeEstCKT type of estimation of the conditional Kendall's tau.
-#' Default is 4. 1 and 3 produced biased estimator
-#' while 2 does not attain the full range \eqn{[-1,1]}.
+#' Possible choices are \itemize{
+#'   \item \code{1} and \code{3} produced biased estimators.
+#'   \code{2} does not attain the full range \eqn{[-1,1]}.
+#'   Therefore these 3 choices are not recommended for applications on real data.
+#'
+#'   \item \code{4} is an improved version of \code{1,2,3} that has less bias
+#'   and attains the full range \eqn{[-1,1]}.
+#'
+#'   \item \code{"wdm"} is the default version and produces the same results
+#'   as \code{4} when they are no ties in the data.
+#' }
+#'
+#' while .
 #'
 #' @param methodCV method used for the cross-validation.
 #' Possible choices are \code{leave-one-out} and \code{Kfolds}.
@@ -448,10 +482,14 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
                        h, kernel.name = "Epa",
                        methodCV = "Kfolds",
                        Kfolds = 5, nPairs = 10*length(observedX1),
-                       typeEstCKT = 4, progressBar = TRUE)
+                       typeEstCKT = "wdm", progressBar = TRUE)
 {
-  matrixSignsPairs = computeMatrixSignPairs(
-    vectorX1 = observedX1, vectorX2 = observedX2, typeEstCKT = typeEstCKT)
+  if (typeEstCKT == "wdm") {
+    matrixSignsPairs = NULL
+  } else {
+    matrixSignsPairs = computeMatrixSignPairs(
+      vectorX1 = observedX1, vectorX2 = observedX2, typeEstCKT = typeEstCKT)
+  }
 
   if (length(h) == 1){
     finalh = h
@@ -464,16 +502,16 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
 
       "Kfolds" = {
         resultCV = CKT.hCV.Kfolds(
+          observedX1 = observedX1, observedX2 = observedX2, observedZ = observedZ,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
-          observedZ = observedZ, ZToEstimate = newZ,
+          ZToEstimate = newZ,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name, Kfolds = Kfolds,
           progressBar = progressBar)
       },
 
       "leave-one-out" = {
         resultCV = CKT.hCV.l1out(
-          observedX1 = observedX1, observedX2 = observedX2,
-          observedZ = observedZ,
+          observedX1 = observedX1, observedX2 = observedX2, observedZ = observedZ,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name,
           nPairs = nPairs, progressBar = progressBar)
@@ -488,8 +526,8 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
 
   if (is.vector(observedZ)){
     estCKT = CKT.kernel.univariate(
-      matrixSignsPairs = matrixSignsPairs, observedZ = observedZ,
-      h = finalh, ZToEstimate = newZ,
+      X1 = observedX1, X2 = observedX2, matrixSignsPairs = matrixSignsPairs,
+      observedZ = observedZ, h = finalh, ZToEstimate = newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
       progressBar = TRUE)
 
@@ -497,8 +535,8 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
   } else {
 
     estCKT = CKT.kernel.multivariate(
-      matrixSignsPairs = matrixSignsPairs, observedZ = observedZ,
-      h = finalh, ZToEstimate = newZ,
+      X1 = observedX1, X2 = observedX2, matrixSignsPairs = matrixSignsPairs,
+      observedZ = observedZ, h = finalh, ZToEstimate = newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
       progressBar = TRUE)
 

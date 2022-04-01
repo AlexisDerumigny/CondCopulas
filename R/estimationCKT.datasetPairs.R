@@ -224,7 +224,7 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
   dataMatrix = matrix(nrow = n*(n-1)/2, ncol = 1 + dimZ + 3)
   lastPosition = 0
 
-  if (typeEstCKT == 4){typeEstCKT <- 2} # Same function for types 2 and 4
+  if (typeEstCKT == 4 || typeEstCKT == "wdm"){typeEstCKT <- 2} # Same function for types 2 and 4
 
   switch(
     typeEstCKT,
@@ -311,8 +311,8 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
   #     x = as.numeric(dataMatrix[indexes, 1 + dimZ + 1]) ,
   #     probs = nPairs / dataMatrix[indexes, 1 + dimZ + 1] , na.rm = TRUE)
   # } else { cut = +Inf }
-  if (!is.null(nPairs) & nPairs < nrow(datasetPairs)){
-    cut = stats::quantile(x = dataMatrix[, dimZ+2], probs = nPairs / nrow(datasetPairs))
+  if (!is.null(nPairs) && nPairs < nrow(dataMatrix)){
+    cut = stats::quantile(x = dataMatrix[, dimZ+2], probs = nPairs / nrow(dataMatrix))
   }
 
   dataMatrix = dataMatrix[ dataMatrix[,dimZ+2] <= cut ,]

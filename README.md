@@ -1,8 +1,14 @@
 
 # How to install
 
+The release version on CRAN:
+```r
+install.packages("MMDCopula")
+```
+
 From GitHub, using the `devtools` package:
 ``` r
+# install.packages("devtools")
 devtools::install_github("AlexisDerumigny/CondCopulas")
 ```
 

@@ -35,7 +35,7 @@ Imports:
     nnet,
     data.tree,
     statmod,
-    pcaPP
+    wdm
 VignetteBuilder: knitr
 BugReports: https://github.com/AlexisDerumigny/CondCopulas/issues
 URL: https://github.com/AlexisDerumigny/CondCopulas

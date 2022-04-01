@@ -161,8 +161,9 @@ matrixInd2matrixCKT <- function(matrixInd, newDataXI)
     for (iVar in 1:(sizeI-1)){
       for (jVar in (iVar+1):sizeI){
         matrix_hat_CKT[index_pair, j] =
-          pcaPP::cor.fk( newDataXI[which(matrixInd[, j] == 1) , iVar] ,
-                         newDataXI[which(matrixInd[, j] == 1) , jVar] )
+          wdm::wdm(newDataXI[which(matrixInd[, j] == 1) , iVar] ,
+                   newDataXI[which(matrixInd[, j] == 1) , jVar] ,
+                   method = "kendall" )
         index_pair = index_pair + 1
       }
     }

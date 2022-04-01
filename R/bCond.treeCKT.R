@@ -164,7 +164,7 @@ CutCKTMult <- function(XI , XJ, namesXI, namesXJ,
   index_pair = 1
   for (iVar in 1:(sizeI-1)){
     for (jVar in (iVar+1):sizeI){
-      node$CKT[index_pair] = pcaPP::cor.fk(XI[,iVar], XI[,jVar])
+      node$CKT[index_pair] = wdm::wdm(XI[,iVar], XI[,jVar], method = "kendall")
       names(node$CKT)[index_pair] = paste0(namesXI[c(iVar, jVar)], collapse = "_")
       index_pair = index_pair + 1
     }
@@ -202,10 +202,10 @@ CutCKTMult <- function(XI , XJ, namesXI, namesXJ,
           whichij = which(XJ[,jVar] <= xj)
 
           arrayCKTl[index_pair, jVar, k_xj] =
-            pcaPP::cor.fk(XI[whichij, iVar1], XI[whichij, iVar2])
+            wdm::wdm(XI[whichij, iVar1], XI[whichij, iVar2], method = "kendal")
 
           arrayCKTg[index_pair, jVar, k_xj] =
-            pcaPP::cor.fk(XI[-whichij, iVar1], XI[-whichij, iVar2])
+            wdm::wdm(XI[-whichij, iVar1], XI[-whichij, iVar2], method = "kendal")
         }
       }
       # We switch to a new pair of conditioned variables
