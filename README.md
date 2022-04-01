@@ -3,7 +3,7 @@
 
 The release version on CRAN:
 ```r
-install.packages("MMDCopula")
+install.packages("CondCopulas")
 ```
 
 From GitHub, using the `devtools` package:
