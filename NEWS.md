@@ -1,4 +1,5 @@
 
+# CondCopulas 0.1.2
 
 * New dependence `wdm` instead of `pcaPP` for fast computation of Kendall's tau.
 
@@ -11,6 +12,7 @@ it is equivalent to the previous choice `typeEstCKT = 4`.
 # CondCopulas 0.1.1
 
 * Adding DOIs in the DESCRIPTION and small documentation fixes.
+
 
 # CondCopulas 0.1.0
 

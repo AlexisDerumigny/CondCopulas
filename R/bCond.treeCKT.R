@@ -202,10 +202,10 @@ CutCKTMult <- function(XI , XJ, namesXI, namesXJ,
           whichij = which(XJ[,jVar] <= xj)
 
           arrayCKTl[index_pair, jVar, k_xj] =
-            wdm::wdm(XI[whichij, iVar1], XI[whichij, iVar2], method = "kendal")
+            wdm::wdm(XI[whichij, iVar1], XI[whichij, iVar2], method = "kendall")
 
           arrayCKTg[index_pair, jVar, k_xj] =
-            wdm::wdm(XI[-whichij, iVar1], XI[-whichij, iVar2], method = "kendal")
+            wdm::wdm(XI[-whichij, iVar1], XI[-whichij, iVar2], method = "kendall")
         }
       }
       # We switch to a new pair of conditioned variables

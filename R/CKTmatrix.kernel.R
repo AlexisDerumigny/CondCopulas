@@ -208,7 +208,7 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
           if (typeEstCKT == "wdm"){
             for (iz in 1:nz){
               matrixBlockCKT[j,iz] = wdm::wdm(x = vectorX1, y = vectorX2,
-                                              weights = matrixWeights[,iz], method = "kendal")
+                                              weights = matrixWeights[,iz], method = "kendall")
             }
           } else {
             matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
@@ -252,7 +252,7 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
               for (iz in 1:nz){
                 arrayBlockCKT[j1,j2,iz] = wdm::wdm(
                   x = vectorX1, y = vectorX2,
-                  weights = matrixWeights[,iz], method = "kendal")
+                  weights = matrixWeights[,iz], method = "kendall")
               }
             } else {
               matrixSigns = computeMatrixSignPairs(vectorX1 = vectorX1,
