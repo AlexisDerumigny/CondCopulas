@@ -194,6 +194,11 @@ CKT.estimate <- function (
                   function(x){return(x^3)})} else
               {list(identity)} , ...)
 {
+  if (length(newZ) == 0){
+    warning("'newZ' is of length 0, therefore, no estimation is done.")
+    return (numeric(0))
+  }
+
   if (methodEstimation %in% c("tree", "randomForest", "logit", "probit",
                               "nearestNeighbors", "neuralNetwork")){
     datasetPairs = datasetPairs(X1 = observedX1, X2 = observedX2,

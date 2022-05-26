@@ -1,4 +1,8 @@
 
+* Functions `CKT.kernel()` and `CKT.estimate()` now warn and return `numeric(0)`
+when the argument `newZ` is `numeric(0)`.
+
+
 # CondCopulas 0.1.2
 
 * New dependence `wdm` instead of `pcaPP` for fast computation of Kendall's tau.

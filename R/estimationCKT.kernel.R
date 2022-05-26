@@ -484,6 +484,11 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
                        Kfolds = 5, nPairs = 10*length(observedX1),
                        typeEstCKT = "wdm", progressBar = TRUE)
 {
+  if (length(newZ) == 0){
+    warning("'newZ' is of length 0, therefore, no estimation is done.")
+    return (numeric(0))
+  }
+
   if (typeEstCKT == "wdm") {
     matrixSignsPairs = NULL
   } else {
