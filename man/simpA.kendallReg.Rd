@@ -10,12 +10,22 @@ simpA.kendallReg(
   X2,
   Z,
   vectorZToEstimate = NULL,
-  listPhi = list(function(x) {     return(x) }, function(x) {     return(x^2) },
-    function(x) {     return(x^3) }),
+  listPhi = list(function(x) {
+     return(x)
+ }, function(x) {
+     return(x^2)
+ },
+    function(x) {
+     return(x^3)
+ }),
   typeEstCKT = 4,
   h_kernel,
-  Lambda = function(x) {     return(x) },
-  Lambda_deriv = function(x) {     return(1) },
+  Lambda = function(x) {
+     return(x)
+ },
+  Lambda_deriv = function(x) {
+     return(1)
+ },
   lambda = NULL,
   h_lambda = h_kernel,
   Kfolds_lambda = 5,
