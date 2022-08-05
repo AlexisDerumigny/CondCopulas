@@ -81,6 +81,24 @@
 #' @author Alexis Derumigny, Jean-David Fermanian and Aleksey Min
 #'
 #'
+#' @examples
+#' set.seed(1)
+#' n = 200
+#' XJ = MASS::mvrnorm(n = n, mu = c(3,3), Sigma = rbind(c(1, 0.2), c(0.2, 1)))
+#' XI = matrix(nrow = n, ncol = 2)
+#' high_XJ1 = which(XJ[,1] > 4)
+#' XI[high_XJ1, ]  = MASS::mvrnorm(n = length(high_XJ1), mu = c(10,10),
+#'                                 Sigma = rbind(c(1, 0.8), c(0.8, 1)))
+#' XI[-high_XJ1, ] = MASS::mvrnorm(n = n - length(high_XJ1), mu = c(8,8),
+#'                                 Sigma = rbind(c(1, -0.2), c(-0.2, 1)))
+#'
+#' result = bCond.simpA.CKT(XI = XI, XJ = XJ, minSize = 10, verbose = 2,
+#'                          methodTree = "doSplit", nBootstrap = 4)
+#' print(result$p.value)
+#' result2 = bCond.simpA.CKT(XI = XI, XJ = XJ, minSize = 10, verbose = 2,
+#'                           methodTree = "noSplit", nBootstrap = 4)
+#' print(result2$p.value)
+#'
 #'
 #' @export
 #'
@@ -114,7 +132,7 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
       XItree = XI[sampleForTree, ]
       XJtree = data.frame(XJ[sampleForTree, ])
 
-      bCond.treeCKT = bCond.treeCKT(
+      treeCKT = bCond.treeCKT(
         XI = XItree, XJ = XJtree,
         minCut = minCut, minSize = minSize, minProb = minProb,
         nPoints_xJ = nPoints_xJ, type.quantile = type.quantile,
@@ -127,7 +145,7 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
       XIstat = XI
       XJstat = NULL
 
-      bCond.treeCKT = bCond.treeCKT(
+      treeCKT = bCond.treeCKT(
         XI = XI, XJ = XJ,
         minCut = minCut, minSize = minSize, minProb = minProb,
         nPoints_xJ = nPoints_xJ, type.quantile = type.quantile,
