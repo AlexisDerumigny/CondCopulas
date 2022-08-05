@@ -75,7 +75,8 @@
 #' @export
 #'
 bCond.treeCKT <- function(XI, XJ,
-                          minCut = 0, minProb = 0.01, minSize = minProb * length(XI),
+                          minCut = 0, minProb = 0.01,
+                          minSize = minProb * nrow(XI),
                           nPoints_xJ = 10, type.quantile = 7,
                           verbose = 2)
 {

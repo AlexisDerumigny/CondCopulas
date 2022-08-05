@@ -9,7 +9,7 @@ bCond.treeCKT(
   XJ,
   minCut = 0,
   minProb = 0.01,
-  minSize = minProb * length(XI),
+  minSize = minProb * nrow(XI),
   nPoints_xJ = 10,
   type.quantile = 7,
   verbose = 2

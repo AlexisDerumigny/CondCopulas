@@ -1,4 +1,8 @@
 
+
+* Fix default value of the argument `minSize` in `bCond.treeCKT()` to be
+`minSize = minProb * nrow(XI)` as intended.
+
 * Functions `CKT.kernel()` and `CKT.estimate()` now warn and return `numeric(0)`
 when the argument `newZ` is `numeric(0)`.
 
