@@ -36,6 +36,12 @@
 #' Dependence Modeling, 5(1), 154-197.
 #' \doi{10.1515/demo-2017-0011}
 #'
+#' Derumigny, A., & Fermanian, J. D. (2022)
+#' Conditional empirical copula processes and generalized dependence measures
+#' Electronic Journal of Statistics, 16(2), 5692-5719.
+#' \doi{10.1214/22-EJS2075}
+#'
+#'
 #' @seealso \code{\link{bCond.estParamCopula}} for the estimation
 #' of a (conditional) parametric copula model in this framework.
 #'

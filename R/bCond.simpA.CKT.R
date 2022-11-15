@@ -53,10 +53,16 @@
 #' if \code{methodPvalue} is not \code{covMatrix}.
 #' }
 #'
-#' @references Derumigny, A., Fermanian, J. D., & Min, A. (2020).
+#' @references Derumigny, A., Fermanian, J. D., & Min, A. (2022).
 #' Testing for equality between conditional copulas
 #' given discretized conditioning events.
-#' ArXiv preprint \href{https://arxiv.org/abs/2008.09498}{arxiv:2008.09498}.
+#' Canadian Journal of Statistics.
+#' \doi{10.1002/cjs.11742}
+#'
+#' Derumigny, A., & Fermanian, J. D. (2022)
+#' Conditional empirical copula processes and generalized dependence measures
+#' Electronic Journal of Statistics, 16(2), 5692-5719.
+#' \doi{10.1214/22-EJS2075}
 #'
 #'
 #' @seealso \code{\link{bCond.simpA.param}} for a test of this simplifying assumption

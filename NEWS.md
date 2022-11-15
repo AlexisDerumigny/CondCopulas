@@ -1,5 +1,7 @@
 
 
+* Adding and updating references for conditional copulas with discretized conditioning events.
+
 * Fix an error when running `bCond.simpA.CKT()`.
 
 * Fix default value of the argument `minSize` in `bCond.treeCKT()` to be
