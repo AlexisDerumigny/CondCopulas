@@ -6,18 +6,16 @@ The release version on CRAN:
 install.packages("CondCopulas")
 ```
 
-From GitHub, using the `devtools` package:
+The development version from GitHub, using the `devtools` package:
 ``` r
 # install.packages("devtools")
 devtools::install_github("AlexisDerumigny/CondCopulas")
 ```
 
 
-Conditional copulas
-=====================
+Conditional copulas with pointwise conditioning
+=================================================
 
-
-# With pointwise conditioning
 
 ## Tests of the simplifying assumption
 
@@ -92,11 +90,17 @@ Each of these methods is detailed below and has its own function.
 * `CKT.adaptkNN`: for a (local) aggregation of the number of nearest neighbors based on Lepski's method
 
 
-# With discrete conditioning by Borel sets
 
-## Test of the assumption that the conditioning Borel subset has no influence on the conditional copula
+Conditional copulas with discrete conditioning by Borel sets
+==============================================================
 
-* `bCond.simpA.param` : assuming that the copula belongs to a parametric family
+
+## Test of the hypothesis that the conditioning Borel subset has no influence on the conditional copula
+
+* `bCond.simpA.param` : test of this hypothesis, assuming that the copula belongs to a parametric family
+
+* `bCond.simpA.CKT`: test of the hypothesis that conditional Kendall's tau are equal
+over all the different conditioning subsets.
 
 
 ## Estimation
@@ -108,22 +112,43 @@ $F_{1|A(i)}(X_{i,1} | A(i))$ and $F_{2|A(i)}(X_{i,2} | A(i))$ for every $i=1, \d
 i.e. for every set $A$, a conditional parameter $\theta(A)$ is estimated.
 
 
+## Data-driven choice of conditioning subsets
+
+* `bCond.treeCKT`: construction of binary tree whose leaves corresponds to the most relevant conditioning subsets
+(in the sense of maximizing the difference between estimated conditional Kendall's taus).
+
+
 # References
 
 Derumigny, A., & Fermanian, J. D. (2017).
 About tests of the “simplifying” assumption for conditional copulas.
 *Dependence Modeling*, 5(1), 154-197.
+[pdf](https://doi.org/10.1515/demo-2017-0011)
 
 Derumigny, A., & Fermanian, J. D. (2019).
 A classification point-of-view about conditional Kendall’s tau.
 *Computational Statistics & Data Analysis*, 135, 70-94.
+[pdf](https://doi.org/10.1016/j.csda.2019.01.013)
 
 Derumigny, A., & Fermanian, J. D. (2019).
 On kernel-based estimation of conditional Kendall’s tau:
 finite-distance bounds and asymptotic behavior.
 *Dependence Modeling*, 7(1), 292-321.
+[pdf](https://doi.org/10.1515/demo-2019-0016)
 
 Derumigny, A., & Fermanian, J. D. (2020).
 On Kendall’s regression.
 *Journal of Multivariate Analysis*, 178, 104610.
+[pdf](https://doi.org/10.1016/j.jmva.2020.104610)
+
+Derumigny, A., & Fermanian, J. D. (2022)
+Conditional empirical copula processes and generalized dependence measures
+*Electronic Journal of Statistics*, 16(2), 5692-5719.
+[pdf](https://doi.org/10.1214/22-EJS2075)
+
+Derumigny, A., Fermanian, J. D., & Min, A. (2022).
+Testing for equality between conditional copulas
+given discretized conditioning events.
+*Canadian Journal of Statistics*.
+[pdf](https://doi.org/10.1002/cjs.11742)
 
