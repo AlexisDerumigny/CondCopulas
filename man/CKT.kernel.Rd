@@ -39,7 +39,7 @@ Possible choices are \code{"Gaussian"} (Gaussian kernel)
 and \code{"Epa"} (Epanechnikov kernel).}
 
 \item{methodCV}{method used for the cross-validation.
-Possible choices are \code{leave-one-out} and \code{Kfolds}.}
+Possible choices are \code{"leave-one-out"} and \code{"Kfolds"}.}
 
 \item{Kfolds}{number of subsamples used,
 if \code{methodCV = "Kfolds"}.}
@@ -58,9 +58,7 @@ Possible choices are \itemize{
 
   \item \code{"wdm"} is the default version and produces the same results
   as \code{4} when they are no ties in the data.
-}
-
-while .}
+}}
 
 \item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
 to show the progress of the computation.}
@@ -88,7 +86,32 @@ is defined as:
 where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
 are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
 For this, a kernel-based estimator is used, as described in
-(Derumigny,& Fermanian (2019)).
+(Derumigny, & Fermanian (2019)).
+}
+\details{
+\strong{Choice of the bandwidth \code{h}}.
+The choice of the bandwidth must be done carefully.
+In the univariate case, the default kernel (Epanechnikov kernel) has a support
+on \eqn{[-1,1]}, so for a bandwidth \code{h}, estimation of conditional Kendall's
+tau at \eqn{Z=z} will only use points for which \eqn{Z_i \in [z \pm h]}.
+As usual in nonparametric estimation, \code{h} should not be too small
+(to avoid having a too large variance) and should not be large
+(to avoid having a too large bias).
+
+We recommend that for each \eqn{z} for which the conditional Kendall's tau
+\eqn{\tau_{X_1, X_2 | Z=z}} is estimated, the set
+\eqn{\{i: Z_i \in [z \pm h] \}}
+should contain at least 20 points and not more than 30\% of the points of
+the whole dataset.
+Note that for a consistent estimation, as the sample size \eqn{n} tends
+to the infinity, \code{h} should tend to \eqn{0} while the size of the set
+\eqn{\{i: Z_i \in [z \pm h]\}} should also tend to the infinity.
+Indeed the conditioning points should be closer and closer to the point of interest \eqn{z}
+(small \code{h}) and more and more numerous (\code{h} tending to 0 slowly enough).
+
+In the multivariate case, similar recommendations can be made.
+Because of the curse of dimensionality, a larger sample will be necessary to
+reach the same level of precision as in the univariate case.
 }
 \examples{
 # We simulate from a conditional copula
@@ -128,6 +151,6 @@ of conditional Kendall's tau.
 when the conditioned vector is of dimension \code{d}
 instead of dimension \code{2} here.
 
-See \code{\link{CKT.hCV.l1out}} for manual selection of the bandwidth
+See \code{\link{CKT.hCV.l1out}} for manual selection of the bandwidth \code{h}
 by leave-one-out or K-folds cross-validation.
 }

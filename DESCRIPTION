@@ -18,7 +18,7 @@ Description:
   and Derumigny, Fermanian and Min (2020) <doi:10.1002/cjs.11742>).
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = FALSE)
 Suggests:
     MASS,

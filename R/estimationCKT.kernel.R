@@ -393,6 +393,32 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
 #' For this, a kernel-based estimator is used, as described in
 #' (Derumigny, & Fermanian (2019)).
 #'
+#'
+#' \strong{Choice of the bandwidth \code{h}}.
+#' The choice of the bandwidth must be done carefully.
+#' In the univariate case, the default kernel (Epanechnikov kernel) has a support
+#' on \eqn{[-1,1]}, so for a bandwidth \code{h}, estimation of conditional Kendall's
+#' tau at \eqn{Z=z} will only use points for which \eqn{Z_i \in [z \pm h]}.
+#' As usual in nonparametric estimation, \code{h} should not be too small
+#' (to avoid having a too large variance) and should not be large
+#' (to avoid having a too large bias).
+#'
+#' We recommend that for each \eqn{z} for which the conditional Kendall's tau
+#' \eqn{\tau_{X_1, X_2 | Z=z}} is estimated, the set
+#' \eqn{\{i: Z_i \in [z \pm h] \}}
+#' should contain at least 20 points and not more than 30\% of the points of
+#' the whole dataset.
+#' Note that for a consistent estimation, as the sample size \eqn{n} tends
+#' to the infinity, \code{h} should tend to \eqn{0} while the size of the set
+#' \eqn{\{i: Z_i \in [z \pm h]\}} should also tend to the infinity.
+#' Indeed the conditioning points should be closer and closer to the point of interest \eqn{z}
+#' (small \code{h}) and more and more numerous (\code{h} tending to 0 slowly enough).
+#'
+#' In the multivariate case, similar recommendations can be made.
+#' Because of the curse of dimensionality, a larger sample will be necessary to
+#' reach the same level of precision as in the univariate case.
+#'
+#'
 #' @param observedX1 a vector of n observations of the first variable
 #'
 #' @param observedX2 a vector of n observations of the second variable
@@ -416,10 +442,8 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
 #'   as \code{4} when they are no ties in the data.
 #' }
 #'
-#' while .
-#'
 #' @param methodCV method used for the cross-validation.
-#' Possible choices are \code{leave-one-out} and \code{Kfolds}.
+#' Possible choices are \code{"leave-one-out"} and \code{"Kfolds"}.
 #'
 #' @param nPairs number of pairs used in the cross-validation criteria,
 #' if \code{methodCV = "leave-one-out"}.
@@ -462,7 +486,7 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
 #' when the conditioned vector is of dimension \code{d}
 #' instead of dimension \code{2} here.
 #'
-#' See \code{\link{CKT.hCV.l1out}} for manual selection of the bandwidth
+#' See \code{\link{CKT.hCV.l1out}} for manual selection of the bandwidth \code{h}
 #' by leave-one-out or K-folds cross-validation.
 #'
 #' @examples
@@ -548,7 +572,7 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
       progressBar = TRUE)
 
-    return (list(estimatedCKT = estCKT, h = finalh))
+
   } else {
 
     estCKT = CKT.kernel.multivariate(
@@ -556,9 +580,18 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
       observedZ = observedZ, h = finalh, ZToEstimate = newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
       progressBar = TRUE)
-
-    return (list(estimatedCKT = estCKT, h = finalh))
   }
+
+  if (anyNA(estCKT)){
+    if (!anyNA(observedX1) && !anyNA(observedX2) && !anyNA(observedZ)){
+      warning("NA in estimated CKT. ",
+              "This often happens when the bandwidth h is too small, ",
+              "consider using a bigger bandwidth ",
+              "(see the documentation for advice on the choice of h).")
+    }
+  }
+
+  return (list(estimatedCKT = estCKT, h = finalh))
 }
 
 
