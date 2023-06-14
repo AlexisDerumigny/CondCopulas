@@ -1,5 +1,7 @@
 
 
+* Fixing a bug for `CKT.kernel()` when the conditioning variable is multivariate.
+
 * Adding and updating references for conditional copulas with discretized conditioning events.
 
 * Fix an error when running `bCond.simpA.CKT()`.

@@ -70,12 +70,24 @@ computeWeights.univariate <- function(vectorZ, h, pointZ,
 #'   matrixZ = matrixZ, h = 0.2, pointZ = pointZ,
 #'   kernel.name = "Gaussian")
 #'
+#' n = 20
+#' matrixZ = matrix(rnorm(20), ncol = 1)
+#' h = 0.2
+#' pointZ = c(2.1)
+#' my_weights = computeWeights.multivariate(
+#'   matrixZ = matrixZ, h = 0.2, pointZ = pointZ,
+#'   kernel.name = "Gaussian")
+#' my_weights_ = computeWeights.univariate(
+#'   vectorZ = as.numeric(matrixZ), h = 0.2, pointZ = pointZ,
+#'   kernel.name = "Gaussian")
+#' my_weights == my_weights_
+#'
 #' @noRd
 #'
 computeWeights.multivariate <- function(matrixZ, h, pointZ,
                                         kernel.name, normalization = TRUE)
 {
-  u = sweep(matrixZ, MARGIN = 2, STATS = pointZ)
+  u = sweep(matrixZ, MARGIN = 2, STATS = pointZ) / h
 
   switch (
     kernel.name,
@@ -379,7 +391,7 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
 #' where \eqn{(X_{1,1}, X_{1,2}, Z_1)} and \eqn{(X_{2,1}, X_{2,2}, Z_2)}
 #' are two independent and identically distributed copies of \eqn{(X_1, X_2, Z)}.
 #' For this, a kernel-based estimator is used, as described in
-#' (Derumigny,& Fermanian (2019)).
+#' (Derumigny, & Fermanian (2019)).
 #'
 #' @param observedX1 a vector of n observations of the first variable
 #'
