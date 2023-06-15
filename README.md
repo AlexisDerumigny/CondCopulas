@@ -142,7 +142,7 @@ On Kendall’s regression.
 [pdf](https://doi.org/10.1016/j.jmva.2020.104610)
 
 Derumigny, A., & Fermanian, J. D. (2022).
-Conditional empirical copula processes and generalized dependence measures
+Conditional empirical copula processes and generalized dependence measures.
 *Electronic Journal of Statistics*, 16(2), 5692-5719.
 [pdf](https://doi.org/10.1214/22-EJS2075)
 
