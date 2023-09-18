@@ -127,6 +127,12 @@ estMatrixAve[1, 2, 1]
 
 
 }
+\references{
+van der Spek, R., & Derumigny, A. (2022).
+Fast estimation of Kendall's Tau and conditional Kendall's Tau matrices
+under structural assumptions.
+\href{https://arxiv.org/abs/2204.03285}{arxiv:2204.03285}.
+}
 \seealso{
 \code{\link{CKT.kernel}} for kernel-based estimation of conditional Kendall's tau
 between two variables (i.e. the equivalent of this function
