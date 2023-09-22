@@ -1,4 +1,6 @@
 
+# CondCopulas 0.1.3
+
 * Adding a warning to `CKT.kernel()` when some estimated conditional Kendall's
 taus are `NA` because of a too small bandwidth.
 

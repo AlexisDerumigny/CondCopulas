@@ -12,12 +12,21 @@ The development version from GitHub, using the `devtools` package:
 devtools::install_github("AlexisDerumigny/CondCopulas")
 ```
 
+If you have any questions or suggestions, feel free to
+[open an issue](https://github.com/AlexisDerumigny/CondCopulas/issues/new).
+
 
 Conditional copulas with pointwise conditioning
 =================================================
 
+In this first part, we are interesting in the inference of the conditional copula
+of a random vector $X$ given the pointwise conditioning $Z = z$,
+where $Z$ is another random vector and $z$ is a fixed value.
 
 ## Tests of the simplifying assumption
+
+These functions perform a test of the "simplifying assumption"
+that the conditional copula $C_{X | Z = z}$ does not depend on the value of $z$.
 
 * `simpA.NP`: in a purely nonparametric framework
 
@@ -30,31 +39,45 @@ of the conditional Kendall's tau assuming that it satisfies a regression-like eq
 
 ## Estimation of conditional copulas (using kernel smoothing)
 
+These functions estimate the conditional copula $C_{X | Z = z}$
+in different frameworks.
 
-* `estimateNPCondCopula`: nonparametric estimation of conditional copulas
+* `estimateNPCondCopula`: nonparametric estimation of conditional copulas.
 
-* `estimateParCondCopula`: parametric estimation of conditional copulas
+* `estimateParCondCopula`: parametric estimation of conditional copulas.
 
 * `estimateParCondCopula_ZIJ`: parametric estimation of conditional copulas
-using (already computed) conditional pseudo-observations
+using (already computed) conditional pseudo-observations.
 
 
 ## Estimation of conditional Kendall's tau (CKT)
 
-A general wrapper function:
+In this part, we assume that the dimension of $X$ is $2$, i.e. $X = (X_1, X_2)$.
+Instead of estimating the conditional copula $C_{X | Z = z}$,
+which is an infinite-dimensional object,
+it is possible to estimate the conditional Kendall's tau (CKT) $\tau_{1,2|Z=z}$,
+which is a real number for every given value of $z$.
+
+
+To estimate the conditional Kendall's tau,
+the package provides a general wrapper function:
 
 * `CKT.estimate`: that can be used for any method of estimating conditional Kendall's tau.
 Each of these methods is detailed below and has its own function.
 
+
 ### Kernel-based estimation of conditional Kendall's tau
 
-* `CKT.kernel`: for any number of variable and with possible choice of the bandwidth
+* `CKT.kernel`: use kernel smoothing to estimate the conditional Kendall's tau.
+The bandwidth can be given by the user or determined by cross-validation.
+
 
 ### Kendall's regression
 
-* `CKT.kendallReg.fit`: fit Kendall's regression, a regression-like method for the estimation of conditional Kendall's tau
+* `CKT.kendallReg.fit`: fit Kendall's regression, a regression-like method for the estimation of conditional Kendall's tau.
 
-* `CKT.kendallReg.predict`: for prediction of the new conditional Kendall's tau (given new covariates)
+* `CKT.kendallReg.predict`: predict the conditional Kendall's tau
+given new values $z$ of the covariates.
 
 
 ### Classification-based estimation of conditional Kendall's tau
@@ -94,8 +117,16 @@ Each of these methods is detailed below and has its own function.
 Conditional copulas with discrete conditioning by Borel sets
 ==============================================================
 
+In this second part, we are interesting in the inference of the conditional copula
+of a random vector $X$ given the discrete conditioning $Z \in A$,
+where $Z$ is another random vector and $A$ is a Borel subset of possible values of $A$.
+
 
 ## Test of the hypothesis that the conditioning Borel subset has no influence on the conditional copula
+
+These functions perform a test of the hypothesis
+that the conditional copula $C_{X | Z \in A}$ does not depend on the value of $A$
+for different choices of the conditioning set $A$.
 
 * `bCond.simpA.param` : test of this hypothesis, assuming that the copula belongs to a parametric family
 
