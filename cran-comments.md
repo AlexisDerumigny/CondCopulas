@@ -5,7 +5,6 @@
 * Windows Server 2022 (devel)
 * Fedora Linux (devel)
 * Ubuntu Linux (release)
-* macOS 10.13.6 High Sierra (release)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
