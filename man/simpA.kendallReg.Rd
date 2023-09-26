@@ -60,7 +60,7 @@ By default, cross-validation is used to find the best value of \code{lambda}.}
 \item{h_lambda}{bandwidth used for the smooth cross-validation
 in order to get a value for \code{lambda}.}
 
-\item{Kfolds_lambda}{the number of subsests used for the cross-validation
+\item{Kfolds_lambda}{the number of subsets used for the cross-validation
 in order to get a value for \code{lambda}.}
 
 \item{l_norm}{type of norm used for selection of the optimal lambda
