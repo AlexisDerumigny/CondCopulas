@@ -53,10 +53,10 @@ using (already computed) conditional pseudo-observations.
 ## Estimation of conditional Kendall's tau (CKT)
 
 In this part, we assume that the dimension of $X$ is $2$, i.e. $X = (X_1, X_2)$.
-Instead of estimating the conditional copula $C_{X | Z = z}$,
-which is an infinite-dimensional object,
-it is possible to estimate the conditional Kendall's tau (CKT) $\tau_{1,2|Z=z}$,
-which is a real number for every given value of $z$.
+Instead of estimating the conditional copula $C_{X | Z = z}$
+which is an infinite-dimensional object for every value of $z$,
+it is possible to estimate the conditional Kendall's tau (CKT) $\tau_{1,2|Z=z}$
+which is a real number in $[-1, 1]$ for every value of $z$.
 
 
 To estimate the conditional Kendall's tau,
@@ -119,7 +119,8 @@ Conditional copulas with discrete conditioning by Borel sets
 
 In this second part, we are interesting in the inference of the conditional copula
 of a random vector $X$ given the discrete conditioning $Z \in A$,
-where $Z$ is another random vector and $A$ is a Borel subset of possible values of $A$.
+where $Z$ is another random vector
+and $A$ is a Borel subset of possible values of $Z$.
 
 
 ## Test of the hypothesis that the conditioning Borel subset has no influence on the conditional copula

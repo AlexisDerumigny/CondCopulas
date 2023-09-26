@@ -27,8 +27,10 @@ set.seed(1)
 
 # Simulation of the data
 
-We simulate a 3 dimensional dataset with one conditioning variable $X_3$, following a normal distribution.
-Conditionally to $X_3 = x_3$, we simulate the two variables $X_1$ and $X_2$ as follows :
+We simulate a 3 dimensional dataset with one conditioning variable $X_3$,
+following a normal distribution.
+Conditionally to $X_3 = x_3$,
+we simulate the two variables $X_1$ and $X_2$ as follows :
 
 * the conditional marginal law of $X_1$ given $X_3 = x_3$ is normal with mean $\sin(x_3)$ and standard deviation $|x_3|$ ;
 
@@ -130,13 +132,14 @@ ggplot() + geom_point(aes(x=X1[whichX3Low], y=X2[whichX3Low]))
 ggplot() + geom_point(aes(x=X1[whichX3High], y=X2[whichX3High]))
 
 ```
-It seems that on the first plot, the dependence is quite high between $X_1$ and $X_2$, while it is much smaller in the second plot. This will be confirmed in the next section.
+It seems that on the first plot, the dependence is quite high between $X_1$ and $X_2$, while it is much smaller in the second plot.
+This will be confirmed in the next section.
 
 
 # Parametric estimation of the conditional copula
 
 In this part, we assume that we know that for each value of the conditioning variable $X_3$, the conditional copula of $X_1$ and $X_3$ belongs to the Clayton family. We can therefore estimate the parameter of the conditional copula by the conditional version of the canonical Maximum Likelihood Estimation.
-After the estimation, we can then compare the estimated conditional arameters with the true conditional parameter of the Clayton copula.
+After the estimation, we can then compare the estimated conditional parameters with the true conditional parameter of the Clayton copula.
 
 ```{r}
 newX3 = seq(2, 9, by = 0.1)

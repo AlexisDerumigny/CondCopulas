@@ -42,7 +42,7 @@
 #' @param h_lambda bandwidth used for the smooth cross-validation
 #' in order to get a value for \code{lambda}.
 #'
-#' @param Kfolds_lambda the number of subsests used for the cross-validation
+#' @param Kfolds_lambda the number of subsets used for the cross-validation
 #' in order to get a value for \code{lambda}.
 #'
 #' @param l_norm type of norm used for selection of the optimal lambda
