@@ -460,8 +460,19 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, observedZ,
 #' Possible choices are \code{"Gaussian"} (Gaussian kernel)
 #' and \code{"Epa"} (Epanechnikov kernel).
 #'
-#' @param progressBar if \code{TRUE}, a progressbar for each h is displayed
-#' to show the progress of the computation.
+#' @param progressBar control the display of progress bars.
+#' Possible choices are: \itemize{
+#'   \item \code{0} no progress bar is displayed
+#'
+#'   \item \code{1} a general progress bar is displayed
+#'
+#'   \item \code{2} and larger values:
+#'   a general progress bar is displayed, and additionally,
+#'   a progressbar for each value of \code{h} is displayed
+#'   to show the progress of the computation.
+#'   This only applies when the bandwidth is chosen by cross-validation
+#'   (i.e. when \code{h} is a vector).
+#' }
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2019).
@@ -547,7 +558,7 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
           ZToEstimate = newZ,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name, Kfolds = Kfolds,
-          progressBar = progressBar)
+          progressBar = progressBar > 1)
       },
 
       "leave-one-out" = {
@@ -555,7 +566,7 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
           observedX1 = observedX1, observedX2 = observedX2, observedZ = observedZ,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name,
-          nPairs = nPairs, progressBar = progressBar)
+          nPairs = nPairs, progressBar = progressBar > 1)
       }
 
     )
@@ -570,7 +581,7 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
       X1 = observedX1, X2 = observedX2, matrixSignsPairs = matrixSignsPairs,
       observedZ = observedZ, h = finalh, ZToEstimate = newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
-      progressBar = TRUE)
+      progressBar = progressBar > 0)
 
 
   } else {
@@ -579,7 +590,7 @@ CKT.kernel <- function(observedX1, observedX2, observedZ, newZ,
       X1 = observedX1, X2 = observedX2, matrixSignsPairs = matrixSignsPairs,
       observedZ = observedZ, h = finalh, ZToEstimate = newZ,
       kernel.name = kernel.name, typeEstCKT = typeEstCKT,
-      progressBar = TRUE)
+      progressBar = progressBar > 0)
   }
 
   if (anyNA(estCKT)){

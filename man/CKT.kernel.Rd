@@ -60,8 +60,19 @@ Possible choices are \itemize{
   as \code{4} when they are no ties in the data.
 }}
 
-\item{progressBar}{if \code{TRUE}, a progressbar for each h is displayed
-to show the progress of the computation.}
+\item{progressBar}{control the display of progress bars.
+Possible choices are: \itemize{
+  \item \code{0} no progress bar is displayed
+
+  \item \code{1} a general progress bar is displayed
+
+  \item \code{2} and larger values:
+  a general progress bar is displayed, and additionally,
+  a progressbar for each value of \code{h} is displayed
+  to show the progress of the computation.
+  This only applies when the bandwidth is chosen by cross-validation
+  (i.e. when \code{h} is a vector).
+}}
 }
 \value{
 a list with two components

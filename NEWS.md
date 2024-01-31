@@ -1,4 +1,8 @@
 
+* Function `CKT.kernel` has now more options to control the possible display of
+the progress bar to show the progress of the computation.
+
+
 # CondCopulas 0.1.3
 
 * Adding a warning to `CKT.kernel()` when some estimated conditional Kendall's
