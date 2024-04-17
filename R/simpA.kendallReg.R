@@ -208,7 +208,8 @@ simpA.kendallReg <- function(
 
   pval_Wn = 1 - stats::pchisq(as.numeric(resultWn$W_n), df = length(whichFinite))
 
-  return (list(p_val = pval_Wn, statWn = resultWn$W_n))
+  return (list(p_val = pval_Wn, statWn = resultWn$W_n,
+               resultWn = resultWn))
 }
 
 
