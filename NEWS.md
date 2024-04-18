@@ -2,6 +2,7 @@
 * Function `CKT.kernel` has now more options to control the possible display of
 the progress bar to show the progress of the computation.
 
+* New dependency: `testthat` has been added to `Suggests`.
 
 # CondCopulas 0.1.3
 

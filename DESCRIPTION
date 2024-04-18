@@ -28,7 +28,8 @@ Suggests:
     knitr,
     rmarkdown,
     ggplot2,
-    mvtnorm
+    mvtnorm,
+    testthat (>= 3.0.0)
 Imports: 
     VineCopula,
     pbapply,
@@ -42,3 +43,4 @@ Imports:
 VignetteBuilder: knitr
 BugReports: https://github.com/AlexisDerumigny/CondCopulas/issues
 URL: https://github.com/AlexisDerumigny/CondCopulas
+Config/testthat/edition: 3
