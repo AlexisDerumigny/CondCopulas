@@ -326,7 +326,7 @@ compute_for_Wn = function(
       kernel.name = kernel.name, normalization = FALSE)
     estimator_fZ = mean(listKh)
     vect_H_ii[iprime] = 4 * (intK2 / estimator_fZ) *
-      (Lambda_deriv(pointZ))^2 * (Gn_zipr[iprime] - (vector_hat_CKT_NP[iprime])^2)
+      (Lambda_deriv(pointZ))^2 * abs(Gn_zipr[iprime] - (vector_hat_CKT_NP[iprime])^2)
   }
 
   # 3 - Computation of Sigma_npr
@@ -374,6 +374,7 @@ computeVectorZToEstimate = function(vecteurZrealised,
 # This function returns Gn(z'_i), z'_i = pointZ
 # which is an estimator of the conditional expectation
 # E(g(X_1, X_2) g(X_1, X_3) | Z_1 = Z_2 = Z_3 = z'_i]
+# We want to compute sum_{i,j,k} w_i w_j w_k g_{i,k} g_{j,k}
 compute_vect_Gn_zipr = function(pointZ, vectorZ, h,
                                 kernel.name, matrixSignsPairsSymmetrized)
 {
