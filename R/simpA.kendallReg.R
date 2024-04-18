@@ -112,7 +112,7 @@
 #' print(result)
 #' plot(result)
 #'
-#' result = simpA.kendallReg(
+#' result_morePhi = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
 #'      function(x){return(x)}, function(x){return(x^2)},
@@ -120,8 +120,8 @@
 #'      function(x){return(cos(x))}, function(x){return(sin(x))},
 #'      function(x){return(as.numeric(x <= 0.4))},
 #'      function(x){return(as.numeric(x <= 0.6))}) )
-#' print(result)
-#' plot(result)
+#' print(result_morePhi)
+#' plot(result_morePhi)
 #'
 #' # We simulate from a conditional copula
 #' set.seed(1)
