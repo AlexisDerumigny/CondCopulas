@@ -217,9 +217,10 @@ simpA.kendallReg <- function(
     vector_hat_beta = reg$coefficient
   } else {
     # Penalized estimation
-    reg = glmnet::glmnet(x = designMatrixZ[whichFinite, ],
+    reg = glmnet::glmnet(x = designMatrix_withIntercept[whichFinite, ],
                          y = LambdaCKT[whichFinite],
-                         family = "gaussian")
+                         family = "gaussian",
+                         intercept = FALSE)
 
     vector_hat_beta = stats::coef(reg, s = lambda)
   }
@@ -234,7 +235,7 @@ simpA.kendallReg <- function(
                             vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
                             vector_hat_beta = vector_hat_beta,
                             matrixSignsPairs = matrixSignsPairs,
-                            inputMatrix = designMatrixZ[whichFinite, , drop = FALSE],
+                            inputMatrix = designMatrix_withIntercept[whichFinite, ],
                             h = h_kernel,
                             kernel.name = "Epa",
                             intK2 = 3/5,
@@ -246,7 +247,7 @@ simpA.kendallReg <- function(
 
   # 5 - Computation of the test statistic W_n
   statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
-    solve(resultWn$matrix_Vn_completed) %*% t( t(vector_hat_beta[-1]) )
+    solve(resultWn$matrix_Vn_completed[-1, -1]) %*% t( t(vector_hat_beta[-1]) )
 
   statWn = as.numeric(statWn)
 
@@ -256,7 +257,9 @@ simpA.kendallReg <- function(
   return (list(p_val = pval_Wn, statWn = statWn, df = df,
                coef = vector_hat_beta,
                resultWn = resultWn,
-               varCov = varCov))
+               varCov = varCov,
+               vectorZToEstimate = vectorZToEstimate,
+               vector_hat_CKT_NP = vectorEstimate_1step))
 }
 
 
