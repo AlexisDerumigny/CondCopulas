@@ -84,6 +84,54 @@ test_that("simpA.kendallReg works if only two functions 'phi' are given", {
   # lambda too high to get reliable p-values...
 })
 
+test_that("simpA.kendallReg works with many phi", {
+  set.seed(1)
+  # We simulate from a conditional copula  set.seed(1)
+  N = 300
+  Z = runif(n = N, min = 0, max = 1)
+  conditionalTau = -0.9 + 1.8 * Z
+
+  simCopula = VineCopula::BiCopSim(N = N , family = 1,
+                                   par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+
+  X1 = qnorm(simCopula[,1])
+  X2 = qnorm(simCopula[,2])
+
+  result_morePhi = simpA.kendallReg(
+     X1, X2, Z, h_kernel = 0.03,
+     listPhi = list(
+       function(x){return(x)},
+       function(x){return(cos(10 * x))},
+       function(x){return(sin(10 * x))},
+       function(x){return(as.numeric(x <= 0.4))},
+       function(x){return(as.numeric(x <= 0.6))}) )
+
+  expect_equal(result$p_val, 0, tolerance = 0.02)
+
+  # We simulate from a simplified conditional copula
+  set.seed(1)
+  N = 300
+  Z = runif(n = N, min = 0, max = 1)
+  conditionalTau = -0.3
+  simCopula = VineCopula::BiCopSim(N=N , family = 1,
+      par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+  X1 = qnorm(simCopula[,1])
+  X2 = qnorm(simCopula[,2])
+
+  result = simpA.kendallReg(
+     X1, X2, Z, h_kernel = 0.03,
+     listPhi = list(
+       function(x){return(x)},
+       function(x){return(cos(10 * x))},
+       function(x){return(sin(10 * x))},
+       function(x){return(as.numeric(x <= 0.4))},
+       function(x){return(as.numeric(x <= 0.6))}) )
+  print(result)
+  plot(result)
+
+  expect_gt(result$p_val, 0.05)
+})
+
 test_that("simpA.kendallReg works if only two functions 'phi' are given and SA is true", {
   set.seed(1)
   # We simulate from a conditional copula  set.seed(1)
