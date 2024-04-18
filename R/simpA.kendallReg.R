@@ -127,18 +127,18 @@
 #'
 #' result = simpA.kendallReg(
 #'   X1, X2, Z, h_kernel = 0.03,
-#'   listPhi = list( function(x){return(x)} ) )
+#'   listPhi = list(z = function(z){return(z)} ) )
 #' print(result)
 #' plot(result)
 #'
 #' result_morePhi = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
-#'      function(x){return(x)},
-#'      function(x){return(cos(10 * x))},
-#'      function(x){return(sin(10 * x))},
-#'      function(x){return(as.numeric(x <= 0.4))},
-#'      function(x){return(as.numeric(x <= 0.6))}) )
+#'      z = function(z){return(z)},
+#'      cos10z = function(z){return(cos(10 * z))},
+#'      sin10z = function(z){return(sin(10 * z))},
+#'      `1(z <= 0.4)` = function(z){return(as.numeric(z <= 0.4))},
+#'      `1(z <= 0.6)` = function(z){return(as.numeric(z <= 0.6))}) )
 #' print(result_morePhi)
 #' plot(result_morePhi)
 #'
@@ -155,11 +155,11 @@
 #' result = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
-#'      function(x){return(x)},
-#'      function(x){return(cos(10 * x))},
-#'      function(x){return(sin(10 * x))},
-#'      function(x){return(as.numeric(x <= 0.4))},
-#'      function(x){return(as.numeric(x <= 0.6))}) )
+#'      z = function(z){return(z)},
+#'      cos10z = function(z){return(cos(10 * z))},
+#'      sin10z = function(z){return(sin(10 * z))},
+#'      `1(z <= 0.4)` = function(z){return(as.numeric(z <= 0.4))},
+#'      `1(z <= 0.6)` = function(z){return(as.numeric(z <= 0.6))}) )
 #' print(result)
 #' plot(result)
 #' }
@@ -169,9 +169,7 @@
 simpA.kendallReg <- function(
     X1, X2, Z,
     vectorZToEstimate = NULL,
-    listPhi = list(function(x){return(x)},
-                   function(x){return(x^2)},
-                   function(x){return(x^3)}),
+    listPhi = list(z = function(z){return(z)}),
     typeEstCKT = 4,
     h_kernel,
     Lambda = function(x){return(x)},

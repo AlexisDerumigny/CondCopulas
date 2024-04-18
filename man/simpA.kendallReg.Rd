@@ -12,13 +12,8 @@ simpA.kendallReg(
   X2,
   Z,
   vectorZToEstimate = NULL,
-  listPhi = list(function(x) {
-     return(x)
- }, function(x) {
-     return(x^2)
- },
-    function(x) {
-     return(x^3)
+  listPhi = list(z = function(z) {
+     return(z)
  }),
   typeEstCKT = 4,
   h_kernel,
@@ -94,8 +89,27 @@ class \code{simpA_kendallReg_test}, containing
     \item \code{statWn}: the value of the test statistic.
     \item \code{p_val}: the p-value of the test.
 }
-\code{print.simpA_kendallReg_test} and \code{plot.simpA_kendallReg_test}
-have no return values and are only called for their side effects.
+
+\code{plot.simpA_kendallReg_test} returns (invisibly) a matrix with columns
+\code{z}, \code{est_CKT_NP}, \code{asympt_se_np}, \code{est_CKT_NP_q025},
+\code{est_CKT_NP_q975}, \code{est_CKT_reg}, \code{asympt_se_reg},
+\code{est_CKT_reg_q025}, code{est_CKT_reg_q975}.
+The first column correspond to the grid of values of z. The next 4 columns
+are the NP (kernel-based) estimator of conditional Kendall's tau, with its
+standard error, and lower/upper confidence bands. The last 4 columns are the
+equivalents for the estimator based on Kendall's regression.
+
+\code{plot.simpA_kendallReg_test} plots the kernel-based estimator and its
+confidence band (in red), and the estimator based on Kendall's regression
+and its confidence band (in blue).
+
+Usually the confidence band for Kendall's regression is much tighter than the
+pure non-parametric counterpart. This is because the parametric model is
+sparser and the corresponding estimator converges faster (even without
+penalization).
+
+\code{print.simpA_kendallReg_test} has no return values and is only called
+for its side effects.
 }
 \description{
 This function computes Kendall's regression, a regression-like
@@ -125,18 +139,18 @@ X2 = qnorm(simCopula[,2])
 
 result = simpA.kendallReg(
   X1, X2, Z, h_kernel = 0.03,
-  listPhi = list( function(x){return(x)} ) )
+  listPhi = list(z = function(z){return(z)} ) )
 print(result)
 plot(result)
 
 result_morePhi = simpA.kendallReg(
    X1, X2, Z, h_kernel = 0.03,
    listPhi = list(
-     function(x){return(x)},
-     function(x){return(cos(10 * x))},
-     function(x){return(sin(10 * x))},
-     function(x){return(as.numeric(x <= 0.4))},
-     function(x){return(as.numeric(x <= 0.6))}) )
+     z = function(z){return(z)},
+     cos10z = function(z){return(cos(10 * z))},
+     sin10z = function(z){return(sin(10 * z))},
+     `1(z <= 0.4)` = function(z){return(as.numeric(z <= 0.4))},
+     `1(z <= 0.6)` = function(z){return(as.numeric(z <= 0.6))}) )
 print(result_morePhi)
 plot(result_morePhi)
 
@@ -153,11 +167,11 @@ X2 = qnorm(simCopula[,2])
 result = simpA.kendallReg(
    X1, X2, Z, h_kernel = 0.03,
    listPhi = list(
-     function(x){return(x)},
-     function(x){return(cos(10 * x))},
-     function(x){return(sin(10 * x))},
-     function(x){return(as.numeric(x <= 0.4))},
-     function(x){return(as.numeric(x <= 0.6))}) )
+     z = function(z){return(z)},
+     cos10z = function(z){return(cos(10 * z))},
+     sin10z = function(z){return(sin(10 * z))},
+     `1(z <= 0.4)` = function(z){return(as.numeric(z <= 0.4))},
+     `1(z <= 0.6)` = function(z){return(as.numeric(z <= 0.6))}) )
 print(result)
 plot(result)
 }
