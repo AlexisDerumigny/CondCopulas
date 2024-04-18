@@ -107,6 +107,12 @@
 #' X2 = qnorm(simCopula[,2])
 #'
 #' result = simpA.kendallReg(
+#'   X1, X2, Z, h_kernel = 0.03,
+#'   listPhi = list( function(x){return(x)} ) )
+#' print(result)
+#' plot(result)
+#'
+#' result = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
 #'      function(x){return(x)}, function(x){return(x^2)},
@@ -173,7 +179,8 @@ simpA.kendallReg <- function(
     h = h_kernel ,
     ZToEstimate = vectorZToEstimate ,
     kernel.name = "Epa" ,
-    typeEstCKT = typeEstCKT )
+    typeEstCKT = typeEstCKT,
+    progressBar = 0)
 
   LambdaCKT = Lambda(vectorEstimate_1step)
 
@@ -340,6 +347,7 @@ print.simpA_kendallReg_test <- function(x, ...)
   # Use stringi::stri_escape_unicode to get the unicode characters escaped
   cat("Kendall regression: \u039b(\U0001d70f) = \u03b20 + \u03b2\' phi(z) \n")
   cat("where \U0001d70f is conditional Kendall's tau between X1 and X2 given Z = z \n \n")
+  cat("Coefficients: \n")
   std_errors = diag(x$varCov)
   z_values = x$coef / diag(x$varCov)
   coef = cbind(Estimate = x$coef,
@@ -349,8 +357,10 @@ print.simpA_kendallReg_test <- function(x, ...)
 
   stats::printCoefmat(coef)
   cat("\n")
-  cat("p-value of the test of the simplfying assumption: ")
-  cat(x$p_val)
+  cat("Wald statistics \u03b2\' V^{-1} \u03b2\ :", x$statWn, "\n")
+  cat("Test of the simplifying assumption with", x$df, "DF,  ",
+      "pvalue: ", x$p_val)
+  cat("\n")
 }
 
 
