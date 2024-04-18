@@ -80,7 +80,7 @@ test_that("simpA.kendallReg works if only two functions 'phi' are given", {
       X1, X2, Z, h_kernel = 0.03,
       listPhi = list( function(x){return(x)} ,
                       function(x){return(x^2)} ),
-      lambda = 1)
+      lambda = 0.1)
   # lambda too high to get reliable p-values...
 })
 

@@ -36,6 +36,8 @@
 #'
 #' @param Lambda_deriv the derivative of the function \code{Lambda}.
 #'
+#' @param Lambda_inv the inverse function of \code{Lambda}.
+#'
 #' @param lambda the penalization parameter used for Kendall's regression.
 #' By default, cross-validation is used to find the best value of \code{lambda}
 #' if \code{length(listPhi) > 1}. Otherwise \code{lambda = 0} is used.
@@ -109,11 +111,11 @@
 #'    listPhi = list(
 #'      function(x){return(x)}, function(x){return(x^2)},
 #'      function(x){return(x^3)}, function(x){return(x^4)},
-#'      function(x){return(x^5)},
 #'      function(x){return(cos(x))}, function(x){return(sin(x))},
 #'      function(x){return(as.numeric(x <= 0.4))},
 #'      function(x){return(as.numeric(x <= 0.6))}) )
-#' print(result$p_val)
+#' print(result)
+#' plot(result)
 #'
 #' # We simulate from a conditional copula
 #' set.seed(1)
@@ -244,33 +246,64 @@ simpA.kendallReg <- function(
                                    newx = designMatrix_withIntercept[whichFinite, ])
   }
 
-  # Using Wn
-  progressBar = TRUE #### TODO : manage the progressbars
+  non_zeroCoeffs = which(vector_hat_beta != 0)
+  if (length(non_zeroCoeffs) == 0){
+    warning("All coefficients are found to be equal to 0. ",
+            "This means that lambda is probably too high. Currently lambda = ",
+            lambda)
+
+    return (NULL)
+  }
 
   # Computation of the asymptotic variance matrix
 
-  resultWn = compute_for_Wn(vectorZ = Z,
-                            vectorZToEstimate = vectorZToEstimate[whichFinite],
-                            vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
-                            vector_hat_beta = vector_hat_beta,
-                            matrixSignsPairs = matrixSignsPairs,
-                            inputMatrix = designMatrix_withIntercept[whichFinite, ],
-                            h = h_kernel,
-                            kernel.name = "Epa",
-                            intK2 = 3/5,
-                            Lambda_deriv = Lambda_deriv,
-                            progressBar = progressBar)
+  resultWn = compute_for_Wn(
+    vectorZ = Z,
+    vectorZToEstimate = vectorZToEstimate[whichFinite],
+    vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
+    vector_hat_beta = vector_hat_beta[non_zeroCoeffs],
+    matrixSignsPairs = matrixSignsPairs,
+    inputMatrix = designMatrix_withIntercept[whichFinite, non_zeroCoeffs, drop = FALSE],
+    h = h_kernel,
+    kernel.name = "Epa",
+    intK2 = 3/5,
+    Lambda_deriv = Lambda_deriv,
+    progressBar = TRUE #### TODO : manage the progressbars
+  )
 
   # computation of the variance-covariance matrix
-  varCov = resultWn$matrix_Vn_completed / (n * h_kernel)
+  varCov_temp = resultWn$matrix_Vn_completed / (n * h_kernel)
 
-  # 5 - Computation of the test statistic W_n
-  statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
-    solve(resultWn$matrix_Vn_completed[-1, -1]) %*% t( t(vector_hat_beta[-1]) )
+  if (length(non_zeroCoeffs) == length(vector_hat_beta)) {
+    varCov = varCov_temp
 
+    df = length(listPhi)
+
+    # Computation of the test statistic W_n
+    statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
+      solve(resultWn$matrix_Vn_completed[-1, -1]) %*% t( t(vector_hat_beta[-1]) )
+
+  } else {
+    varCov = matrix(nrow = length(vector_hat_beta),
+                    ncol = length(vector_hat_beta))
+
+    varCov[non_zeroCoeffs, non_zeroCoeffs] = varCov_temp
+
+    if (non_zeroCoeffs[1] == 1){
+      # We now the first one is the intercept, so we remove it if it is here.
+      non_zeroCoeffs = non_zeroCoeffs[-1]
+    }
+
+    # Computation of the test statistic W_n
+    statWn = n * h_kernel * t(vector_hat_beta[non_zeroCoeffs]) %*%
+      solve(resultWn$matrix_Vn_completed) %*%
+      t( t(vector_hat_beta[non_zeroCoeffs]) )
+
+    df = length(non_zeroCoeffs)
+  }
+
+  # Conversion to numeric type and computation of the p-value
   statWn = as.numeric(statWn)
-
-  df = length(listPhi)
   pval_Wn = 1 - stats::pchisq(statWn, df = df)
 
   result = list(p_val = pval_Wn,
@@ -286,7 +319,8 @@ simpA.kendallReg <- function(
                 fitted.values = fitted.values,
                 Lambda = Lambda,
                 Lambda_inv = Lambda_inv,
-                Lambda_deriv = Lambda_deriv)
+                Lambda_deriv = Lambda_deriv,
+                lambda = lambda)
 
   class(result) <- "simpA_kendallReg_test"
   return (result)
@@ -340,10 +374,19 @@ plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
 
   est_CKT_reg = vapply(X = x$fitted.values, FUN = x$Lambda_inv, FUN.VALUE = 1)
 
-  # vcov matrix for beta' phi(z)
-  vcova = x$designMatrix_withIntercept %*% x$varCov %*% t(x$designMatrix_withIntercept)
   # Remember the chain rule (lambda^{-1})' = 1 / (lambda' o lambda^{-1}))
   lambdainvprime_estCKT = 1 / vapply(X = x$fitted.values, FUN = x$Lambda_deriv, FUN.VALUE = 1)
+
+  # vcov matrix for beta' phi(z)
+  non_zeroCoeffs = which(x$coef != 0)
+  if (length(non_zeroCoeffs) == length(x$coef)){
+    designMatrix = x$designMatrix_withIntercept
+    varCov = x$varCov
+  } else {
+    designMatrix = x$designMatrix_withIntercept[, non_zeroCoeffs]
+    varCov = x$varCov[non_zeroCoeffs, non_zeroCoeffs]
+  }
+  vcova = designMatrix %*% varCov %*% t(designMatrix)
 
   # vcov matrix for lambdainv(beta' phi(z))
   # by the delta method, this is given by the sandwich rule
