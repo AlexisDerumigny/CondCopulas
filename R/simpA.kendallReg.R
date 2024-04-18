@@ -145,6 +145,7 @@ simpA.kendallReg <- function(
     Kfolds_lambda = 5, l_norm = 1
 )
 {
+  n = length(X1)
   if (is.null(vectorZToEstimate)){
     nprime = 100
     vectorZToEstimate = computeVectorZToEstimate(
@@ -226,29 +227,41 @@ simpA.kendallReg <- function(
   # Using Wn
   progressBar = TRUE #### TODO : manage the progressbars
 
-  resultWn = computeWn(vectorZ = Z,
-                       vectorZToEstimate = vectorZToEstimate[whichFinite],
-                       vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
-                       vector_hat_beta = vector_hat_beta,
-                       matrixSignsPairs = matrixSignsPairs,
-                       inputMatrix = designMatrixZ[whichFinite, , drop = FALSE],
-                       h = h_kernel,
-                       kernel.name = "Epa",
-                       intK2 = 3/5,
-                       Lambda_deriv = Lambda_deriv,
-                       progressBar = progressBar)
+  # Computation of the asymptotic variance matrix
+
+  resultWn = compute_for_Wn(vectorZ = Z,
+                            vectorZToEstimate = vectorZToEstimate[whichFinite],
+                            vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
+                            vector_hat_beta = vector_hat_beta,
+                            matrixSignsPairs = matrixSignsPairs,
+                            inputMatrix = designMatrixZ[whichFinite, , drop = FALSE],
+                            h = h_kernel,
+                            kernel.name = "Epa",
+                            intK2 = 3/5,
+                            Lambda_deriv = Lambda_deriv,
+                            progressBar = progressBar)
+
+  # computation of the variance-covariance matrix
+  varCov = resultWn$matrix_Vn_completed / (n * h_kernel)
+
+  # 5 - Computation of the test statistic W_n
+  statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
+    resultWn$matrix_Vn_completed %*% t( t(vector_hat_beta[-1]) )
+
+  statWn = as.numeric(statWn)
 
   df = length(whichFinite)
-  pval_Wn = 1 - stats::pchisq(as.numeric(resultWn$W_n), df = df)
+  pval_Wn = 1 - stats::pchisq(statWn, df = df)
 
-  return (list(p_val = pval_Wn, statWn = resultWn$W_n, df = df,
+  return (list(p_val = pval_Wn, statWn = statWn, df = df,
                coef = vector_hat_beta,
-               resultWn = resultWn))
+               resultWn = resultWn,
+               varCov = varCov))
 }
 
 
 
-# Compute the Wald-type test statistic related to
+# Compute the elements for Wald-type test statistic related to
 # the hypothesis $\beta = 0$ against $\beta != 0$
 # vectorZ is the vector of Z in the database of length n
 # vectorZToEstimate is the vector of z'_i
@@ -256,7 +269,7 @@ simpA.kendallReg <- function(
 # vector_hat_beta is the vector of coefficients, of size p'
 # matrixSignsPairs is a matrix of size n * n
 # inputMatrix is the inputMatrix of size n' * p'
-computeWn = function(
+compute_for_Wn = function(
     vectorZ, vectorZToEstimate, vector_hat_CKT_NP, vector_hat_beta,
     matrixSignsPairs, inputMatrix, h, kernel.name, intK2, Lambda_deriv,
     progressBar)
@@ -323,11 +336,7 @@ computeWn = function(
   matrix_Vn_completed =
     inv_matrix_Sigma_npr %*% matrix_Vn %*% inv_matrix_Sigma_npr
 
-  # 5 - Computation of W_n
-  W_n = n * h * t(vector_hat_beta[-1]) %*%
-    matrix_Vn_completed %*% t( t(vector_hat_beta[-1]) )
-
-  return (list(W_n = W_n, Gn_zipr = Gn_zipr,
+  return (list(Gn_zipr = Gn_zipr,
                vect_H_ii = vect_H_ii,
                matrix_Sigma_npr = matrix_Sigma_npr,
                matrix_Vn = matrix_Vn,
