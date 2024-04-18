@@ -113,7 +113,7 @@ where the coefficient corresponding to the intercept is removed.
 \examples{
 
 \donttest{
-# We simulate from a conditional copula
+# We simulate from a non-simplified conditional copula
 set.seed(1)
 N = 300
 Z = runif(n = N, min = 0, max = 1)
@@ -124,17 +124,23 @@ X1 = qnorm(simCopula[,1])
 X2 = qnorm(simCopula[,2])
 
 result = simpA.kendallReg(
-   X1, X2, Z, h_kernel = 0.03,
-   listPhi = list(
-     function(x){return(x)}, function(x){return(x^2)},
-     function(x){return(x^3)}, function(x){return(x^4)},
-     function(x){return(cos(x))}, function(x){return(sin(x))},
-     function(x){return(as.numeric(x <= 0.4))},
-     function(x){return(as.numeric(x <= 0.6))}) )
+  X1, X2, Z, h_kernel = 0.03,
+  listPhi = list( function(x){return(x)} ) )
 print(result)
 plot(result)
 
-# We simulate from a conditional copula
+result_morePhi = simpA.kendallReg(
+   X1, X2, Z, h_kernel = 0.03,
+   listPhi = list(
+     function(x){return(x)},
+     function(x){return(cos(10 * x))},
+     function(x){return(sin(10 * x))},
+     function(x){return(as.numeric(x <= 0.4))},
+     function(x){return(as.numeric(x <= 0.6))}) )
+print(result_morePhi)
+plot(result_morePhi)
+
+# We simulate from a simplified conditional copula
 set.seed(1)
 N = 300
 Z = runif(n = N, min = 0, max = 1)
@@ -147,13 +153,13 @@ X2 = qnorm(simCopula[,2])
 result = simpA.kendallReg(
    X1, X2, Z, h_kernel = 0.03,
    listPhi = list(
-     function(x){return(x)}, function(x){return(x^2)},
-     function(x){return(x^3)}, function(x){return(x^4)},
-     function(x){return(x^5)},
-     function(x){return(cos(x))}, function(x){return(sin(x))},
+     function(x){return(x)},
+     function(x){return(cos(10 * x))},
+     function(x){return(sin(10 * x))},
      function(x){return(as.numeric(x <= 0.4))},
      function(x){return(as.numeric(x <= 0.6))}) )
-print(result$p_val)
+print(result)
+plot(result)
 }
 
 }

@@ -96,7 +96,7 @@
 #' @examples
 #'
 #' \donttest{
-#' # We simulate from a conditional copula
+#' # We simulate from a non-simplified conditional copula
 #' set.seed(1)
 #' N = 300
 #' Z = runif(n = N, min = 0, max = 1)
@@ -115,15 +115,15 @@
 #' result_morePhi = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
-#'      function(x){return(x)}, function(x){return(x^2)},
-#'      function(x){return(x^3)}, function(x){return(x^4)},
-#'      function(x){return(cos(x))}, function(x){return(sin(x))},
+#'      function(x){return(x)},
+#'      function(x){return(cos(10 * x))},
+#'      function(x){return(sin(10 * x))},
 #'      function(x){return(as.numeric(x <= 0.4))},
 #'      function(x){return(as.numeric(x <= 0.6))}) )
 #' print(result_morePhi)
 #' plot(result_morePhi)
 #'
-#' # We simulate from a conditional copula
+#' # We simulate from a simplified conditional copula
 #' set.seed(1)
 #' N = 300
 #' Z = runif(n = N, min = 0, max = 1)
@@ -136,13 +136,13 @@
 #' result = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
 #'    listPhi = list(
-#'      function(x){return(x)}, function(x){return(x^2)},
-#'      function(x){return(x^3)}, function(x){return(x^4)},
-#'      function(x){return(x^5)},
-#'      function(x){return(cos(x))}, function(x){return(sin(x))},
+#'      function(x){return(x)},
+#'      function(x){return(cos(10 * x))},
+#'      function(x){return(sin(10 * x))},
 #'      function(x){return(as.numeric(x <= 0.4))},
 #'      function(x){return(as.numeric(x <= 0.6))}) )
-#' print(result$p_val)
+#' print(result)
+#' plot(result)
 #' }
 #'
 #' @export
@@ -198,6 +198,14 @@ simpA.kendallReg <- function(
                          function(phi) {phi(vectorZToEstimate)},
                          simplify = "array")
 
+  designMatrix_withIntercept = cbind(1 , designMatrixZ)
+  if (is.null(names(listPhi))){
+    coefNames = c("Intercept", paste0("phi", 1:length(listPhi)))
+  } else {
+    coefNames = c("Intercept", names(listPhi))
+  }
+  colnames(designMatrix_withIntercept) <- coefNames
+
   # Choice of lambda
   if (length(listPhi) == 1){
     if (!is.null(lambda)){
@@ -224,15 +232,6 @@ simpA.kendallReg <- function(
     }
   }
 
-  designMatrix_withIntercept = cbind(1 , designMatrixZ)
-  if (is.null(names(listPhi))){
-    colnames(designMatrix_withIntercept) <-
-      c("Intercept", paste0("phi", 1:length(listPhi)))
-  } else {
-    colnames(designMatrix_withIntercept) <-
-      c("Intercept", names(listPhi))
-  }
-
 
   # Estimation
   if (lambda == 0){
@@ -249,18 +248,19 @@ simpA.kendallReg <- function(
                          intercept = FALSE)
 
     vector_hat_beta = stats::coef(reg, s = lambda)[-1]
+    names(vector_hat_beta) <- coefNames
     fitted.values = stats::predict(reg, s = lambda,
                                    newx = designMatrix_withIntercept[whichFinite, ])
   }
 
-  non_zeroCoeffs = which(vector_hat_beta != 0)
-  if (length(non_zeroCoeffs) == 0){
-    warning("All coefficients are found to be equal to 0. ",
-            "This means that lambda is probably too high. Currently lambda = ",
-            lambda)
-
-    return (NULL)
-  }
+  # non_zeroCoeffs = which(vector_hat_beta != 0)
+  # if (length(non_zeroCoeffs) == 0){
+  #   warning("All coefficients are found to be equal to 0. ",
+  #           "This means that lambda is probably too high. Currently lambda = ",
+  #           lambda)
+  #
+  #   return (NULL)
+  # }
 
   # Computation of the asymptotic variance matrix
 
@@ -268,9 +268,9 @@ simpA.kendallReg <- function(
     vectorZ = Z,
     vectorZToEstimate = vectorZToEstimate[whichFinite],
     vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
-    vector_hat_beta = vector_hat_beta[non_zeroCoeffs],
+    vector_hat_beta = vector_hat_beta,
     matrixSignsPairs = matrixSignsPairs,
-    inputMatrix = designMatrix_withIntercept[whichFinite, non_zeroCoeffs, drop = FALSE],
+    inputMatrix = designMatrix_withIntercept[whichFinite, ],
     h = h_kernel,
     kernel.name = "Epa",
     intK2 = 3/5,
@@ -279,35 +279,13 @@ simpA.kendallReg <- function(
   )
 
   # computation of the variance-covariance matrix
-  varCov_temp = resultWn$matrix_Vn_completed / (n * h_kernel)
+  varCov = resultWn$matrix_Vn_completed / (n * h_kernel)
 
-  if (length(non_zeroCoeffs) == length(vector_hat_beta)) {
-    varCov = varCov_temp
+  df = length(listPhi)
 
-    df = length(listPhi)
-
-    # Computation of the test statistic W_n
-    statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
-      solve(resultWn$matrix_Vn_completed[-1, -1]) %*% t( t(vector_hat_beta[-1]) )
-
-  } else {
-    varCov = matrix(nrow = length(vector_hat_beta),
-                    ncol = length(vector_hat_beta))
-
-    varCov[non_zeroCoeffs, non_zeroCoeffs] = varCov_temp
-
-    if (non_zeroCoeffs[1] == 1){
-      # We now the first one is the intercept, so we remove it if it is here.
-      non_zeroCoeffs = non_zeroCoeffs[-1]
-    }
-
-    # Computation of the test statistic W_n
-    statWn = n * h_kernel * t(vector_hat_beta[non_zeroCoeffs]) %*%
-      solve(resultWn$matrix_Vn_completed) %*%
-      t( t(vector_hat_beta[non_zeroCoeffs]) )
-
-    df = length(non_zeroCoeffs)
-  }
+  # Computation of the test statistic W_n
+  statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
+    solve(resultWn$matrix_Vn_completed[-1, -1]) %*% t( t(vector_hat_beta[-1]) )
 
   # Conversion to numeric type and computation of the p-value
   statWn = as.numeric(statWn)
@@ -388,14 +366,8 @@ plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
   lambdainvprime_estCKT = 1 / vapply(X = x$fitted.values, FUN = x$Lambda_deriv, FUN.VALUE = 1)
 
   # vcov matrix for beta' phi(z)
-  non_zeroCoeffs = which(x$coef != 0)
-  if (length(non_zeroCoeffs) == length(x$coef)){
-    designMatrix = x$designMatrix_withIntercept
-    varCov = x$varCov
-  } else {
-    designMatrix = x$designMatrix_withIntercept[, non_zeroCoeffs]
-    varCov = x$varCov[non_zeroCoeffs, non_zeroCoeffs]
-  }
+  designMatrix = x$designMatrix_withIntercept
+  varCov = x$varCov
   vcova = designMatrix %*% varCov %*% t(designMatrix)
 
   # vcov matrix for lambdainv(beta' phi(z))
