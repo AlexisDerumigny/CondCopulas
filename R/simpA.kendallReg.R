@@ -64,8 +64,27 @@
 #'     \item \code{statWn}: the value of the test statistic.
 #'     \item \code{p_val}: the p-value of the test.
 #' }
-#' \code{print.simpA_kendallReg_test} and \code{plot.simpA_kendallReg_test}
-#' have no return values and are only called for their side effects.
+#'
+#' \code{plot.simpA_kendallReg_test} returns (invisibly) a matrix with columns
+#' \code{z}, \code{est_CKT_NP}, \code{asympt_se_np}, \code{est_CKT_NP_q025},
+#' \code{est_CKT_NP_q975}, \code{est_CKT_reg}, \code{asympt_se_reg},
+#' \code{est_CKT_reg_q025}, code{est_CKT_reg_q975}.
+#' The first column correspond to the grid of values of z. The next 4 columns
+#' are the NP (kernel-based) estimator of conditional Kendall's tau, with its
+#' standard error, and lower/upper confidence bands. The last 4 columns are the
+#' equivalents for the estimator based on Kendall's regression.
+#'
+#' \code{plot.simpA_kendallReg_test} plots the kernel-based estimator and its
+#' confidence band (in red), and the estimator based on Kendall's regression
+#' and its confidence band (in blue).
+#'
+#' Usually the confidence band for Kendall's regression is much tighter than the
+#' pure non-parametric counterpart. This is because the parametric model is
+#' sparser and the corresponding estimator converges faster (even without
+#' penalization).
+#'
+#' \code{print.simpA_kendallReg_test} has no return values and is only called
+#' for its side effects.
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
@@ -356,7 +375,8 @@ plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
   est_CKT_NP = x$vector_hat_CKT_NP
   asympt_se_np = sqrt(x$resultWn$vect_H_ii) / sqrt(x$n * x$h_kernel)
 
-  plot(z, est_CKT_NP, type = "l", ylim = ylim, col = "red")
+  plot(z, est_CKT_NP, type = "l", ylim = ylim, col = "red",
+       ylab = "Conditional Kendall's tau given Z = z")
   graphics::lines(z, est_CKT_NP + 1.96 * asympt_se_np, type = "l", col = "red")
   graphics::lines(z, est_CKT_NP - 1.96 * asympt_se_np, type = "l", col = "red")
 
@@ -379,6 +399,20 @@ plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
   graphics::lines(z, est_CKT_reg, type = "l", ylim = ylim, col = "blue")
   graphics::lines(z, est_CKT_reg + 1.96 * asympt_se_reg, type = "l", col = "blue")
   graphics::lines(z, est_CKT_reg - 1.96 * asympt_se_reg, type = "l", col = "blue")
+
+  df = cbind(
+    z,
+    est_CKT_NP,
+    asympt_se_np,
+    est_CKT_NP_q025 = est_CKT_NP - 1.96 * asympt_se_np,
+    est_CKT_NP_q975 = est_CKT_NP + 1.96 * asympt_se_np,
+    est_CKT_reg,
+    asympt_se_reg,
+    est_CKT_reg_q025 = est_CKT_reg - 1.96 * asympt_se_reg,
+    est_CKT_reg_q975 = est_CKT_reg + 1.96 * asympt_se_reg
+  )
+
+  return (invisible(df))
 }
 
 
