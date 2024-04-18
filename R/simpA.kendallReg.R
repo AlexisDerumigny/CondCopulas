@@ -206,12 +206,19 @@ simpA.kendallReg <- function(
     }
   }
 
+  designMatrix_withIntercept = cbind(1 , designMatrixZ)
+  if (is.null(names(listPhi))){
+    colnames(designMatrix_withIntercept) <-
+      c("Intercept", paste0("phi", 1:length(listPhi)))
+  } else {
+    colnames(designMatrix_withIntercept) <-
+      c("Intercept", names(listPhi))
+  }
+
+
   # Estimation
   if (lambda == 0){
     # Estimation by least-squares
-    designMatrix_withIntercept = cbind(1 , designMatrixZ)
-    colnames(d)[1] <- "Intercept"
-
     reg = stats::lm.fit(x = designMatrix_withIntercept[whichFinite, ],
                         y = LambdaCKT[whichFinite])
     vector_hat_beta = reg$coefficient
