@@ -63,6 +63,8 @@ By default, the identity function is used.}
 
 \item{Lambda_deriv}{the derivative of the function \code{Lambda}.}
 
+\item{Lambda_inv}{the inverse function of \code{Lambda}.}
+
 \item{lambda}{the penalization parameter used for Kendall's regression.
 By default, cross-validation is used to find the best value of \code{lambda}
 if \code{length(listPhi) > 1}. Otherwise \code{lambda = 0} is used.}
@@ -82,6 +84,8 @@ the sum of squares of differences.}
 \item{x}{object of class \code{simpA_kendallReg_test}}
 
 \item{...}{other arguments, unused}
+
+\item{ylim}{graphical parameter, see \link{plot}}
 }
 \value{
 \code{simpA.kendallReg} returns an \code{S3} object of
@@ -124,11 +128,11 @@ result = simpA.kendallReg(
    listPhi = list(
      function(x){return(x)}, function(x){return(x^2)},
      function(x){return(x^3)}, function(x){return(x^4)},
-     function(x){return(x^5)},
      function(x){return(cos(x))}, function(x){return(sin(x))},
      function(x){return(as.numeric(x <= 0.4))},
      function(x){return(as.numeric(x <= 0.6))}) )
-print(result$p_val)
+print(result)
+plot(result)
 
 # We simulate from a conditional copula
 set.seed(1)
