@@ -52,12 +52,17 @@
 #' conditional Kendall's tau while \code{l_norm=2} corresponds to
 #' the sum of squares of differences.
 #'
+#' @param x an \code{S3} object of class \code{simpA_kendallReg_test}.
 #'
-#' @return a list containing
+#'
+#' @return \code{simpA.kendallReg} returns an \code{S3} object of
+#' class \code{simpA_kendallReg_test}, containing
 #' \itemize{
 #'     \item \code{statWn}: the value of the test statistic.
 #'     \item \code{p_val}: the p-value of the test.
 #' }
+#' \code{print.simpA_kendallReg_test} and \code{plot.simpA_kendallReg_test}
+#' have no return values and are only called for their side effects.
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
@@ -136,11 +141,13 @@
 simpA.kendallReg <- function(
     X1, X2, Z,
     vectorZToEstimate = NULL,
-    listPhi = list(function(x){return(x)}, function(x){return(x^2)},
+    listPhi = list(function(x){return(x)},
+                   function(x){return(x^2)},
                    function(x){return(x^3)}),
     typeEstCKT = 4,
     h_kernel,
-    Lambda = function(x){return(x)}, Lambda_deriv = function(x){return(1)},
+    Lambda = function(x){return(x)},
+    Lambda_deriv = function(x){return(1)},
     lambda = NULL, h_lambda = h_kernel,
     Kfolds_lambda = 5, l_norm = 1
 )
@@ -222,6 +229,7 @@ simpA.kendallReg <- function(
     reg = stats::lm.fit(x = designMatrix_withIntercept[whichFinite, ],
                         y = LambdaCKT[whichFinite])
     vector_hat_beta = reg$coefficient
+    fitted.values = reg$fitted.values
   } else {
     # Penalized estimation
     reg = glmnet::glmnet(x = designMatrix_withIntercept[whichFinite, ],
@@ -230,6 +238,8 @@ simpA.kendallReg <- function(
                          intercept = FALSE)
 
     vector_hat_beta = stats::coef(reg, s = lambda)
+    fitted.values = stats::predict(reg, s = lambda,
+                                   newx = designMatrix_withIntercept[whichFinite, ])
   }
 
   # Using Wn
@@ -261,14 +271,67 @@ simpA.kendallReg <- function(
   df = length(listPhi)
   pval_Wn = 1 - stats::pchisq(statWn, df = df)
 
-  return (list(p_val = pval_Wn, statWn = statWn, df = df,
-               coef = vector_hat_beta,
-               resultWn = resultWn,
-               varCov = varCov,
-               vectorZToEstimate = vectorZToEstimate,
-               vector_hat_CKT_NP = vectorEstimate_1step))
+  result = list(p_val = pval_Wn,
+                statWn = statWn, df = df,
+                coef = vector_hat_beta,
+                resultWn = resultWn,
+                varCov = varCov,
+                vectorZToEstimate = vectorZToEstimate,
+                vector_hat_CKT_NP = vectorEstimate_1step,
+                n = n,
+                h_kernel = h_kernel,
+                fitted.values = fitted.values)
+
+  class(result) <- "simpA_kendallReg_test"
+  return (result)
 }
 
+
+#' Print method
+#'
+#' @param x object of class \code{simpA_kendallReg_test}
+#'
+#' @param ... other arguments, unused
+#'
+#' @export
+#' @rdname simpA.kendallReg
+print.simpA_kendallReg_test <- function(x, ...)
+{
+  # Use stringi::stri_escape_unicode to get the unicode characters escaped
+  cat("Kendall regression: \u039b(\U0001d70f) = \u03b20 + \u03b2\' phi(z) \n")
+  cat("where \U0001d70f is conditional Kendall's tau between X1 and X2 given Z = z \n \n")
+  std_errors = diag(x$varCov)
+  z_values = x$coef / diag(x$varCov)
+  coef = cbind(Estimate = x$coef,
+               `Std. Error` = std_errors,
+               `z value` = z_values,
+               `p-value` = 2 * stats::pnorm(abs(z_values), lower.tail = FALSE))
+
+  stats::printCoefmat(coef)
+  cat("\n")
+  cat("p-value of the test of the simplfying assumption: ")
+  cat(x$p_val)
+}
+
+
+#' Plot method
+#'
+#' @param x object of class \code{simpA_kendallReg_test}
+#'
+#' @param ... other arguments, unused
+#'
+#' @export
+#' @rdname simpA.kendallReg
+plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
+{
+  z = x$vectorZToEstimate
+  est_CKT_NP = x$vector_hat_CKT_NP
+  asympt_se_np = sqrt(x$resultWn$vect_H_ii) / sqrt(x$n * x$h_kernel)
+
+  plot(z, est_CKT_NP, type = "l", ylim = ylim)
+  lines(z, est_CKT_NP + 1.96 * asympt_se_np, type = "l", col = "red")
+  lines(z, est_CKT_NP - 1.96 * asympt_se_np, type = "l", col = "red")
+}
 
 
 # Compute the elements for Wald-type test statistic related to

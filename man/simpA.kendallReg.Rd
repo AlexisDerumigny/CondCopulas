@@ -2,6 +2,8 @@
 % Please edit documentation in R/simpA.kendallReg.R
 \name{simpA.kendallReg}
 \alias{simpA.kendallReg}
+\alias{print.simpA_kendallReg_test}
+\alias{plot.simpA_kendallReg_test}
 \title{Test of the simplifying assumption using the constancy
 of conditional Kendall's tau}
 \usage{
@@ -31,6 +33,10 @@ simpA.kendallReg(
   Kfolds_lambda = 5,
   l_norm = 1
 )
+
+\method{print}{simpA_kendallReg_test}(x, ...)
+
+\method{plot}{simpA_kendallReg_test}(x, ylim = c(-1.5, 1.5), ...)
 }
 \arguments{
 \item{X1}{vector of observations of the first conditioned variable}
@@ -69,13 +75,20 @@ by cross-validation. \code{l_norm=1} corresponds to the sum of
 absolute values of differences between predicted and estimated
 conditional Kendall's tau while \code{l_norm=2} corresponds to
 the sum of squares of differences.}
+
+\item{x}{object of class \code{simpA_kendallReg_test}}
+
+\item{...}{other arguments, unused}
 }
 \value{
-a list containing
+\code{simpA.kendallReg} returns an \code{S3} object of
+class \code{simpA_kendallReg_test}, containing
 \itemize{
     \item \code{statWn}: the value of the test statistic.
     \item \code{p_val}: the p-value of the test.
 }
+\code{print.simpA_kendallReg_test} and \code{plot.simpA_kendallReg_test}
+have no return values and are only called for their side effects.
 }
 \description{
 This function computes Kendall's regression, a regression-like
