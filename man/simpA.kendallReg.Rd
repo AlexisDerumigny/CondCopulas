@@ -28,6 +28,9 @@ simpA.kendallReg(
   Lambda_deriv = function(x) {
      return(1)
  },
+  Lambda_inv = function(x) {
+     return(x)
+ },
   lambda = NULL,
   h_lambda = h_kernel,
   Kfolds_lambda = 5,

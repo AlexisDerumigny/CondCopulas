@@ -53,6 +53,7 @@
 #' the sum of squares of differences.
 #'
 #' @param x an \code{S3} object of class \code{simpA_kendallReg_test}.
+#' @param ylim graphical parameter, see \link{plot}
 #'
 #'
 #' @return \code{simpA.kendallReg} returns an \code{S3} object of
@@ -148,6 +149,7 @@ simpA.kendallReg <- function(
     h_kernel,
     Lambda = function(x){return(x)},
     Lambda_deriv = function(x){return(1)},
+    Lambda_inv = function(x){return(x)},
     lambda = NULL, h_lambda = h_kernel,
     Kfolds_lambda = 5, l_norm = 1
 )
@@ -276,11 +278,15 @@ simpA.kendallReg <- function(
                 coef = vector_hat_beta,
                 resultWn = resultWn,
                 varCov = varCov,
+                designMatrix_withIntercept = designMatrix_withIntercept,
                 vectorZToEstimate = vectorZToEstimate,
                 vector_hat_CKT_NP = vectorEstimate_1step,
                 n = n,
                 h_kernel = h_kernel,
-                fitted.values = fitted.values)
+                fitted.values = fitted.values,
+                Lambda = Lambda,
+                Lambda_inv = Lambda_inv,
+                Lambda_deriv = Lambda_deriv)
 
   class(result) <- "simpA_kendallReg_test"
   return (result)
@@ -328,9 +334,26 @@ plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
   est_CKT_NP = x$vector_hat_CKT_NP
   asympt_se_np = sqrt(x$resultWn$vect_H_ii) / sqrt(x$n * x$h_kernel)
 
-  plot(z, est_CKT_NP, type = "l", ylim = ylim)
-  lines(z, est_CKT_NP + 1.96 * asympt_se_np, type = "l", col = "red")
-  lines(z, est_CKT_NP - 1.96 * asympt_se_np, type = "l", col = "red")
+  plot(z, est_CKT_NP, type = "l", ylim = ylim, col = "red")
+  graphics::lines(z, est_CKT_NP + 1.96 * asympt_se_np, type = "l", col = "red")
+  graphics::lines(z, est_CKT_NP - 1.96 * asympt_se_np, type = "l", col = "red")
+
+  est_CKT_reg = vapply(X = x$fitted.values, FUN = x$Lambda_inv, FUN.VALUE = 1)
+
+  # vcov matrix for beta' phi(z)
+  vcova = x$designMatrix_withIntercept %*% x$varCov %*% t(x$designMatrix_withIntercept)
+  # Remember the chain rule (lambda^{-1})' = 1 / (lambda' o lambda^{-1}))
+  lambdainvprime_estCKT = 1 / vapply(X = x$fitted.values, FUN = x$Lambda_deriv, FUN.VALUE = 1)
+
+  # vcov matrix for lambdainv(beta' phi(z))
+  # by the delta method, this is given by the sandwich rule
+  vcova = diag(lambdainvprime_estCKT) %*% vcova %*% diag(lambdainvprime_estCKT)
+
+  asympt_se_reg = sqrt(diag(vcova))
+
+  graphics::lines(z, est_CKT_reg, type = "l", ylim = ylim, col = "blue")
+  graphics::lines(z, est_CKT_reg + 1.96 * asympt_se_reg, type = "l", col = "blue")
+  graphics::lines(z, est_CKT_reg - 1.96 * asympt_se_reg, type = "l", col = "blue")
 }
 
 
