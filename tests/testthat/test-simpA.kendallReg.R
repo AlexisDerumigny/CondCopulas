@@ -17,7 +17,7 @@ test_that("simpA.kendallReg works if only one function 'phi' is given", {
       listPhi = list( function(x){return(x)} ) )
   })
 
-  print(result$p_val)
+  expect_equal(result$p_val, 0, tolerance = 0.02)
 
   result$coef
 })

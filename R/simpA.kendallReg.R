@@ -246,11 +246,11 @@ simpA.kendallReg <- function(
 
   # 5 - Computation of the test statistic W_n
   statWn = n * h_kernel * t(vector_hat_beta[-1]) %*%
-    resultWn$matrix_Vn_completed %*% t( t(vector_hat_beta[-1]) )
+    solve(resultWn$matrix_Vn_completed) %*% t( t(vector_hat_beta[-1]) )
 
   statWn = as.numeric(statWn)
 
-  df = length(whichFinite)
+  df = length(listPhi)
   pval_Wn = 1 - stats::pchisq(statWn, df = df)
 
   return (list(p_val = pval_Wn, statWn = statWn, df = df,
