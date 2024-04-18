@@ -237,7 +237,7 @@ simpA.kendallReg <- function(
                          family = "gaussian",
                          intercept = FALSE)
 
-    vector_hat_beta = stats::coef(reg, s = lambda)
+    vector_hat_beta = stats::coef(reg, s = lambda)[-1]
     fitted.values = stats::predict(reg, s = lambda,
                                    newx = designMatrix_withIntercept[whichFinite, ])
   }
