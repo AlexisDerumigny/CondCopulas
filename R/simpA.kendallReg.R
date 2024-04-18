@@ -37,7 +37,8 @@
 #' @param Lambda_deriv the derivative of the function \code{Lambda}.
 #'
 #' @param lambda the penalization parameter used for Kendall's regression.
-#' By default, cross-validation is used to find the best value of \code{lambda}.
+#' By default, cross-validation is used to find the best value of \code{lambda}
+#' if \code{length(listPhi) > 1}. Otherwise \code{lambda = 0} is used.
 #'
 #' @param h_lambda bandwidth used for the smooth cross-validation
 #' in order to get a value for \code{lambda}.
@@ -133,15 +134,15 @@
 #' @export
 #'
 simpA.kendallReg <- function(
-  X1, X2, Z,
-  vectorZToEstimate = NULL,
-  listPhi = list(function(x){return(x)}, function(x){return(x^2)},
-                 function(x){return(x^3)}),
-  typeEstCKT = 4,
-  h_kernel,
-  Lambda = function(x){return(x)}, Lambda_deriv = function(x){return(1)},
-  lambda = NULL, h_lambda = h_kernel,
-  Kfolds_lambda = 5, l_norm = 1
+    X1, X2, Z,
+    vectorZToEstimate = NULL,
+    listPhi = list(function(x){return(x)}, function(x){return(x^2)},
+                   function(x){return(x^3)}),
+    typeEstCKT = 4,
+    h_kernel,
+    Lambda = function(x){return(x)}, Lambda_deriv = function(x){return(1)},
+    lambda = NULL, h_lambda = h_kernel,
+    Kfolds_lambda = 5, l_norm = 1
 )
 {
   if (is.null(vectorZToEstimate)){
@@ -162,32 +163,64 @@ simpA.kendallReg <- function(
     kernel.name = "Epa" ,
     typeEstCKT = typeEstCKT )
 
-  # Computation of the matrix \Zb of the \psibm(Z'_i)
-  designMatrixZ =
-    sapply(listPhi,
-           function(x) sapply(vectorZToEstimate, x))
+  LambdaCKT = Lambda(vectorEstimate_1step)
 
-  # Computation of \hat \beta
-  whichFinite = which( is.finite(vectorEstimate_1step))
+  whichFinite = which( is.finite(LambdaCKT))
   if (is.null(whichFinite)) {
     stop("No kernel estimation successful. ",
          "Maybe h_kernel is too small?")
   }
-  resultEstimation = glmnet::glmnet(x = designMatrixZ[whichFinite, ],
-                                    y = Lambda(vectorEstimate_1step[whichFinite]),
-                                    family = "gaussian")
 
-  if (is.null(lambda)){
-    # Computation of \lambda chosen by cross-validation
-    resultCV = CKT.KendallReg.LambdaCV(
-      observedX1 = X1, observedX2 = X2,
-      observedZ = Z, ZToEstimate = vectorZToEstimate,
-      designMatrixZ = designMatrixZ,
-      typeEstCKT = typeEstCKT,
-      h_lambda = h_lambda, Lambda = Lambda, kernel.name = "Epa",
-      Kfolds_lambda = Kfolds_lambda, l_norm = l_norm)
+  # To compute \hat \beta,
+  # we first prepare the design matrix and the penalization parameter lambda
 
-    lambda = resultCV$lambdaCV
+  # Computation of the design matrix \Zb by applying each phi to Z'_i
+  designMatrixZ = sapply(listPhi,
+                         function(phi) {phi(vectorZToEstimate)},
+                         simplify = "array")
+
+  # Choice of lambda
+  if (length(listPhi) == 1){
+    if (!is.null(lambda)){
+      if (lambda != 0){
+        warning(paste0("There is only one function 'phi' provided. ",
+                       "Therefore the penalization parameter lambda is set to 0."))
+      }
+    }
+    lambda = 0
+  } else {
+
+    # Choice of lambda by cross-validation if it is `NULL`
+    if (is.null(lambda)){
+      # Computation of \lambda chosen by cross-validation
+      resultCV = CKT.KendallReg.LambdaCV(
+        observedX1 = X1, observedX2 = X2,
+        observedZ = Z, ZToEstimate = vectorZToEstimate,
+        designMatrixZ = designMatrixZ,
+        typeEstCKT = typeEstCKT,
+        h_lambda = h_lambda, Lambda = Lambda, kernel.name = "Epa",
+        Kfolds_lambda = Kfolds_lambda, l_norm = l_norm)
+
+      lambda = resultCV$lambdaCV
+    }
+  }
+
+  # Estimation
+  if (lambda == 0){
+    # Estimation by least-squares
+    designMatrix_withIntercept = cbind(1 , designMatrixZ)
+    colnames(d)[1] <- "Intercept"
+
+    reg = stats::lm.fit(x = designMatrix_withIntercept[whichFinite, ],
+                        y = LambdaCKT[whichFinite])
+    vector_hat_beta = reg$coefficient
+  } else {
+    # Penalized estimation
+    reg = glmnet::glmnet(x = designMatrixZ[whichFinite, ],
+                         y = LambdaCKT[whichFinite],
+                         family = "gaussian")
+
+    vector_hat_beta = stats::coef(reg, s = lambda)
   }
 
   # Using Wn
@@ -196,19 +229,20 @@ simpA.kendallReg <- function(
   resultWn = computeWn(vectorZ = Z,
                        vectorZToEstimate = vectorZToEstimate[whichFinite],
                        vector_hat_CKT_NP = vectorEstimate_1step[whichFinite],
-                       vector_hat_beta = stats::coef(resultEstimation ,
-                                                     s = lambda),
+                       vector_hat_beta = vector_hat_beta,
                        matrixSignsPairs = matrixSignsPairs,
-                       inputMatrix = designMatrixZ[whichFinite, ],
+                       inputMatrix = designMatrixZ[whichFinite, , drop = FALSE],
                        h = h_kernel,
                        kernel.name = "Epa",
                        intK2 = 3/5,
                        Lambda_deriv = Lambda_deriv,
                        progressBar = progressBar)
 
-  pval_Wn = 1 - stats::pchisq(as.numeric(resultWn$W_n), df = length(whichFinite))
+  df = length(whichFinite)
+  pval_Wn = 1 - stats::pchisq(as.numeric(resultWn$W_n), df = df)
 
-  return (list(p_val = pval_Wn, statWn = resultWn$W_n,
+  return (list(p_val = pval_Wn, statWn = resultWn$W_n, df = df,
+               coef = vector_hat_beta,
                resultWn = resultWn))
 }
 
@@ -223,9 +257,9 @@ simpA.kendallReg <- function(
 # matrixSignsPairs is a matrix of size n * n
 # inputMatrix is the inputMatrix of size n' * p'
 computeWn = function(
-  vectorZ, vectorZToEstimate, vector_hat_CKT_NP, vector_hat_beta,
-  matrixSignsPairs, inputMatrix, h, kernel.name, intK2, Lambda_deriv,
-  progressBar)
+    vectorZ, vectorZToEstimate, vector_hat_CKT_NP, vector_hat_beta,
+    matrixSignsPairs, inputMatrix, h, kernel.name, intK2, Lambda_deriv,
+    progressBar)
 {
   nprime = length(vectorZToEstimate)
   n = length(vectorZ)
@@ -259,12 +293,6 @@ computeWn = function(
         pointZ, vectorZ, h,
         kernel.name, matrixSignsPairsSymmetrized) } )
   }
-
-
-  # compute_vect_Gn_zipr(vectorZ = vectorZ,
-  #                      h = h, vectorZToEstimate = vectorZToEstimate,
-  #                      kernel.name = kernel.name,
-  #                      matrixSignsPairs = matrixSignsPairs)
 
   # 2 - Computation of H_(i,i) under the hypothesis that all z'_i are distinct
   vect_H_ii = rep(NA, nprime)

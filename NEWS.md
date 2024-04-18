@@ -1,4 +1,7 @@
 
+* Function `simpA.kendallReg` can handle the case where only one regressor is given.
+It also uses `stats::lm.fit` for the unpenalized regression.
+
 * Function `CKT.kernel` has now more options to control the possible display of
 the progress bar to show the progress of the computation.
 

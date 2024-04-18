@@ -55,7 +55,8 @@ By default, the identity function is used.}
 \item{Lambda_deriv}{the derivative of the function \code{Lambda}.}
 
 \item{lambda}{the penalization parameter used for Kendall's regression.
-By default, cross-validation is used to find the best value of \code{lambda}.}
+By default, cross-validation is used to find the best value of \code{lambda}
+if \code{length(listPhi) > 1}. Otherwise \code{lambda = 0} is used.}
 
 \item{h_lambda}{bandwidth used for the smooth cross-validation
 in order to get a value for \code{lambda}.}
