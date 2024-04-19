@@ -1,3 +1,65 @@
+
+test_that("simpA.kendallReg does not work for multivariate X1 or X2", {
+
+  X1 = matrix(data = c(1,1,1,1), ncol = 2)
+  X2 = c(1,1)
+  Z = c(1,2)
+
+  expect_error({
+    result = simpA.kendallReg(
+      X1, X2, Z, h_kernel = 1,
+      listPhi = list( function(x){return(x)} ),
+      lambda = 0)
+  }, class = "WrongDimensionError")
+
+  X1 = c(1,1)
+  X2 = matrix(data = c(1,1,1,1), ncol = 2)
+  Z = c(1,2)
+
+  expect_error({
+    result = simpA.kendallReg(
+      X1, X2, Z, h_kernel = 1,
+      listPhi = list( function(x){return(x)} ),
+      lambda = 0)
+  }, class = "WrongDimensionError")
+})
+
+test_that("simpA.kendallReg does not work for X1, X2 of different lengths", {
+
+  X1 = c(1,1,3)
+  X2 = c(1,1)
+  Z = c(1,2)
+
+  expect_error({
+    result = simpA.kendallReg(
+      X1, X2, Z, h_kernel = 1,
+      listPhi = list( function(x){return(x)} ),
+      lambda = 0)
+  }, class = "DifferentLengthsError")
+
+  X1 = c(1,1)
+  X2 = c(1,1,3)
+  Z = c(1,2)
+
+  expect_error({
+    result = simpA.kendallReg(
+      X1, X2, Z, h_kernel = 1,
+      listPhi = list( function(x){return(x)} ),
+      lambda = 0)
+  }, class = "DifferentLengthsError")
+
+  X1 = c(1,1)
+  X2 = c(1,1)
+  Z = c(1,2,3)
+
+  expect_error({
+    result = simpA.kendallReg(
+      X1, X2, Z, h_kernel = 1,
+      listPhi = list( function(x){return(x)} ),
+      lambda = 0)
+  }, class = "DifferentLengthsError")
+})
+
 test_that("simpA.kendallReg works if only one function 'phi' is given", {
   set.seed(1)
   # We simulate from a conditional copula  set.seed(1)
