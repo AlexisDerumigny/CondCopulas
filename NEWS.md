@@ -2,7 +2,8 @@
 * Function `simpA.kendallReg` can handle the case where only one regressor is given.
 It also uses `stats::lm.fit` for the unpenalized regression.
 A typo in the Wald test statistic has been fixed.
-Its output is an `S3` object of class `simpA_kendallReg_test` with `print` and `plot` methods.
+Its output is an `S3` object of class `simpA_kendallReg_test`
+with `print`, `plot`, `coef`, and `vcov` methods.
 
 * Function `CKT.kernel` has now more options to control the possible display of
 the progress bar to show the progress of the computation.

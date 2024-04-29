@@ -55,8 +55,10 @@
 #' the sum of squares of differences.
 #'
 #' @param object,x an \code{S3} object of class \code{simpA_kendallReg_test}.
+#'
 #' @param ylim graphical parameter, see \link{plot}
 #'
+#' @param ... other arguments, unused
 #'
 #' @return \code{simpA.kendallReg} returns an \code{S3} object of
 #' class \code{simpA_kendallReg_test}, containing
@@ -382,7 +384,7 @@ coef.simpA_kendallReg_test <- function(object, ...)
   return (coef)
 }
 
-#'
+
 #' @export
 #' @rdname simpA.kendallReg
 #'
@@ -392,12 +394,6 @@ vcov.simpA_kendallReg_test <- function(object, ...)
 }
 
 
-#' Print method
-#'
-#' @param x object of class \code{simpA_kendallReg_test}
-#'
-#' @param ... other arguments, unused
-#'
 #' @export
 #' @rdname simpA.kendallReg
 print.simpA_kendallReg_test <- function(x, ...)
@@ -421,13 +417,6 @@ print.simpA_kendallReg_test <- function(x, ...)
   cat("\n")
 }
 
-
-#' Plot method
-#'
-#' @param x object of class \code{simpA_kendallReg_test}
-#'
-#' @param ... other arguments, unused
-#'
 #' @export
 #' @rdname simpA.kendallReg
 plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)

@@ -86,8 +86,6 @@ the sum of squares of differences.}
 
 \item{...}{other arguments, unused}
 
-\item{x}{object of class \code{simpA_kendallReg_test}}
-
 \item{ylim}{graphical parameter, see \link{plot}}
 }
 \value{
