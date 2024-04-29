@@ -2,6 +2,7 @@
 % Please edit documentation in R/simpA.kendallReg.R
 \name{simpA.kendallReg}
 \alias{simpA.kendallReg}
+\alias{coef.simpA_kendallReg_test}
 \alias{print.simpA_kendallReg_test}
 \alias{plot.simpA_kendallReg_test}
 \title{Test of the simplifying assumption using the constancy
@@ -31,6 +32,8 @@ simpA.kendallReg(
   Kfolds_lambda = 5,
   l_norm = 1
 )
+
+\method{coef}{simpA_kendallReg_test}(object, ...)
 
 \method{print}{simpA_kendallReg_test}(x, ...)
 
@@ -76,9 +79,11 @@ absolute values of differences between predicted and estimated
 conditional Kendall's tau while \code{l_norm=2} corresponds to
 the sum of squares of differences.}
 
-\item{x}{object of class \code{simpA_kendallReg_test}}
+\item{object, x}{an \code{S3} object of class \code{simpA_kendallReg_test}.}
 
 \item{...}{other arguments, unused}
+
+\item{x}{object of class \code{simpA_kendallReg_test}}
 
 \item{ylim}{graphical parameter, see \link{plot}}
 }
@@ -110,6 +115,9 @@ penalization).
 
 \code{print.simpA_kendallReg_test} has no return values and is only called
 for its side effects.
+
+Function \code{coef.simpA_kendallReg_test} returns the matrix of coefficients
+with standard errors, z values and p-values.
 }
 \description{
 This function computes Kendall's regression, a regression-like
@@ -141,6 +149,7 @@ result = simpA.kendallReg(
   X1, X2, Z, h_kernel = 0.03,
   listPhi = list(z = function(z){return(z)} ) )
 print(result)
+coef(result)
 plot(result)
 
 result_morePhi = simpA.kendallReg(

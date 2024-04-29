@@ -54,7 +54,7 @@
 #' conditional Kendall's tau while \code{l_norm=2} corresponds to
 #' the sum of squares of differences.
 #'
-#' @param x an \code{S3} object of class \code{simpA_kendallReg_test}.
+#' @param object,x an \code{S3} object of class \code{simpA_kendallReg_test}.
 #' @param ylim graphical parameter, see \link{plot}
 #'
 #'
@@ -85,6 +85,9 @@
 #'
 #' \code{print.simpA_kendallReg_test} has no return values and is only called
 #' for its side effects.
+#'
+#' Function \code{coef.simpA_kendallReg_test} returns the matrix of coefficients
+#' with standard errors, z values and p-values.
 #'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
@@ -129,6 +132,7 @@
 #'   X1, X2, Z, h_kernel = 0.03,
 #'   listPhi = list(z = function(z){return(z)} ) )
 #' print(result)
+#' coef(result)
 #' plot(result)
 #'
 #' result_morePhi = simpA.kendallReg(
@@ -354,6 +358,22 @@ simpA.kendallReg <- function(
   return (result)
 }
 
+
+#'
+#' @export
+#' @rdname simpA.kendallReg
+#'
+coef.simpA_kendallReg_test <- function(object, ...)
+{
+  std_errors = diag(object$varCov)
+  z_values = object$coef / diag(object$varCov)
+  coef = cbind(Estimate = object$coef,
+               `Std. Error` = std_errors,
+               `z value` = z_values,
+               `p-value` = 2 * stats::pnorm(abs(z_values), lower.tail = FALSE))
+
+  return (coef)
+}
 
 #' Print method
 #'

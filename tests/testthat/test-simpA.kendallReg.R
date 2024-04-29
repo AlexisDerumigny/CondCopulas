@@ -216,7 +216,8 @@ test_that("simpA.kendallReg works if only two functions 'phi' are given and SA i
   })
 
   expect_gt(result$p_val, 0.05)
-  result$coef
+  coefs = coef(result)
+  expect_true(!is.null(coefs))
   result$varCov
 
   # plot(result_$vectorZToEstimate, result_$vector_hat_CKT_NP^2, col = "blue", type = "l")
