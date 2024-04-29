@@ -159,7 +159,7 @@ test_that("simpA.kendallReg works with many phi", {
   X1 = qnorm(simCopula[,1])
   X2 = qnorm(simCopula[,2])
 
-  result_morePhi = simpA.kendallReg(
+  result = simpA.kendallReg(
      X1, X2, Z, h_kernel = 0.03,
      listPhi = list(
        function(x){return(x)},
