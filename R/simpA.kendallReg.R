@@ -89,6 +89,10 @@
 #' Function \code{coef.simpA_kendallReg_test} returns the matrix of coefficients
 #' with standard errors, z values and p-values.
 #'
+#' Function \code{vcov.simpA_kendallReg_test} returns the (estimated)
+#' variance-covariance matrix of the estimated coefficients.
+#'
+#'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2020).
 #' On Kendall’s regression.
@@ -132,8 +136,11 @@
 #'   X1, X2, Z, h_kernel = 0.03,
 #'   listPhi = list(z = function(z){return(z)} ) )
 #' print(result)
-#' coef(result)
 #' plot(result)
+#' # Obtain matrix of coefficients, std err, z values and p values
+#' coef(result)
+#' # Obtain variance-covariance matrix of the coefficients
+#' vcov(result)
 #'
 #' result_morePhi = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
@@ -374,6 +381,16 @@ coef.simpA_kendallReg_test <- function(object, ...)
 
   return (coef)
 }
+
+#'
+#' @export
+#' @rdname simpA.kendallReg
+#'
+vcov.simpA_kendallReg_test <- function(object, ...)
+{
+  return (object$varCov)
+}
+
 
 #' Print method
 #'

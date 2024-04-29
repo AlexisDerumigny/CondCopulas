@@ -3,6 +3,7 @@
 \name{simpA.kendallReg}
 \alias{simpA.kendallReg}
 \alias{coef.simpA_kendallReg_test}
+\alias{vcov.simpA_kendallReg_test}
 \alias{print.simpA_kendallReg_test}
 \alias{plot.simpA_kendallReg_test}
 \title{Test of the simplifying assumption using the constancy
@@ -34,6 +35,8 @@ simpA.kendallReg(
 )
 
 \method{coef}{simpA_kendallReg_test}(object, ...)
+
+\method{vcov}{simpA_kendallReg_test}(object, ...)
 
 \method{print}{simpA_kendallReg_test}(x, ...)
 
@@ -118,6 +121,9 @@ for its side effects.
 
 Function \code{coef.simpA_kendallReg_test} returns the matrix of coefficients
 with standard errors, z values and p-values.
+
+Function \code{vcov.simpA_kendallReg_test} returns the (estimated)
+variance-covariance matrix of the estimated coefficients.
 }
 \description{
 This function computes Kendall's regression, a regression-like
@@ -149,8 +155,11 @@ result = simpA.kendallReg(
   X1, X2, Z, h_kernel = 0.03,
   listPhi = list(z = function(z){return(z)} ) )
 print(result)
-coef(result)
 plot(result)
+# Obtain matrix of coefficients, std err, z values and p values
+coef(result)
+# Obtain variance-covariance matrix of the coefficients
+vcov(result)
 
 result_morePhi = simpA.kendallReg(
    X1, X2, Z, h_kernel = 0.03,
