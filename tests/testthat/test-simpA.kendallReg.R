@@ -81,8 +81,11 @@ test_that("simpA.kendallReg works if only one function 'phi' is given", {
 
   expect_equal(result$p_val, 0, tolerance = 0.02)
 
-  result$coef
-  result$varCov
+  coefs = coef(result)
+  expect_true(!is.null(coefs))
+
+  varcov = vcov(result)
+  expect_true(!is.null(varcov))
 })
 
 test_that("simpA.kendallReg works if SA is true", {
@@ -106,8 +109,12 @@ test_that("simpA.kendallReg works if SA is true", {
 
   expect_gt(result$p_val, 0.05)
 
-  result$coef
-  result$varCov
+
+  coefs = coef(result)
+  expect_true(!is.null(coefs))
+
+  varcov = vcov(result)
+  expect_true(!is.null(varcov))
 })
 
 test_that("simpA.kendallReg works if only two functions 'phi' are given", {
@@ -192,6 +199,12 @@ test_that("simpA.kendallReg works with many phi", {
   plot(result)
 
   expect_gt(result$p_val, 0.05)
+
+  coefs = coef(result)
+  expect_true(!is.null(coefs))
+
+  varcov = vcov(result)
+  expect_true(!is.null(varcov))
 })
 
 test_that("simpA.kendallReg works if only two functions 'phi' are given and SA is true", {
@@ -216,9 +229,6 @@ test_that("simpA.kendallReg works if only two functions 'phi' are given and SA i
   })
 
   expect_gt(result$p_val, 0.05)
-  coefs = coef(result)
-  expect_true(!is.null(coefs))
-  result$varCov
 
   # plot(result_$vectorZToEstimate, result_$vector_hat_CKT_NP^2, col = "blue", type = "l")
   # lines(result_$vectorZToEstimate, result_$resultWn$Gn_zipr, type = "l")
