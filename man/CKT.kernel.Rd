@@ -22,9 +22,11 @@ CKT.kernel(
 )
 }
 \arguments{
-\item{X1}{a vector of n observations of the first variable}
+\item{X1}{a vector of n observations of the first variable
+(or a 1-column matrix)}
 
-\item{X2}{a vector of n observations of the second variable}
+\item{X2}{a vector of n observations of the second variable
+(or a 1-column matrix)}
 
 \item{Z}{a vector of n observations of the conditioning variable,
 or a matrix with n rows of observations of the conditioning vector}

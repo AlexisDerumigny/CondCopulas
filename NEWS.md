@@ -1,4 +1,7 @@
 
+* Function `CKT.kernel` can now handle arguments `X1`, `X2` and `Z` in the case
+where these are matrices with 1 column.
+
 * Function `simpA.kendallReg` can handle the case where only one regressor is given.
 It also uses `stats::lm.fit` for the unpenalized regression.
 A typo in the Wald test statistic has been fixed.

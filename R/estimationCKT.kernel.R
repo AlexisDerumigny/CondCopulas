@@ -420,8 +420,10 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'
 #'
 #' @param X1 a vector of n observations of the first variable
+#' (or a 1-column matrix)
 #'
 #' @param X2 a vector of n observations of the second variable
+#' (or a 1-column matrix)
 #'
 #' @param Z a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
@@ -562,6 +564,19 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
     } else {
       Z = observedZ
     }
+  }
+
+  # Checking for same number of observations
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+
+  # Checking that X1 and X2 are univariate
+  .checkUnivX1X2(X1, X2)
+  X1 = as.numeric(X1)
+  X2 = as.numeric(X2)
+
+  # Putting Z as a column vector if it has only one column
+  if (NCOL(Z) == 1 && is.matrix(Z)){
+    Z = as.numeric(Z)
   }
 
   if (typeEstCKT == "wdm") {
