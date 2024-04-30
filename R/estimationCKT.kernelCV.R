@@ -203,13 +203,13 @@ CKT.hCV.Kfolds <- function(observedX1, observedX2, observedZ, ZToEstimate,
       list_vectorEstimate[[i]] = estimCKTNP(
         X1 = observedX1[!which], X2 = observedX2[!which],
         matrixSignsPairs = matrixSignsPairs[!which, !which],
-        observedZ = observedZ[!which,], ZToEstimate = ZToEstimate,
+        Z = observedZ[!which,], ZToEstimate = ZToEstimate,
         typeEstCKT = typeEstCKT, h = h, kernel.name = kernel.name, progressBar = FALSE)
 
       list_vectorEstimate_comp[[i]] = estimCKTNP(
         X1 = observedX1[which], X2 = observedX2[which],
         matrixSignsPairs = matrixSignsPairs[which, which],
-        observedZ = observedZ[which,], ZToEstimate = ZToEstimate,
+        Z = observedZ[which,], ZToEstimate = ZToEstimate,
         typeEstCKT = typeEstCKT, h = h, kernel.name = kernel.name, progressBar = FALSE)
 
       if (all(!is.finite(list_vectorEstimate[[i]])))

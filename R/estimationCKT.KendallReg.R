@@ -349,7 +349,7 @@ CKT.KendallReg.LambdaCV <- function(
     which = foldid == i
     list_vectorEstimate[[i]] = estimCKTNP(
       matrixSignsPairs = matrixSignsPairs[!which, !which],
-      observedZ = observedZ[!which], typeEstCKT = typeEstCKT,
+      Z = observedZ[!which], typeEstCKT = typeEstCKT,
       h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
       progressBar = indivProgressBar)
 
@@ -357,7 +357,7 @@ CKT.KendallReg.LambdaCV <- function(
 
     list_vectorEstimate_comp[[i]] = estimCKTNP(
       matrixSignsPairs = matrixSignsPairs[which, which],
-      observedZ = observedZ[which], typeEstCKT = typeEstCKT,
+      Z = observedZ[which], typeEstCKT = typeEstCKT,
       h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
       progressBar = indivProgressBar)
 

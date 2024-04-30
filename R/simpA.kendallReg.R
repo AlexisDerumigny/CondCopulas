@@ -216,7 +216,7 @@ simpA.kendallReg <- function(
   # Computation of the \hat \tau_{1,2 | \Z = \Z'_i}
   vectorEstimate_1step = CKT.kernel.univariate(
     matrixSignsPairs = matrixSignsPairs ,
-    observedZ = Z ,
+    Z = Z ,
     h = h_kernel ,
     ZToEstimate = vectorZToEstimate ,
     kernel.name = "Epa" ,
