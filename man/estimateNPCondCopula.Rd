@@ -5,33 +5,35 @@
 \title{Compute a kernel-based estimator of the conditional copula}
 \usage{
 estimateNPCondCopula(
-  observedX1,
-  observedX2,
-  observedX3,
+  X1 = NULL,
+  X2 = NULL,
+  X3 = NULL,
   U1_,
   U2_,
   newX3,
   kernel,
-  h
+  h,
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedX3 = NULL
 )
 }
 \arguments{
-\item{observedX1}{a vector of observations of size n}
-
-\item{observedX2}{a vector of observations of size n}
-
-\item{observedX3}{a vector of observations of size n}
+\item{X1, X2, X3}{vectors of observations of size \code{n}}
 
 \item{U1_}{a vector of numbers in [0, 1]}
 
 \item{U2_}{a vector of numbers in [0, 1]}
 
-\item{newX3}{a vector of new values for the conditioning variable X3}
+\item{newX3}{a vector of new values for the conditioning variable \code{X3}}
 
 \item{kernel}{a character string describing the kernel to be used.
 Possible choices are \code{Gaussian}, \code{Triangular} and \code{Epanechnikov}.}
 
 \item{h}{the bandwidth to use in the estimation.}
+
+\item{observedX1, observedX2, observedX3}{old parameter names for \code{X1},
+\code{X2}, \code{X3}. Support for this will be removed at a later version.}
 }
 \value{
 An array of dimension \code{(length(U1_, U2_, newX3))}
@@ -57,8 +59,8 @@ X2 = qnorm(simCopula[,2])
 
 # We do the estimation
 grid = c(0.2, 0.4, 0.6, 0.8)
-arrayEst = estimateNPCondCopula(observedX1 = X1,
-  observedX2 = X2, observedX3 = X3,
+arrayEst = estimateNPCondCopula(
+  X1 = X1, X2 = X2, X3 = X3,
   U1_ = grid, U2_ = grid, newX3 = c(2, 5, 7),
   kernel = "Gaussian", h = 0.8)
 arrayEst

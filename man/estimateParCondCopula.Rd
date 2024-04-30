@@ -6,25 +6,28 @@
 \title{Estimation of parametric conditional copulas}
 \usage{
 estimateParCondCopula(
-  observedX1,
-  observedX2,
-  observedX3,
+  X1 = NULL,
+  X2 = NULL,
+  X3 = NULL,
   newX3,
   family,
   method = "mle",
-  h
+  h,
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedX3 = NULL
 )
 
 estimateParCondCopula_ZIJ(Z1_J, Z2_J, observedX3, newX3, family, method, h)
 }
 \arguments{
-\item{observedX1}{a vector of \code{n} observations
+\item{X1}{a vector of \code{n} observations
 of the first conditioned variable}
 
-\item{observedX2}{a vector of \code{n} observations
+\item{X2}{a vector of \code{n} observations
 of the second conditioned variable}
 
-\item{observedX3}{a vector of \code{n} observations
+\item{X3}{a vector of \code{n} observations
 of the conditioning variable}
 
 \item{newX3}{a vector of new observations of \eqn{X3}}
@@ -37,6 +40,9 @@ Can be \code{"mle"} for maximum likelihood estimation
 or \code{"itau"} for estimation by inversion of Kendall's tau.}
 
 \item{h}{bandwidth to be chosen}
+
+\item{observedX1, observedX2, observedX3}{old parameter names for \code{X1},
+\code{X2}, \code{X3}. Support for this will be removed at a later version.}
 
 \item{Z1_J}{the conditional pseudos-observations of the first variable,
 i.e. \eqn{\hat F_{1|J}( x_{i,1} | x_J = x_{i,J})} for \eqn{i=1,\dots, n}.}
@@ -77,7 +83,7 @@ gridnewX3 = seq(2, 8, by = 1)
 conditionalTauNewX3 = 0.9 * pnorm(gridnewX3, mean = 5, sd = 2)
 
 vecEstimatedThetas = estimateParCondCopula(
-  observedX1 = X1, observedX2 = X2, observedX3 = X3,
+  X1 = X1, X2 = X2, X3 = X3,
   newX3 = gridnewX3, family = 1, h = 0.1)
 
 # Estimated conditional parameters

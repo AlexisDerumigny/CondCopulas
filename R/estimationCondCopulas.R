@@ -6,15 +6,16 @@
 #' \eqn{\hat C_{1,2|3}(u_1, u_2 | X_3 = x_3)}
 #' for each choice of (u_1, u_2, x_3).
 #'
-#' @param observedX1 a vector of observations of size n
-#' @param observedX2 a vector of observations of size n
-#' @param observedX3 a vector of observations of size n
+#' @param X1,X2,X3 vectors of observations of size \code{n}
 #' @param U1_  a vector of numbers in [0, 1]
 #' @param U2_  a vector of numbers in [0, 1]
-#' @param newX3  a vector of new values for the conditioning variable X3
+#' @param newX3  a vector of new values for the conditioning variable \code{X3}
 #' @param kernel a character string describing the kernel to be used.
 #' Possible choices are \code{Gaussian}, \code{Triangular} and \code{Epanechnikov}.
 #' @param h the bandwidth to use in the estimation.
+#'
+#' @param observedX1,observedX2,observedX3 old parameter names for \code{X1},
+#' \code{X2}, \code{X3}. Support for this will be removed at a later version.
 #'
 #' @return An array of dimension \code{(length(U1_, U2_, newX3))}
 #' whose element in position (i, j, k) is
@@ -45,33 +46,39 @@
 #'
 #' # We do the estimation
 #' grid = c(0.2, 0.4, 0.6, 0.8)
-#' arrayEst = estimateNPCondCopula(observedX1 = X1,
-#'   observedX2 = X2, observedX3 = X3,
+#' arrayEst = estimateNPCondCopula(
+#'   X1 = X1, X2 = X2, X3 = X3,
 #'   U1_ = grid, U2_ = grid, newX3 = c(2, 5, 7),
 #'   kernel = "Gaussian", h = 0.8)
 #' arrayEst
 #'
 #' @export
 #'
-estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
-                                 U1_, U2_, newX3, kernel, h)
+estimateNPCondCopula <- function(X1 = NULL, X2 = NULL, X3 = NULL,
+                                 U1_, U2_, newX3, kernel, h,
+                                 observedX1 = NULL, observedX2 = NULL, observedX3 = NULL)
 {
-  .checkSame_nobs_X1X2X3(observedX1, observedX2, observedX3)
-  .checkUnivX1X2X3(observedX1, observedX2, observedX3)
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedX3_to_X3(env)
+
+  .checkSame_nobs_X1X2X3(X1, X2, X3)
+  .checkUnivX1X2X3(X1, X2, X3)
 
   nNewPoints1 = length(U1_)
   nNewPoints2 = length(U2_)
   nNewPoints3 = length(newX3)
 
   matrixK3 = computeKernelMatrix(
-    observedX = observedX3, newX = newX3, kernel = kernel, h = h)
+    observedX = X3, newX = newX3, kernel = kernel, h = h)
 
   # Computation of conditional quantiles
   matrix_condQuantile13 = estimateCondQuantiles(
-    observedX1 = observedX1, probsX1 = U1_, matrixK3 = matrixK3)
+    observedX1 = X1, probsX1 = U1_, matrixK3 = matrixK3)
 
   matrix_condQuantile23 = estimateCondQuantiles(
-    observedX1 = observedX2, probsX1 = U2_, matrixK3 = matrixK3)
+    observedX1 = X2, probsX1 = U2_, matrixK3 = matrixK3)
 
 
   # Computation of C_(1,2|3) ( U_(i,1) , U_(j,2) | X_(k,3) )
@@ -84,8 +91,8 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
       for (j in 1:nNewPoints2)
       {
         array_C_IJ[i, j, k] =
-          sum(matrixK3[ , k] * as.numeric(observedX1 <= matrix_condQuantile13[i , k] &
-                                            observedX2 <= matrix_condQuantile23[j , k] ) )
+          sum(matrixK3[ , k] * as.numeric(X1 <= matrix_condQuantile13[i , k] &
+                                            X2 <= matrix_condQuantile23[j , k] ) )
       }
     }
     array_C_IJ[, , k] = array_C_IJ[, , k] / sum(matrixK3[, k])
@@ -105,13 +112,13 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' vector \eqn{(X_1, X_2, X_3)}. Remember that \eqn{C_{X_1,X_2 | X_3 = x_3}}
 #' denotes the conditional copula of \eqn{X_1} and \eqn{X_2} given \eqn{X_3 = x_3}.
 #'
-#' @param observedX1 a vector of \code{n} observations
+#' @param X1 a vector of \code{n} observations
 #' of the first conditioned variable
 #'
-#' @param observedX2 a vector of \code{n} observations
+#' @param X2 a vector of \code{n} observations
 #' of the second conditioned variable
 #'
-#' @param observedX3 a vector of \code{n} observations
+#' @param X3 a vector of \code{n} observations
 #' of the conditioning variable
 #'
 #' @param newX3 a vector of new observations of \eqn{X3}
@@ -124,6 +131,10 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' or \code{"itau"} for estimation by inversion of Kendall's tau.
 #'
 #' @param h bandwidth to be chosen
+#'
+#' @param observedX1,observedX2,observedX3 old parameter names for \code{X1},
+#' \code{X2}, \code{X3}. Support for this will be removed at a later version.
+#'
 #'
 #' @return a vector of size \code{length(newX3)} containing
 #' the estimated conditional copula parameters for each value of \code{newX3}.
@@ -158,7 +169,7 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #' conditionalTauNewX3 = 0.9 * pnorm(gridnewX3, mean = 5, sd = 2)
 #'
 #' vecEstimatedThetas = estimateParCondCopula(
-#'   observedX1 = X1, observedX2 = X2, observedX3 = X3,
+#'   X1 = X1, X2 = X2, X3 = X3,
 #'   newX3 = gridnewX3, family = 1, h = 0.1)
 #'
 #' # Estimated conditional parameters
@@ -174,17 +185,24 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 #'
 #' @export
 #'
-estimateParCondCopula <- function (observedX1, observedX2, observedX3,
-                                   newX3, family, method = "mle", h)
+estimateParCondCopula <- function(X1 = NULL, X2 = NULL, X3 = NULL,
+                                  newX3, family, method = "mle", h,
+                                  observedX1 = NULL, observedX2 = NULL, observedX3 = NULL
+)
 {
-  .checkSame_nobs_X1X2X3(observedX1, observedX2, observedX3)
-  .checkUnivX1X2X3(observedX1, observedX2, observedX3)
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedX3_to_X3(env)
+
+  .checkSame_nobs_X1X2X3(X1, X2, X3)
+  .checkUnivX1X2X3(X1, X2, X3)
 
   # Computation of pseudo-observations
-  U1 = stats::ecdf(observedX1)(observedX1)
-  U2 = stats::ecdf(observedX2)(observedX2)
-  U3 = stats::ecdf(observedX3)(observedX3)
-  newU3 = stats::ecdf(observedX3)(newX3)
+  U1 = stats::ecdf(X1)(X1)
+  U2 = stats::ecdf(X2)(X2)
+  U3 = stats::ecdf(X3)(X3)
+  newU3 = stats::ecdf(X3)(newX3)
 
   # Computation of the kernel
   matrixK3 = computeKernelMatrix(observedX = U3, newX = U3, kernel = "Epanechnikov", h = h)

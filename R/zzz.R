@@ -88,3 +88,14 @@
     }
   }
 }
+
+.observedX3_to_X3 <- function(env)
+{
+  if (is.null(env$X3)){
+    if (is.null(env$observedX3)){
+      stop("X3 must be non-null.")
+    } else {
+      env$X3 = env$observedX3
+    }
+  }
+}
