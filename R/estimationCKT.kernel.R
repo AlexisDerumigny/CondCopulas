@@ -572,6 +572,11 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   X1 = as.numeric(X1)
   X2 = as.numeric(X2)
 
+  # Putting Z as a column vector if it has only one column
+  if (NCOL(Z) == 1 && is.matrix(Z)){
+    Z = as.numeric(Z)
+  }
+
   if (typeEstCKT == "wdm") {
     matrixSignsPairs = NULL
   } else {
