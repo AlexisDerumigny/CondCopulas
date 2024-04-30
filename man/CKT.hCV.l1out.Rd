@@ -12,7 +12,7 @@ CKT.hCV.l1out(
   Z = NULL,
   range_h,
   matrixSignsPairs = NULL,
-  nPairs = 10 * length(observedX1),
+  nPairs = 10 * length(X1),
   typeEstCKT = "wdm",
   kernel.name = "Epa",
   progressBar = TRUE,

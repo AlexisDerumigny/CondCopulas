@@ -103,7 +103,7 @@
 #'
 CKT.hCV.l1out <- function (X1 = NULL, X2 = NULL, Z = NULL,
                            range_h, matrixSignsPairs = NULL,
-                           nPairs = 10*length(observedX1),
+                           nPairs = 10*length(X1),
                            typeEstCKT = "wdm", kernel.name = "Epa",
                            progressBar = TRUE, verbose = FALSE,
                            observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
@@ -201,14 +201,14 @@ CKT.hCV.Kfolds <- function(X1, X2, Z, ZToEstimate,
 
   n_h = length(range_h)
   scores = rep(NA, n_h)
-  n = NROW(observedZ)
+  n = NROW(Z)
 
-  .checkSame_nobs_X1X2Z(observedX1, observedX2, observedZ)
-  .checkUnivX1X2(observedX1, observedX2)
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+  .checkUnivX1X2(X1, X2)
 
-  if (is.vector(observedZ)){
+  if (is.vector(Z)){
     estimCKTNP <- CKT.kernel.univariate
-    observedZ = matrix(observedZ, ncol = 1)
+    Z = matrix(Z, ncol = 1)
   } else {
     estimCKTNP <- CKT.kernel.multivariate
   }
