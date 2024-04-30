@@ -420,8 +420,10 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'
 #'
 #' @param X1 a vector of n observations of the first variable
+#' (or a 1-column matrix)
 #'
 #' @param X2 a vector of n observations of the second variable
+#' (or a 1-column matrix)
 #'
 #' @param Z a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
