@@ -56,11 +56,12 @@
 estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
                                  U1_, U2_, newX3, kernel, h)
 {
-  if (length(observedX1) != length(observedX2)) {
-    stop("Error: observedX1 and observedX2 have different lengths.")
-  }
-  if (length(observedX1) != length(observedX3)) {
-    stop("Error: observedX1 and observedX3 have different lengths.")
+  if ((NROW(observedX1) != NROW(observedX2)) || (NROW(observedX1) != NROW(observedX3))){
+    stop(errorCondition(
+      message = paste0("X1, X2 and X3 must have the same number of observations. ",
+                       "Here they are respectively: ",
+                       NROW(X1), ", ", NROW(X2), ", ", NROW(X3)),
+      class = "DifferentLengthsError") )
   }
 
   nNewPoints1 = length(U1_)

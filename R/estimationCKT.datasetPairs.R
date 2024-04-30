@@ -81,23 +81,14 @@
 datasetPairs <- function(X1, X2, Z, h, cut = 0.9,
                          onlyConsecutivePairs = FALSE, nPairs = NULL)
 {
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+
+  .checkUnivX1X2(X1, X2)
+
   n = length(X1)
-  if (length(X1) != length(X2)) {
-    stop(paste0("X1 and X2 have different numbers of observations: ",
-                length(X1), " and ", length(X2)))
-  }
-  if (is.vector(Z)) {
-    if (length(X1) != length(Z)) {
-      stop(paste0("X1 and Z have different numbers of observations: ",
-                  length(X1), " and ", length(Z)))
-    }
-    dimZ = 1
-  } else {
-    if (length(X1) != nrow(Z)) {
-      stop(paste0("X1 and Z have different numbers of observations: ",
-                  length(X1), " and ", nrow(Z)))
-    }
-    dimZ = ncol(Z)
+  dimZ = NCOL(Z)
+  if (dimZ == 1 && is.matrix(Z)){
+    Z = as.numeric(Z)
   }
 
   if (onlyConsecutivePairs){
@@ -357,8 +348,10 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
 computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT = 4)
 {
   if (length(vectorX1) != length(vectorX2)) {
-    stop(paste0("vectorX1 and vectorX2 have different lengths: ",
-                length(vectorX1), " and ", length(vectorX2)))
+    stop(errorCondition(
+      message = paste0("vectorX1 and vectorX2 have different lengths: ",
+                       length(vectorX1), " and ", length(vectorX2)),
+      class = "DifferentLengthsError") )
   }
 
   n = length(vectorX1)

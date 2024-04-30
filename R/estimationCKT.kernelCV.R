@@ -107,6 +107,9 @@ CKT.hCV.l1out <- function (observedX1, observedX2, observedZ,
   n_h = length(range_h)
   scores = rep(NA, n_h)
 
+  .checkSame_nobs_X1X2Z(observedX1, observedX2, observedZ)
+  .checkUnivX1X2(observedX1, observedX2)
+
   # Construction of the matrix of selected pairs
   dataMatrix = datasetPairs_hCV(
     X1 = observedX1, X2 = observedX2, Z = observedZ,
@@ -181,6 +184,9 @@ CKT.hCV.Kfolds <- function(observedX1, observedX2, observedZ, ZToEstimate,
   n_h = length(range_h)
   scores = rep(NA, n_h)
   n = NROW(observedZ)
+
+  .checkSame_nobs_X1X2Z(observedX1, observedX2, observedZ)
+  .checkUnivX1X2(observedX1, observedX2)
 
   if (is.vector(observedZ)){
     estimCKTNP <- CKT.kernel.univariate

@@ -109,6 +109,9 @@ bCond.simpA.param <- function(
                        NROW(X1), ", ", NROW(X2), ", ", NROW(partition)),
       class = "DifferentLengthsError") )
   }
+
+  .checkUnivX1X2(X1, X2)
+
   n <- length(X1)
 
   if (family == 2){
