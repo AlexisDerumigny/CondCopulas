@@ -28,3 +28,25 @@ test_that("CKT.kernel gives the same results with inputs that are matrices with 
   expect_identical(estimatedCKT_kernel_matX1, estimatedCKT_kernel)
   expect_identical(estimatedCKT_kernel_matZ, estimatedCKT_kernel)
 })
+
+
+test_that("old interface to CKT.kernel works", {
+
+  set.seed(1)
+  N = 50
+  Z = rnorm(n = N)
+  X1 = rnorm(n = N)
+  X2 = rnorm(n = N)
+
+  newZ = seq(-10, 10, by = 0.1)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 10, kernel.name = "Epa")
+
+  estimatedCKT_kernel_old <- CKT.kernel(
+    observedX1 = X1, observedX2 = X2, observedZ = Z,
+    newZ = newZ, h = 10, kernel.name = "Epa")
+
+  expect_identical(estimatedCKT_kernel_old, estimatedCKT_kernel)
+})

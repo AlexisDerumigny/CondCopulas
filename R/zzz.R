@@ -59,3 +59,32 @@
   }
 }
 
+
+.observedX1X2_to_X1X2 <- function(env)
+{
+  if (is.null(env$X1)){
+    if (is.null(env$observedX1)){
+      stop("X1 must be non-null.")
+    } else {
+      env$X1 = env$observedX1
+    }
+  }
+  if (is.null(env$X2)){
+    if (is.null(env$observedX2)){
+      stop("X2 must be non-null.")
+    } else {
+      env$X2 = env$observedX2
+    }
+  }
+}
+
+.observedZ_to_Z <- function(env)
+{
+  if (is.null(env$Z)){
+    if (is.null(env$observedZ)){
+      stop("Z must be non-null.")
+    } else {
+      env$Z = env$observedZ
+    }
+  }
+}

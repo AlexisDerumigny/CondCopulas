@@ -544,27 +544,9 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   }
 
   # Back-compatibility code to allow users to use the old "observedX1 = ..."
-  if (is.null(X1)){
-    if (is.null(observedX1)){
-      stop("X1 must be of non-zero length.")
-    } else {
-      X1 = observedX1
-    }
-  }
-  if (is.null(X2)){
-    if (is.null(observedX2)){
-      stop("X2 must be of non-zero length.")
-    } else {
-      X2 = observedX2
-    }
-  }
-  if (is.null(Z)){
-    if (is.null(observedX2)){
-      stop("Z must be of non-zero length.")
-    } else {
-      Z = observedZ
-    }
-  }
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedZ_to_Z(env)
 
   # Checking for same number of observations
   .checkSame_nobs_X1X2Z(X1, X2, Z)
