@@ -474,6 +474,10 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'   (i.e. when \code{h} is a vector).
 #' }
 #'
+#' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
+#' \code{X2}, \code{Z}. Support for this will be removed at a later version.
+#'
+#'
 #' @references
 #' Derumigny, A., & Fermanian, J. D. (2019).
 #' On kernel-based estimation of conditional Kendall’s tau:
@@ -535,6 +539,29 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   if (length(newZ) == 0){
     warning("'newZ' is of length 0, therefore, no estimation is done.")
     return (numeric(0))
+  }
+
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  if (is.null(X1)){
+    if (is.null(observedX1)){
+      stop("X1 must be of non-zero length.")
+    } else {
+      X1 = observedX1
+    }
+  }
+  if (is.null(X2)){
+    if (is.null(observedX2)){
+      stop("X2 must be of non-zero length.")
+    } else {
+      X2 = observedX2
+    }
+  }
+  if (is.null(Z)){
+    if (is.null(observedX2)){
+      stop("Z must be of non-zero length.")
+    } else {
+      Z = observedZ
+    }
   }
 
   if (typeEstCKT == "wdm") {
