@@ -100,9 +100,14 @@ bCond.simpA.param <- function(
   X1, X2, partition, family, testStat = "T2c_tau", typeBoot = "boot.NP",
   nBootstrap = 100)
 {
-  if (length(X1) != length(X2)){stop("X1 and X2 should be of the same length.")}
-  if (length(X1) != nrow(partition)){
-    stop("X1 should have the same length as the number of rows in 'partition'")
+  if (NROW(X1) != NROW(X2) || NROW(X1) != NROW(partition)){
+    stop(errorCondition(
+      message = paste0("X1 and X2 should be of the same length, ",
+                       "(the number of observations in the dataset). ",
+                       "This should be equal to the number of rows in 'partition'. ",
+                       "Here they are respectively: ",
+                       NROW(X1), ", ", NROW(X2), ", ", NROW(partition)),
+      class = "DifferentLengthsError") )
   }
   n <- length(X1)
 

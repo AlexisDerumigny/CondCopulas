@@ -82,8 +82,12 @@ bCond.treeCKT <- function(XI, XJ,
                           verbose = 2)
 {
   # Doing various checks
-  if(nrow(XI) != NROW(XJ)){
-    stop("XI and XJ must have the same number of observations.")
+  if(NROW(XI) != NROW(XJ)){
+    stop(errorCondition(
+      message = paste0("XI and XJ must have the same number of observations. ",
+                       "Here they are respectively: ",
+                       NROW(XI), ", ", NROW(XJ)),
+      class = "DifferentLengthsError") )
   }
   if (anyNA(XI) || anyNA(XJ)){
     stop("XI and XJ must not contain missing values.")

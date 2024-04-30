@@ -125,8 +125,12 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
            "Currently, both are `NULL`.")
     }
     if (nrow(XI) != nrow(XJ)){
-      stop("XI and XJ should have the same number of rows, ",
-           "equal to the number of observations in the dataset.")
+      stop(errorCondition(
+        message = paste0("XI and XJ should have the same number of rows, ",
+                         "equal to the number of observations in the dataset. ",
+                         "Here they are respectively: ",
+                         NROW(XI), ", ", NROW(XJ)),
+        class = "DifferentLengthsError") )
     }
 
     # First part: construction of the tree -----------------------

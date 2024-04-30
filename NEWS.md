@@ -1,4 +1,9 @@
 
+* Errors because of inputs of different lengths (for example computing some kind
+of dependence between two vectors `X1` and `X2` of different lengths) are now
+of the class `DifferentLengthsError`. Their messages now explicitly give the
+lengths of the different objects.
+
 * Function `CKT.kernel` can now handle arguments `X1`, `X2` and `Z` in the case
 where these are matrices with 1 column.
 
