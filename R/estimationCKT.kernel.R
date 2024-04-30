@@ -579,7 +579,7 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
 
       "Kfolds" = {
         resultCV = CKT.hCV.Kfolds(
-          observedX1 = X1, observedX2 = X2, observedZ = Z,
+          X1 = X1, X2 = X2, Z = Z,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
           ZToEstimate = newZ,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name, Kfolds = Kfolds,
@@ -588,7 +588,7 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
 
       "leave-one-out" = {
         resultCV = CKT.hCV.l1out(
-          observedX1 = X1, observedX2 = X2, observedZ = Z,
+          X1 = X1, X2 = X2, Z = Z,
           range_h = h, matrixSignsPairs = matrixSignsPairs,
           typeEstCKT = typeEstCKT, kernel.name = kernel.name,
           nPairs = nPairs, progressBar = progressBar > 1)

@@ -7,22 +7,25 @@
 conditional Kendall's tau using cross-validation}
 \usage{
 CKT.hCV.l1out(
-  observedX1,
-  observedX2,
-  observedZ,
+  X1 = NULL,
+  X2 = NULL,
+  Z = NULL,
   range_h,
   matrixSignsPairs = NULL,
   nPairs = 10 * length(observedX1),
   typeEstCKT = "wdm",
   kernel.name = "Epa",
   progressBar = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedZ = NULL
 )
 
 CKT.hCV.Kfolds(
-  observedX1,
-  observedX2,
-  observedZ,
+  X1,
+  X2,
+  Z,
   ZToEstimate,
   range_h,
   matrixSignsPairs = NULL,
@@ -30,15 +33,18 @@ CKT.hCV.Kfolds(
   kernel.name = "Epa",
   Kfolds = 5,
   progressBar = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedZ = NULL
 )
 }
 \arguments{
-\item{observedX1}{a vector of \code{n} observations of the first variable}
+\item{X1}{a vector of \code{n} observations of the first variable}
 
-\item{observedX2}{a vector of \code{n} observations of the second variable}
+\item{X2}{a vector of \code{n} observations of the second variable}
 
-\item{observedZ}{observedZ vector of observed values of Z.
+\item{Z}{vector of observed values of Z.
 If Z is multivariate, then this is a matrix whose rows correspond
 to the observations of Z}
 
@@ -60,6 +66,9 @@ and \code{"Epa"} (Epanechnikov kernel).}
 to show the progress of the computation.}
 
 \item{verbose}{if \code{TRUE}, print the score of each h during the procedure.}
+
+\item{observedX1, observedX2, observedZ}{old parameter names for \code{X1},
+\code{X2}, \code{Z}. Support for this will be removed at a later version.}
 
 \item{ZToEstimate}{vector of fixed conditioning values at which
 the difference between the two conditional Kendall's tau should be computed.
@@ -114,11 +123,11 @@ X2 = qnorm(simCopula[,2])
 newZ = seq(2,10,by = 0.1)
 range_h = 3:10
 
-resultCV <- CKT.hCV.l1out(observedX1 = X1, observedX2 = X2,
-  range_h = range_h, observedZ = Z, nPairs = 100)
+resultCV <- CKT.hCV.l1out(X1 = X1, X2 = X2, Z = Z,
+                          range_h = range_h, nPairs = 100)
 
-resultCV <- CKT.hCV.Kfolds(observedX1 = X1, observedX2 = X2,
-  range_h = range_h, observedZ = Z, ZToEstimate = newZ)
+resultCV <- CKT.hCV.Kfolds(X1 = X1, X2 = X2, Z = Z,
+                           range_h = range_h, ZToEstimate = newZ)
 
 plot(range_h, resultCV$scores, type = "b")
 

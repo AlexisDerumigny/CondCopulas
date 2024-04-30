@@ -18,11 +18,11 @@
 #' - \sum_{j=1}^{p'} \beta_j \psi_j(z_i)]^2 + \lambda * |\beta|_1,}
 #' where the \eqn{z_i} are a second sample (here denoted by \code{ZToEstimate}).
 #'
-#' @param observedX1 a vector of \code{n} observations of the first variable \eqn{X_1}.
+#' @param X1 a vector of \code{n} observations of the first variable \eqn{X_1}.
 #'
-#' @param observedX2 a vector of \code{n} observations of the second variable \eqn{X_2}.
+#' @param X2 a vector of \code{n} observations of the second variable \eqn{X_2}.
 #'
-#' @param observedZ a vector of \code{n} observations of the conditioning variable,
+#' @param Z a vector of \code{n} observations of the conditioning variable,
 #' or a matrix with \code{n} rows of observations of the conditioning vector
 #' (if \eqn{Z} is multivariate).
 #'
@@ -60,6 +60,10 @@
 #'
 #' @param ... other arguments to be passed to \code{\link{CKT.kernel}}
 #' for the first step (kernel-based) estimator of conditional Kendall's tau.
+#'
+#'
+#' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
+#' \code{X2}, \code{Z}. Support for this will be removed at a later version.
 #'
 #'
 #' @return The function \code{CKT.kendallReg.fit} returns
@@ -105,7 +109,7 @@
 #'
 #' newZ = seq(2, 10, by = 0.1)
 #' estimatedCKT_kendallReg <- CKT.kendallReg.fit(
-#'    observedX1 = X1, observedX2 = X2, observedZ = Z,
+#'    X1 = X1, X2 = X2, Z = Z,
 #'    ZToEstimate = newZ, h_kernel = 0.07)
 #'
 #' coef(estimatedCKT_kendallReg$fit,
@@ -123,16 +127,22 @@
 #' @export
 #'
 CKT.kendallReg.fit <- function(
-  observedX1, observedX2, observedZ, ZToEstimate,
+  X1 = NULL, X2 = NULL, Z = NULL, ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   newZ = designMatrixZ,
   h_kernel,
   Lambda = identity, Lambda_inv = identity,
-  lambda = NULL, Kfolds_lambda = 10, l_norm = 1, h_lambda = h_kernel, ...)
+  lambda = NULL, Kfolds_lambda = 10, l_norm = 1, h_lambda = h_kernel, ... ,
+  observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedZ_to_Z(env)
+
   kernelEstCKT = CKT.kernel(
-    observedX1 = observedX1, observedX2 = observedX2,
-    observedZ = observedZ, newZ = ZToEstimate, h = h_kernel, ...)
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = ZToEstimate, h = h_kernel, ...)
 
   stopifnot(ncol(designMatrixZ) == ncol(newZ), ncol(designMatrixZ) > 1)
   stopifnot(NROW(ZToEstimate) == nrow(designMatrixZ))
@@ -149,8 +159,8 @@ CKT.kendallReg.fit <- function(
   if (is.null(lambda)){
     cat("Beginning of the cross-validation\n")
     resultCV <- CKT.KendallReg.LambdaCV(
-      observedX1 = observedX1, observedX2 = observedX1,
-      observedZ = observedZ, ZToEstimate = ZToEstimate,
+      X1 = X1, X2 = X2, Z = Z,
+      ZToEstimate = ZToEstimate,
       designMatrixZ = designMatrixZ,
       typeEstCKT = 4, Lambda = Lambda, h_lambda = h_lambda, kernel.name = "Epa",
       Kfolds_lambda = Kfolds_lambda, l_norm = l_norm)
@@ -211,11 +221,11 @@ CKT.kendallReg.predict <- function(fit, newZ, lambda = NULL, Lambda_inv = identi
 #' This function chooses the penalization parameter \eqn{lambda}
 #' by cross-validation.
 #'
-#' @param observedX1 a vector of n observations of the first variable \eqn{X_1}.
+#' @param X1 a vector of n observations of the first variable \eqn{X_1}.
 #'
-#' @param observedX2 a vector of n observations of the second variable \eqn{X_2}.
+#' @param X2 a vector of n observations of the second variable \eqn{X_2}.
 #'
-#' @param observedZ a vector of n observations of the conditioning variable,
+#' @param Z a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
 #' (if \eqn{Z} is multivariate).
 #'
@@ -260,6 +270,10 @@ CKT.kendallReg.predict <- function(fit, newZ, lambda = NULL, Lambda_inv = identi
 #'    for each kernel smoothing step.
 #' }
 #'
+#' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
+#' \code{X2}, \code{Z}. Support for this will be removed at a later version.
+#'
+#'
 #' @return A list with the following components
 #' \itemize{
 #'   \item \code{lambdaCV}: the chosen value of the
@@ -295,9 +309,8 @@ CKT.kendallReg.predict <- function(fit, newZ, lambda = NULL, Lambda_inv = identi
 #' X2 = qnorm(simCopula[,2])
 #'
 #' newZ = seq(2, 10, by = 0.1)
-#' result <- CKT.KendallReg.LambdaCV(
-#'    observedX1 = X1, observedX2 = X2, observedZ = Z,
-#'    ZToEstimate = newZ, h_lambda = 2)
+#' result <- CKT.KendallReg.LambdaCV(X1 = X1, X2 = X2, Z = Z,
+#'                                   ZToEstimate = newZ, h_lambda = 2)
 #'
 #' plot(x = result$vectorLambda, y = result$vectorMSEMean,
 #'      type = "l", log = "x")
@@ -305,22 +318,27 @@ CKT.kendallReg.predict <- function(fit, newZ, lambda = NULL, Lambda_inv = identi
 #' @export
 #'
 CKT.KendallReg.LambdaCV <- function(
-  observedX1, observedX2,
-  observedZ, ZToEstimate,
+  X1 = NULL, X2 = NULL, Z = NULL, ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   typeEstCKT = 4, h_lambda, Lambda = identity, kernel.name = "Epa",
   Kfolds_lambda = 10, l_norm = 1, matrixSignsPairs = NULL,
-  progressBars = "global")
+  progressBars = "global" ,
+  observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {
-  n = length(observedX1)
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedZ_to_Z(env)
+
+  n = length(X1)
   nZprime = length(ZToEstimate)
 
   if (is.null(matrixSignsPairs)){
     matrixSignsPairs = computeMatrixSignPairs(
-      vectorX1 = observedX1, vectorX2 = observedX2, typeEstCKT = typeEstCKT)
+      vectorX1 = X1, vectorX2 = X2, typeEstCKT = typeEstCKT)
   }
 
-  if (is.vector(observedZ)){
+  if (is.vector(Z)){
     estimCKTNP <- CKT.kernel.univariate
   } else {
     estimCKTNP <- CKT.kernel.multivariate
@@ -349,7 +367,7 @@ CKT.KendallReg.LambdaCV <- function(
     which = foldid == i
     list_vectorEstimate[[i]] = estimCKTNP(
       matrixSignsPairs = matrixSignsPairs[!which, !which],
-      Z = observedZ[!which], typeEstCKT = typeEstCKT,
+      Z = Z[!which], typeEstCKT = typeEstCKT,
       h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
       progressBar = indivProgressBar)
 
@@ -357,7 +375,7 @@ CKT.KendallReg.LambdaCV <- function(
 
     list_vectorEstimate_comp[[i]] = estimCKTNP(
       matrixSignsPairs = matrixSignsPairs[which, which],
-      Z = observedZ[which], typeEstCKT = typeEstCKT,
+      Z = Z[which], typeEstCKT = typeEstCKT,
       h = h_lambda, ZToEstimate = ZToEstimate, kernel.name = kernel.name,
       progressBar = indivProgressBar)
 

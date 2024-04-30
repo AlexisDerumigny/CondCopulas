@@ -6,21 +6,22 @@
 between two variables X1 and X2 given Z = z}
 \usage{
 CKT.estimate(
-  observedX1, observedX2, observedZ,
-  newZ = observedZ, methodEstimation, h,
+  X1 = NULL, X2 = NULL, Z = NULL,
+  newZ = Z, methodEstimation, h,
   listPhi = if(methodEstimation == "kendallReg")
                {list( function(x){return(x)}   ,
                       function(x){return(x^2)} ,
                       function(x){return(x^3)} )
                } else {list(identity)} ,
-  ...)
+  ... ,
+  observedX1 = NULL, observedX2 = NULL, observedZ = NULL )
 }
 \arguments{
-\item{observedX1}{a vector of \eqn{n} observations of the first variable}
+\item{X1}{a vector of \eqn{n} observations of the first variable}
 
-\item{observedX2}{a vector of \eqn{n} observations of the second variable}
+\item{X2}{a vector of \eqn{n} observations of the second variable}
 
-\item{observedZ}{a vector of \eqn{n} observations of the conditioning variable,
+\item{Z}{a vector of \eqn{n} observations of the conditioning variable,
 or a matrix with \eqn{n} rows of observations of the conditioning vector
 (if \eqn{Z} is multivariate).}
 
@@ -62,6 +63,9 @@ to the conditioning variable \eqn{Z}
 \code{\link{CKT.fit.GLM}}, \code{\link{CKT.fit.nNets}},
 \code{\link{CKT.predict.kNN}}, \code{\link{CKT.kernel}}
 and \code{\link{CKT.kendallReg.fit}}.}
+
+\item{observedX1, observedX2, observedZ}{old parameter names for \code{X1},
+\code{X2}, \code{Z}. Support for this will be removed at a later version.}
 }
 \value{
 the vector of estimated conditional Kendall's tau
@@ -99,24 +103,24 @@ X2 = qnorm(simCopula[,2])
 newZ = seq(2,10,by = 0.1)
 h = 0.1
 estimatedCKT_tree <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "tree", h = h)
 
 estimatedCKT_rf <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "randomForest", h = h)
 
 estimatedCKT_GLM <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "logit", h = h,
   listPhi = list(function(x){return(x)}, function(x){return(x^2)},
                  function(x){return(x^3)}) )
 
 estimatedCKT_kNN <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "nearestNeighbors", h = h,
   number_nn = c(50,80, 100, 120,200),
@@ -124,19 +128,19 @@ estimatedCKT_kNN <- CKT.estimate(
   )
 
 estimatedCKT_nNet <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "neuralNetwork", h = h,
   )
 
 estimatedCKT_kernel <- CKT.estimate(
-  observedX1 = X1, observedX2 = X2, observedZ = Z,
+  X1 = X1, X2 = X2, Z = Z,
   newZ = newZ,
   methodEstimation = "kernel", h = h,
   )
 
 estimatedCKT_kendallReg <- CKT.estimate(
-   observedX1 = X1, observedX2 = X2, observedZ = Z,
+   X1 = X1, X2 = X2, Z = Z,
    newZ = newZ,
    methodEstimation = "kendallReg", h = h)
 

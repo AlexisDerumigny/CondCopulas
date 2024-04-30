@@ -5,9 +5,9 @@
 \title{Kendall's regression: choice of the penalization parameter by K-folds cross-validation}
 \usage{
 CKT.KendallReg.LambdaCV(
-  observedX1,
-  observedX2,
-  observedZ,
+  X1 = NULL,
+  X2 = NULL,
+  Z = NULL,
   ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   typeEstCKT = 4,
@@ -17,15 +17,18 @@ CKT.KendallReg.LambdaCV(
   Kfolds_lambda = 10,
   l_norm = 1,
   matrixSignsPairs = NULL,
-  progressBars = "global"
+  progressBars = "global",
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedZ = NULL
 )
 }
 \arguments{
-\item{observedX1}{a vector of n observations of the first variable \eqn{X_1}.}
+\item{X1}{a vector of n observations of the first variable \eqn{X_1}.}
 
-\item{observedX2}{a vector of n observations of the second variable \eqn{X_2}.}
+\item{X2}{a vector of n observations of the second variable \eqn{X_2}.}
 
-\item{observedZ}{a vector of n observations of the conditioning variable,
+\item{Z}{a vector of n observations of the conditioning variable,
 or a matrix with n rows of observations of the conditioning vector
 (if \eqn{Z} is multivariate).}
 
@@ -69,6 +72,9 @@ Possible values are
    \item \code{"eachStep"}: uses a global progress bar + one progress bar
    for each kernel smoothing step.
 }}
+
+\item{observedX1, observedX2, observedZ}{old parameter names for \code{X1},
+\code{X2}, \code{Z}. Support for this will be removed at a later version.}
 }
 \value{
 A list with the following components
@@ -117,9 +123,8 @@ X1 = qnorm(simCopula[,1])
 X2 = qnorm(simCopula[,2])
 
 newZ = seq(2, 10, by = 0.1)
-result <- CKT.KendallReg.LambdaCV(
-   observedX1 = X1, observedX2 = X2, observedZ = Z,
-   ZToEstimate = newZ, h_lambda = 2)
+result <- CKT.KendallReg.LambdaCV(X1 = X1, X2 = X2, Z = Z,
+                                  ZToEstimate = newZ, h_lambda = 2)
 
 plot(x = result$vectorLambda, y = result$vectorMSEMean,
      type = "l", log = "x")

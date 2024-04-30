@@ -6,9 +6,9 @@
 \title{Fit Kendall's regression, a GLM-type model for conditional Kendall's tau}
 \usage{
 CKT.kendallReg.fit(
-  observedX1,
-  observedX2,
-  observedZ,
+  X1 = NULL,
+  X2 = NULL,
+  Z = NULL,
   ZToEstimate,
   designMatrixZ = cbind(ZToEstimate, ZToEstimate^2, ZToEstimate^3),
   newZ = designMatrixZ,
@@ -19,17 +19,20 @@ CKT.kendallReg.fit(
   Kfolds_lambda = 10,
   l_norm = 1,
   h_lambda = h_kernel,
-  ...
+  ...,
+  observedX1 = NULL,
+  observedX2 = NULL,
+  observedZ = NULL
 )
 
 CKT.kendallReg.predict(fit, newZ, lambda = NULL, Lambda_inv = identity)
 }
 \arguments{
-\item{observedX1}{a vector of \code{n} observations of the first variable \eqn{X_1}.}
+\item{X1}{a vector of \code{n} observations of the first variable \eqn{X_1}.}
 
-\item{observedX2}{a vector of \code{n} observations of the second variable \eqn{X_2}.}
+\item{X2}{a vector of \code{n} observations of the second variable \eqn{X_2}.}
 
-\item{observedZ}{a vector of \code{n} observations of the conditioning variable,
+\item{Z}{a vector of \code{n} observations of the conditioning variable,
 or a matrix with \code{n} rows of observations of the conditioning vector
 (if \eqn{Z} is multivariate).}
 
@@ -67,6 +70,9 @@ procedure to choose \code{lambda}.}
 
 \item{...}{other arguments to be passed to \code{\link{CKT.kernel}}
 for the first step (kernel-based) estimator of conditional Kendall's tau.}
+
+\item{observedX1, observedX2, observedZ}{old parameter names for \code{X1},
+\code{X2}, \code{Z}. Support for this will be removed at a later version.}
 
 \item{fit}{the fitted model, obtained by a call
 to \code{CKT.kendallReg.fit}.}
@@ -123,7 +129,7 @@ X2 = qnorm(simCopula[,2])
 
 newZ = seq(2, 10, by = 0.1)
 estimatedCKT_kendallReg <- CKT.kendallReg.fit(
-   observedX1 = X1, observedX2 = X2, observedZ = Z,
+   X1 = X1, X2 = X2, Z = Z,
    ZToEstimate = newZ, h_kernel = 0.07)
 
 coef(estimatedCKT_kendallReg$fit,

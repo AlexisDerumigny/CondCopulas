@@ -27,11 +27,11 @@
 #' }
 #'
 #'
-#' @param observedX1 a vector of \code{n} observations of the first variable
+#' @param X1 a vector of \code{n} observations of the first variable
 #'
-#' @param observedX2 a vector of \code{n} observations of the second variable
+#' @param X2 a vector of \code{n} observations of the second variable
 #'
-#' @param observedZ observedZ vector of observed values of Z.
+#' @param Z vector of observed values of Z.
 #' If Z is multivariate, then this is a matrix whose rows correspond
 #' to the observations of Z
 #'
@@ -53,6 +53,9 @@
 #' to show the progress of the computation.
 #'
 #' @param verbose if \code{TRUE}, print the score of each h during the procedure.
+#'
+#' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
+#' \code{X2}, \code{Z}. Support for this will be removed at a later version.
 #'
 #'
 #' @return Both functions return a list with two components:
@@ -88,31 +91,40 @@
 #' newZ = seq(2,10,by = 0.1)
 #' range_h = 3:10
 #'
-#' resultCV <- CKT.hCV.l1out(observedX1 = X1, observedX2 = X2,
-#'   range_h = range_h, observedZ = Z, nPairs = 100)
+#' resultCV <- CKT.hCV.l1out(X1 = X1, X2 = X2, Z = Z,
+#'                           range_h = range_h, nPairs = 100)
 #'
-#' resultCV <- CKT.hCV.Kfolds(observedX1 = X1, observedX2 = X2,
-#'   range_h = range_h, observedZ = Z, ZToEstimate = newZ)
+#' resultCV <- CKT.hCV.Kfolds(X1 = X1, X2 = X2, Z = Z,
+#'                            range_h = range_h, ZToEstimate = newZ)
 #'
 #' plot(range_h, resultCV$scores, type = "b")
 #'
 #' @export
 #'
-CKT.hCV.l1out <- function (observedX1, observedX2, observedZ,
+CKT.hCV.l1out <- function (X1 = NULL, X2 = NULL, Z = NULL,
                            range_h, matrixSignsPairs = NULL,
                            nPairs = 10*length(observedX1),
                            typeEstCKT = "wdm", kernel.name = "Epa",
-                           progressBar = TRUE, verbose = FALSE)
+                           progressBar = TRUE, verbose = FALSE,
+                           observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedZ_to_Z(env)
+
   n_h = length(range_h)
   scores = rep(NA, n_h)
 
-  .checkSame_nobs_X1X2Z(observedX1, observedX2, observedZ)
-  .checkUnivX1X2(observedX1, observedX2)
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+  .checkUnivX1X2(X1, X2)
+  if (NCOL(Z) == 1 && is.matrix(Z)){
+    Z = as.numeric(Z)
+  }
 
   # Construction of the matrix of selected pairs
   dataMatrix = datasetPairs_hCV(
-    X1 = observedX1, X2 = observedX2, Z = observedZ,
+    X1 = X1, X2 = X2, Z = Z,
     nPairs = nPairs, typeEstCKT = typeEstCKT)
 
   nPairsReal = nrow(dataMatrix)
@@ -120,25 +132,25 @@ CKT.hCV.l1out <- function (observedX1, observedX2, observedZ,
     warning(paste0("nPairs =", nPairs, " but real number of pairs is ", nPairsReal))
   }
 
-  if (is.vector(observedZ)){
+  if (is.vector(Z)){
     computeScore <- function(i, i_h, h){
-      toBeRemoved = - c(dataMatrix[i,4], dataMatrix[i,5])
+      toBeRemoved = - c(dataMatrix[i , 4], dataMatrix[i , 5])
       matrixScore[i, i_h] <<- CKT.kernelPointwise.univariate(
-        X1 = observedX1[toBeRemoved], X2 = observedX2[toBeRemoved],
+        X1 = X1[toBeRemoved], X2 = X2[toBeRemoved],
         matrixSignsPairs = matrixSignsPairs[toBeRemoved , toBeRemoved],
-        vectorZ = observedZ[toBeRemoved],
-        h = h, pointZ = dataMatrix[i,2],
+        vectorZ = Z[toBeRemoved],
+        h = h, pointZ = dataMatrix[i , 2],
         kernel.name = kernel.name, typeEstCKT = typeEstCKT)
     }
   } else {
-    dimZ = ncol(observedZ)
+    dimZ = ncol(Z)
     computeScore <- function(i, i_h, h){
-      toBeRemoved = - c(dataMatrix[i,4], dataMatrix[i,5])
+      toBeRemoved = - c(dataMatrix[i , 4], dataMatrix[i , 5])
       matrixScore[i, i_h] <<- CKT.kernelPointwise.multivariate(
-        X1 = observedX1[toBeRemoved], X2 = observedX2[toBeRemoved],
+        X1 = X1[toBeRemoved], X2 = X2[toBeRemoved],
         matrixSignsPairs = matrixSignsPairs[toBeRemoved , toBeRemoved],
-        matrixZ = observedZ[toBeRemoved, ],
-        h = h, pointZ = dataMatrix[i,1+1:dimZ],
+        matrixZ = Z[toBeRemoved, ],
+        h = h, pointZ = dataMatrix[i , 1 + 1:dimZ],
         kernel.name = kernel.name, typeEstCKT = typeEstCKT)
     }
   }
@@ -176,11 +188,17 @@ CKT.hCV.l1out <- function (observedX1, observedX2, observedZ,
 #' @rdname CKT.hCV.l1out
 #' @export
 #'
-CKT.hCV.Kfolds <- function(observedX1, observedX2, observedZ, ZToEstimate,
+CKT.hCV.Kfolds <- function(X1, X2, Z, ZToEstimate,
                            range_h, matrixSignsPairs = NULL,
                            typeEstCKT = "wdm", kernel.name = "Epa",
-                           Kfolds = 5, progressBar = TRUE, verbose = FALSE)
+                           Kfolds = 5, progressBar = TRUE, verbose = FALSE,
+                           observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {
+  # Back-compatibility code to allow users to use the old "observedX1 = ..."
+  env = environment()
+  .observedX1X2_to_X1X2(env)
+  .observedZ_to_Z(env)
+
   n_h = length(range_h)
   scores = rep(NA, n_h)
   n = NROW(observedZ)
@@ -207,15 +225,15 @@ CKT.hCV.Kfolds <- function(observedX1, observedX2, observedZ, ZToEstimate,
     for (i in seq(Kfolds)) {
       which = foldid == i
       list_vectorEstimate[[i]] = estimCKTNP(
-        X1 = observedX1[!which], X2 = observedX2[!which],
+        X1 = X1[!which], X2 = X2[!which],
         matrixSignsPairs = matrixSignsPairs[!which, !which],
-        Z = observedZ[!which,], ZToEstimate = ZToEstimate,
+        Z = Z[!which,], ZToEstimate = ZToEstimate,
         typeEstCKT = typeEstCKT, h = h, kernel.name = kernel.name, progressBar = FALSE)
 
       list_vectorEstimate_comp[[i]] = estimCKTNP(
-        X1 = observedX1[which], X2 = observedX2[which],
+        X1 = X1[which], X2 = X2[which],
         matrixSignsPairs = matrixSignsPairs[which, which],
-        Z = observedZ[which,], ZToEstimate = ZToEstimate,
+        Z = Z[which,], ZToEstimate = ZToEstimate,
         typeEstCKT = typeEstCKT, h = h, kernel.name = kernel.name, progressBar = FALSE)
 
       if (all(!is.finite(list_vectorEstimate[[i]])))
