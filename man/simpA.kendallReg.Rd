@@ -99,7 +99,7 @@ class \code{simpA_kendallReg_test}, containing
 \code{plot.simpA_kendallReg_test} returns (invisibly) a matrix with columns
 \code{z}, \code{est_CKT_NP}, \code{asympt_se_np}, \code{est_CKT_NP_q025},
 \code{est_CKT_NP_q975}, \code{est_CKT_reg}, \code{asympt_se_reg},
-\code{est_CKT_reg_q025}, code{est_CKT_reg_q975}.
+\code{est_CKT_reg_q025}, \code{est_CKT_reg_q975}.
 The first column correspond to the grid of values of z. The next 4 columns
 are the NP (kernel-based) estimator of conditional Kendall's tau, with its
 standard error, and lower/upper confidence bands. The last 4 columns are the
