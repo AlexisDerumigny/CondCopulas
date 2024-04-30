@@ -1,4 +1,8 @@
 
+* Argument names have been shortened: functions taking arguments of the form
+`observedX1 = ` are now simplified to `X1 = ...`
+(which was already an interface present for some of the functions of the package).
+
 * Errors because of inputs of different lengths (for example computing some kind
 of dependence between two vectors `X1` and `X2` of different lengths) are now
 of the class `DifferentLengthsError`. Their messages now explicitly give the
