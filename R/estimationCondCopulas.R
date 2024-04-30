@@ -56,13 +56,8 @@
 estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
                                  U1_, U2_, newX3, kernel, h)
 {
-  if ((NROW(observedX1) != NROW(observedX2)) || (NROW(observedX1) != NROW(observedX3))){
-    stop(errorCondition(
-      message = paste0("X1, X2 and X3 must have the same number of observations. ",
-                       "Here they are respectively: ",
-                       NROW(X1), ", ", NROW(X2), ", ", NROW(X3)),
-      class = "DifferentLengthsError") )
-  }
+  .checkSame_nobs_X1X2X3(observedX1, observedX2, observedX3)
+  .checkUnivX1X2X3(observedX1, observedX2, observedX3)
 
   nNewPoints1 = length(U1_)
   nNewPoints2 = length(U2_)
@@ -182,6 +177,9 @@ estimateNPCondCopula <- function(observedX1, observedX2, observedX3,
 estimateParCondCopula <- function (observedX1, observedX2, observedX3,
                                    newX3, family, method = "mle", h)
 {
+  .checkSame_nobs_X1X2X3(observedX1, observedX2, observedX3)
+  .checkUnivX1X2X3(observedX1, observedX2, observedX3)
+
   # Computation of pseudo-observations
   U1 = stats::ecdf(observedX1)(observedX1)
   U2 = stats::ecdf(observedX2)(observedX2)
@@ -223,7 +221,6 @@ estimateParCondCopula <- function (observedX1, observedX2, observedX3,
 estimateParCondCopula_ZIJ <- function (Z1_J, Z2_J, observedX3,
                                        newX3, family, method, h)
 {
-
   # Computation of conditional parameters
   nNewPoints = length(newX3)
   theta_xJ = rep(NA, nNewPoints)

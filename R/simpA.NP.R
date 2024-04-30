@@ -144,8 +144,9 @@ simpA.NP <- function(
   kernel.name = "Epanechnikov", truncVal = h,
   numericalInt = list(kind = "legendre", nGrid = 10))
 {
-  stopifnot(length(X1) == length(X2))
-  stopifnot(length(X1) == length(X3))
+  .checkSame_nobs_X1X2X3(X1, X2, X3)
+  .checkUnivX1X2X3(X1, X2, X3)
+
   n <- length(X1)
 
   if (testStat %in% c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM",
