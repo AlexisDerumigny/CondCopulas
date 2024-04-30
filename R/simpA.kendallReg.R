@@ -192,27 +192,12 @@ simpA.kendallReg <- function(
     Kfolds_lambda = 5, l_norm = 1
 )
 {
-  if ((NROW(X1) != NROW(X2)) || (NROW(X1) != NROW(Z))){
-    stop(errorCondition(
-      message = paste0("X1, X2 and Z should have the same number of observations. ",
-                       "Here they are respectively: ",
-                       NROW(X1), ", ", NROW(X2), ", ", NROW(Z)),
-      class = "DifferentLengthsError") )
-  }
-  if (NCOL(X1) > 1){
-    stop(errorCondition(
-      message = paste0("X1 should be univariate. Here it has ",
-                       NCOL(X1), " columns"),
-      class = "WrongDimensionError") )
-  }
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+
+  .checkUnivX1X2(X1, X2)
   X1 = as.numeric(X1)
-  if (NCOL(X2) > 1){
-    stop(errorCondition(
-      message = paste0("X2 should be univariate. Here it has ",
-                       NCOL(X2), " columns"),
-      class = "WrongDimensionError") )
-  }
   X2 = as.numeric(X2)
+
   if (NCOL(Z) > 1){
     stop("'simpA.kendallReg' is currently only implemented for univariate Z")
   }
