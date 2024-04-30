@@ -564,6 +564,14 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
     }
   }
 
+  # Checking for same number of observations
+  .checkSame_nobs_X1X2Z(X1, X2, Z)
+
+  # Checking that X1 and X2 are univariate
+  .checkUnivX1X2(X1, X2)
+  X1 = as.numeric(X1)
+  X2 = as.numeric(X2)
+
   if (typeEstCKT == "wdm") {
     matrixSignsPairs = NULL
   } else {
