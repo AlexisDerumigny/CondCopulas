@@ -56,7 +56,7 @@ and the conditional Kendall's tau conditionally to it.
 }
 \examples{
 set.seed(1)
-n = 200
+n = 400
 XJ = MASS::mvrnorm(n = n, mu = c(3,3), Sigma = rbind(c(1, 0.2), c(0.2, 1)))
 XI = matrix(nrow = n, ncol = 2)
 high_XJ1 = which(XJ[,1] > 4)
@@ -66,6 +66,10 @@ XI[-high_XJ1, ] = MASS::mvrnorm(n = n - length(high_XJ1), mu = c(8,8),
                                 Sigma = rbind(c(1, -0.2), c(-0.2, 1)))
 
 result = bCond.treeCKT(XI = XI, XJ = XJ, minSize = 50, verbose = 2)
+# Plotting the corresponding tree using the "DiagrammeR" package
+if (requireNamespace("DiagrammeR", quietly = TRUE)){
+  plot(result)
+}
 
 # Number of observations in the first two children
 print(length(data.tree::GetAttribute(result$children[[1]], "condObs")))

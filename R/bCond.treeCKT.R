@@ -57,7 +57,7 @@
 #'
 #' @examples
 #' set.seed(1)
-#' n = 200
+#' n = 400
 #' XJ = MASS::mvrnorm(n = n, mu = c(3,3), Sigma = rbind(c(1, 0.2), c(0.2, 1)))
 #' XI = matrix(nrow = n, ncol = 2)
 #' high_XJ1 = which(XJ[,1] > 4)
@@ -67,6 +67,10 @@
 #'                                 Sigma = rbind(c(1, -0.2), c(-0.2, 1)))
 #'
 #' result = bCond.treeCKT(XI = XI, XJ = XJ, minSize = 50, verbose = 2)
+#' # Plotting the corresponding tree using the "DiagrammeR" package
+#' if (requireNamespace("DiagrammeR", quietly = TRUE)){
+#'   plot(result)
+#' }
 #'
 #' # Number of observations in the first two children
 #' print(length(data.tree::GetAttribute(result$children[[1]], "condObs")))
@@ -123,6 +127,11 @@ bCond.treeCKT <- function(XI, XJ,
     minCut = minCut, minProb = minProb, minSize = minSize,
     nPoints_xJ = nPoints_xJ, type.quantile = type.quantile,
     verbose = verbose, verbose.space = "")
+
+  # Creating nodes labels for plotting
+  # This function can be modified in order to get different visuals
+  data.tree::SetNodeStyle(result, label = function (node) {
+    return(createNodeLabel(node, newLine = TRUE, forceFirstLine = TRUE))} )
 
   return (result)
 }
@@ -290,5 +299,30 @@ CutCKTMult <- function(XI , XJ, namesXI, namesXJ,
   }
 
   return(node)
+}
+
+
+createNodeLabel <- function(node, newLine, forceFirstLine){
+  if (length(node$sign) == 0) {
+    label = paste0("KT = ", formatC(node$CKT, digits = 3))
+    return (label)
+  }
+
+  if (node$sign == 1){
+    textSign = "> "
+  } else if (node$sign == -1) {
+    textSign = "< "
+  }
+
+  textxjstar = formatC(node$xjstar, digits = 3)
+
+  if (newLine){
+    sepCKT = "\n"
+  } else {
+    sepCKT = ", "
+  }
+  label = paste0(node$namejstar, " " , textSign, textxjstar, sepCKT,
+                 "CKT = ", formatC(node$CKT, digits = 3))
+  return(label)
 }
 
