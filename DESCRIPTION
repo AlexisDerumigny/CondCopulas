@@ -1,8 +1,8 @@
 Package: CondCopulas
 Type: Package
 Title: Estimation and Inference for Conditional Copula Models
-Version: 0.1.3.4
-Date: 2023-09-22
+Version: 0.1.4
+Date: 2024-05-31
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
     person("Jean-David", "Fermanian", , email = "Jean-David.Fermanian@ensae.fr", role = c("ctb","ths"), comment = c(ORCID = "0000-0001-5960-5555")),

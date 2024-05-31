@@ -1,4 +1,6 @@
 
+# CondCopulas 0.1.4
+
 * Argument names have been shortened: functions taking arguments of the form
 `observedX1 = ` are now simplified to `X1 = ...`
 (which was already an interface present for some of the functions of the package).
