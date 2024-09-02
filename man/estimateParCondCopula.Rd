@@ -33,7 +33,8 @@ of the conditioning variable}
 \item{newX3}{a vector of new observations of \eqn{X3}}
 
 \item{family}{an integer indicating the parametric family of copulas to be used,
-following the conventions of the package \code{\link{VineCopula}}.}
+following the conventions of the \link[VineCopula:VineCopula]{VineCopula}
+package, see e.g. \link[VineCopula:BiCop]{VineCopula::BiCop}.}
 
 \item{method}{the method of estimation of the conditional parameters.
 Can be \code{"mle"} for maximum likelihood estimation
