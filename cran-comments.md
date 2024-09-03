@@ -6,13 +6,14 @@ This fixes the NOTE:
     estimateParCondCopula.Rd: VineCopula
   Please provide package anchors for all Rd \link{} targets not in the
   package itself and the base packages.
-  
+
+
 ## Test environments
 
 * Windows 10 (release)
+* macOS Sonoma 14.6.1 (release)
 * Windows Server 2022 (devel)
-* Fedora Linux (devel)
-* Ubuntu Linux (release)
+* Ubuntu Linux (devel)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
