@@ -186,5 +186,5 @@ given discretized conditioning events.
 
 van der Spek, R., & Derumigny, A. (2022). Fast estimation of Kendall’s
 Tau and conditional Kendall’s Tau matrices under structural assumptions.
-[arXiv:2204.03285](https://arxiv.org/pdf/2204.03285.pdf).
+[arXiv:2204.03285](https://arxiv.org/pdf/2204.03285).
 

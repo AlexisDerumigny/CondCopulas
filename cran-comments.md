@@ -1,11 +1,15 @@
 
-This fixes the NOTE:
+The NOTE:
 
-* Found the following Rd file(s) with Rd \link{} targets missing package
-  anchors:
-    estimateParCondCopula.Rd: VineCopula
-  Please provide package anchors for all Rd \link{} targets not in the
-  package itself and the base packages.
+* Found the following (possibly) invalid URLs:
+    URL: https://arxiv.org/pdf/2204.03285.pdf (moved to http://arxiv.org/pdf/2204.03285)
+      From: README.md
+      Status: 301
+      Message: Moved Permanently
+  For content that is 'Moved Permanently', please change http to https,
+  add trailing slashes, or replace the old by the new URL.
+
+has been fixed by replacing the old URL by the new URL.
 
 
 ## Test environments
