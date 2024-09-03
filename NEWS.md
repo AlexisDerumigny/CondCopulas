@@ -1,4 +1,17 @@
 
+# CondCopulas 0.1.4.1
+
+* Fix CRAN `NOTE`: 
+  * Found the following (possibly) invalid URLs:
+  
+      URL: https://arxiv.org/pdf/2204.03285.pdf (moved to http://arxiv.org/pdf/2204.03285)
+        From: README.md
+        Status: 301
+        Message: Moved Permanently
+    For content that is 'Moved Permanently', please change http to https,
+    add trailing slashes, or replace the old by the new URL.
+
+
 # CondCopulas 0.1.4
 
 * Argument names have been shortened: functions taking arguments of the form
@@ -29,11 +42,13 @@ the progress bar to show the progress of the computation.
 This package was already suggested by `data.tree` (which is imported).
 
 * Fix CRAN `NOTE`: 
-  * Found the following Rd file(s) with Rd \link{} targets missing package
-    anchors:
+  * Found the following Rd file(s) with Rd \link{} targets missing package anchors:
+  
       estimateParCondCopula.Rd: VineCopula
+	  
     Please provide package anchors for all Rd \link{} targets not in the
     package itself and the base packages.
+
 
 # CondCopulas 0.1.3
 
