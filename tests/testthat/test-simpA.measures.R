@@ -58,3 +58,22 @@ test_that("measures_nonsimplifyingness_NP works for valid input", {
                                    measures = c("T1_CvM_Cs3", "T1_CvM_Cs4")) })
 })
 
+
+test_that("measures_nonsimplifyingness_NP works several bandiwdths at the same time", {
+
+  X1 = rnorm(100)
+  X2 = rnorm(100)
+  Z = rnorm(100)
+
+  measures = measures_nonsimplifyingness_NP(X1 = X1, X2 = X2, Z = Z, h = c(0.1, 1))
+
+  expect_true("h" %in% colnames(measures))
+  expect_equal(sort(unique(measures$h)), c(0.1, 1) )
+
+  measures_0_1 = measures_nonsimplifyingness_NP(X1 = X1, X2 = X2, Z = Z, h = 0.1)
+
+  expect_identical(measures[which(measures$h == 0.1), c("measure", "value")],
+                   measures_0_1[, c("measure", "value")])
+})
+
+

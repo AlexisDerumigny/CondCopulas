@@ -13,19 +13,16 @@
 measures_nonsimplifyingness_NP <- function(
     X1, X2, Z, h,
     measures = "all",
-    kernel.name = "Epanechnikov", truncVal = h,
+    kernel.name = "Epanechnikov", truncVal = NULL,
     numericalInt = list(kind = "legendre", nGrid = 10))
 {
   .checkSame_nobs_X1X2Z(X1, X2, Z)
   n = length(X1)
 
   .checkUnivX1X2Z(X1, X2, Z)
-
-  nGrid = numericalInt$nGrid
-  grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
-  # Change of range to be on [0,1]
-  grid$nodes <- grid$nodes * (1/2 - h) + 1/2
-  grid$weights <- grid$weights / 2
+  if (length(truncVal) > 1){
+    stop("'truncVal' must be of length 1 or NULL")
+  }
 
   possible_measures = c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM",
                         "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS")
@@ -50,19 +47,35 @@ measures_nonsimplifyingness_NP <- function(
     }
   }
 
-  result = data.frame(
-    name = measures,
-    value = NA_real_
-  )
+  result = expand.grid(measure = measures,
+                       h = h,
+                       stringsAsFactors = FALSE)
+
+  if (is.null(truncVal)){
+    result$truncVal = result$h
+  } else {
+    result$truncVal = truncVal
+  }
+
+  result$value = NA_real_
 
   env <- environment()
 
   # Necessary to make the other functions work...
   X3 = Z
 
-  for (i in 1:length(measures)){
+  for (i in 1:nrow(result)){
+    h = result$h[i]
+    truncVal = result$truncVal[i]
+
+    nGrid = numericalInt$nGrid
+    grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
+    # Change of range to be on [0,1]
+    grid$nodes <- grid$nodes * (1/2 - h) + 1/2
+    grid$weights <- grid$weights / 2
+
     result$value[i] <- switch(
-      measures[i],
+      result$measure[i],
 
       "T1_CvM_Cs3" = {testStat_T1_CvM_Cs3(env); true_stat},
 
