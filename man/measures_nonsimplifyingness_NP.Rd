@@ -12,7 +12,7 @@ measures_nonsimplifyingness_NP(
   h,
   measures = "all",
   kernel.name = "Epanechnikov",
-  truncVal = h,
+  truncVal = NULL,
   numericalInt = list(kind = "legendre", nGrid = 10)
 )
 }
@@ -20,6 +20,19 @@ measures_nonsimplifyingness_NP(
 \item{X1, X2}{vector of \code{n} observations of the conditioned variables}
 
 \item{Z}{vector of \code{n} observations of the conditioning variable}
+
+\item{h}{the bandwidth used for kernel smoothing}
+
+\item{kernel.name}{the name of the kernel}
+
+\item{truncVal}{the value of truncation for the integral,
+i.e. the integrals are computed from \code{truncVal} to \code{1-truncVal}
+instead of from 0 to 1.
+Note that \code{truncVal} must be in the interval \eqn{[0, 0.5)},
+i.e. \eqn{0} is allowed but not \eqn{0.5}.
+
+The default is \code{truncVal = NULL}, which actually means that
+\code{truncVal = h} if \code{h < 0.5} and \code{truncVal = 0} else.}
 }
 \description{
 Compute a measure of non-simplifyingness based on non-parametric estimation

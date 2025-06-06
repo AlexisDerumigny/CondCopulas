@@ -99,17 +99,17 @@ measures_nonsimplifyingness_NP <- function(
     result$value[i] <- switch(
       result$measure[i],
 
-      "T1_CvM_Cs3" = {testStat_T1_CvM_Cs3(env); true_stat},
+      "T1_CvM_Cs3" = {testStat_T1_CvM_Cs3(env); env$true_stat},
 
-      "T1_CvM_Cs4" = {testStat_T1_CvM_Cs4(env); true_stat},
+      "T1_CvM_Cs4" = {testStat_T1_CvM_Cs4(env); env$true_stat},
 
-      "tilde_T0_CvM" = {testStat_tilde_T0_CvM(env); true_stat},
+      "tilde_T0_CvM" = {testStat_tilde_T0_CvM(env); env$true_stat},
 
-      "T1_KS_Cs3" = {testStat_T1_KS_Cs3(env); true_stat},
+      "T1_KS_Cs3" = {testStat_T1_KS_Cs3(env); env$true_stat},
 
-      "T1_KS_Cs4" = {testStat_T1_KS_Cs4(env); true_stat},
+      "T1_KS_Cs4" = {testStat_T1_KS_Cs4(env); env$true_stat},
 
-      "tilde_T0_KS" = {testStat_tilde_T0_KS(env); true_stat}
+      "tilde_T0_KS" = {testStat_tilde_T0_KS(env); env$true_stat}
     )
   }
 

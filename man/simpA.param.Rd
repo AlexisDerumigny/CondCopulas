@@ -14,7 +14,7 @@ simpA.param(
   h,
   nBootstrap = 100,
   kernel.name = "Epanechnikov",
-  truncVal = h,
+  truncVal = NULL,
   numericalInt = list(kind = "legendre", nGrid = 10)
 )
 }
@@ -60,7 +60,12 @@ Possible values are
 
 \item{truncVal}{the value of truncation for the integral,
 i.e. the integrals are computed from \code{truncVal} to \code{1-truncVal}
-instead of from 0 to 1.}
+instead of from 0 to 1.
+Note that \code{truncVal} must be in the interval \eqn{[0, 0.5)},
+i.e. \eqn{0} is allowed but not \eqn{0.5}.
+
+The default is \code{truncVal = NULL}, which actually means that
+\code{truncVal = h} if \code{h < 0.5} and \code{truncVal = 0} else.}
 
 \item{numericalInt}{parameters to be given to
 \code{statmod::\link[statmod]{gauss.quad}}, including the number of
