@@ -66,6 +66,13 @@ estimateNPCondCopula <- function(X1 = NULL, X2 = NULL, X3 = NULL,
   .checkSame_nobs_X1X2X3(X1, X2, X3)
   .checkUnivX1X2X3(X1, X2, X3)
 
+  if (any(U1_ < 0 | U1_ > 1 | U2_ < 0 | U2_ > 1)){
+    stop(errorCondition(
+      message = "All the elements of U1_ and U2_ should all be in the interval [0,1]",
+      class = "InvalidInputError"
+    ))
+  }
+
   nNewPoints1 = length(U1_)
   nNewPoints2 = length(U2_)
   nNewPoints3 = length(newX3)
