@@ -7,6 +7,14 @@ The new behavior is the following: there is 1 warning per call of
 `estimateNPCondCopula`.
 
 
+## Bug fixes:
+
+* In `simpA.NP` and `simpA.param`, the parameter `truncVal` used to have no
+effect (contrary to what was written in the documentation). It is now taken into
+account. Also it is now checked that this parameter belongs to the interval
+`[0, 1/2)` so that the integration interval is not empty.
+
+
 # CondCopulas 0.1.4.1
 
 * Fix CRAN `NOTE`: 
