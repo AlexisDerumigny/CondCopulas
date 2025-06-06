@@ -59,7 +59,7 @@ test_that("measures_nonsimplifyingness_NP works for valid input", {
 })
 
 
-test_that("measures_nonsimplifyingness_NP works several bandiwdths at the same time", {
+test_that("measures_nonsimplifyingness_NP works for several bandwidths at the same time", {
 
   X1 = rnorm(100)
   X2 = rnorm(100)
@@ -76,4 +76,22 @@ test_that("measures_nonsimplifyingness_NP works several bandiwdths at the same t
                    measures_0_1[, c("measure", "value")])
 })
 
+
+test_that("measures_nonsimplifyingness_NP does not work if truncVal is invalid", {
+
+  n = 50
+  X1 = rnorm(n)
+  X2 = rnorm(n)
+  Z = rnorm(n)
+
+  expect_error(
+    {measures = measures_nonsimplifyingness_NP(X1 = X1, X2 = X2, Z = Z, h = c(0.5, 1),
+                                               truncVal = -1)},
+  )
+
+  expect_error(
+    {measures = measures_nonsimplifyingness_NP(X1 = X1, X2 = X2, Z = Z, h = c(0.5, 1),
+                                               truncVal = 0.5)},
+  )
+})
 

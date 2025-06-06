@@ -8,6 +8,20 @@
 #' @param Z vector of \code{n} observations of the conditioning variable
 #'
 #'
+#' @param h the bandwidth used for kernel smoothing
+#'
+#' @param kernel.name the name of the kernel
+#'
+#' @param truncVal the value of truncation for the integral,
+#' i.e. the integrals are computed from \code{truncVal} to \code{1-truncVal}
+#' instead of from 0 to 1.
+#' Note that \code{truncVal} must be in the interval \eqn{[0, 0.5)},
+#' i.e. \eqn{0} is allowed but not \eqn{0.5}.
+#'
+#' The default is \code{truncVal = NULL}, which actually means that
+#' \code{truncVal = h} if \code{h < 0.5} and \code{truncVal = 0} else.
+#'
+#'
 #' @export
 #'
 measures_nonsimplifyingness_NP <- function(
@@ -52,8 +66,16 @@ measures_nonsimplifyingness_NP <- function(
                        stringsAsFactors = FALSE)
 
   if (is.null(truncVal)){
-    result$truncVal = result$h
+    result$truncVal = ifelse(h < 0.5, yes = h, no = 0)
+
   } else {
+    if (truncVal < 0 || truncVal >= 0.5){
+      stop(errorCondition(
+        message = paste0("'truncVal' must be in the interval [0, 0.5). ",
+                         "Here it is: ", truncVal),
+        class = "InvalidInputError"
+      ))
+    }
     result$truncVal = truncVal
   }
 
