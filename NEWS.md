@@ -1,4 +1,12 @@
 
+* Add more explicit warnings in `estimateNPCondCopula` when the bandwidth `h`
+is too small. This should reduce the total number of warnings there when using
+too small bandwidth. The previous behavior was the following: there would be 1
+warning per value of `X3` such that the total sum of kernel-based weights is 0.
+The new behavior is the following: there is 1 warning per call of
+`estimateNPCondCopula`.
+
+
 # CondCopulas 0.1.4.1
 
 * Fix CRAN `NOTE`: 

@@ -73,29 +73,61 @@ estimateNPCondCopula <- function(X1 = NULL, X2 = NULL, X3 = NULL,
   matrixK3 = computeKernelMatrix(
     observedX = X3, newX = newX3, kernel = kernel, h = h)
 
+  # Sometimes, h is too small, and then there are some points newX3, that are
+  # such that all all the kernel weights that correspond to them are 0.
+  # These points should be found out, and a warning be raised.
+  # They would cause anyway a problem further downstream with estimateCondQuantiles(),
+  # so it is better to catch them now than later.
+  which_zeroWeights = which(colSums(matrixK3) == 0)
+  which_nonZeroWeights = which(colSums(matrixK3) > 0)
+
+  if (length(which_zeroWeights) > 0){
+    warning(CondCopulas_warning_condition_base(
+      message = paste0(
+        length(which_zeroWeights), " ",
+        "points (out of ", length(newX3), ") have kernel weights that are all 0. ",
+        "This is usually caused by a too small bandwidth and/or ",
+        "by points that are too far away from the distribution of the conditioning variable."
+      ),
+      problematicPoints = newX3[which_zeroWeights],
+      subclass = "ZeroWeights_KernelWarning"
+    ))
+
+    if (length(which_nonZeroWeights) == 0){
+      # We now that all points have 0 weight. Estimation is therefore impossible.
+      # The best we can do is return an array with NAs everywhere.
+
+      array_C_IJ = array(dim = c(nNewPoints1, nNewPoints2, nNewPoints3))
+      return (array_C_IJ)
+    }
+  }
+
   # Computation of conditional quantiles
   matrix_condQuantile13 = estimateCondQuantiles(
-    observedX1 = X1, probsX1 = U1_, matrixK3 = matrixK3)
+    observedX1 = X1, probsX1 = U1_,
+    matrixK3 = matrixK3[ , which_nonZeroWeights, drop = FALSE])
 
   matrix_condQuantile23 = estimateCondQuantiles(
-    observedX1 = X2, probsX1 = U2_, matrixK3 = matrixK3)
+    observedX1 = X2, probsX1 = U2_,
+    matrixK3 = matrixK3[ , which_nonZeroWeights, drop = FALSE])
 
 
   # Computation of C_(1,2|3) ( U_(i,1) , U_(j,2) | X_(k,3) )
   array_C_IJ = array(dim = c(nNewPoints1, nNewPoints2, nNewPoints3))
 
-  for (k in 1:nNewPoints3)
+  for (k in 1:length(which_nonZeroWeights))
   {
+    k_original = which_nonZeroWeights[k]
     for (i in 1:nNewPoints1)
     {
       for (j in 1:nNewPoints2)
       {
-        array_C_IJ[i, j, k] =
-          sum(matrixK3[ , k] * as.numeric(X1 <= matrix_condQuantile13[i , k] &
-                                            X2 <= matrix_condQuantile23[j , k] ) )
+        array_C_IJ[i, j, k_original] = sum(
+          matrixK3[ , k_original] * as.numeric(X1 <= matrix_condQuantile13[i , k] &
+                                                 X2 <= matrix_condQuantile23[j , k] ) )
       }
     }
-    array_C_IJ[, , k] = array_C_IJ[, , k] / sum(matrixK3[, k])
+    array_C_IJ[, , k_original] = array_C_IJ[, , k_original] / sum(matrixK3[, k_original])
   }
 
   return (array_C_IJ)
