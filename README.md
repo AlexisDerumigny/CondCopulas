@@ -184,7 +184,12 @@ given discretized conditioning events.
 *Canadian Journal of Statistics*.
 [pdf](https://doi.org/10.1002/cjs.11742)
 
-van der Spek, R., & Derumigny, A. (2022). Fast estimation of Kendall’s
+van der Spek, R., & Derumigny, A. (2025). Fast estimation of Kendall’s
 Tau and conditional Kendall’s Tau matrices under structural assumptions.
-[arXiv:2204.03285](https://arxiv.org/pdf/2204.03285).
+*Dependence Modeling*, 13(1), 20250012.
+[pdf](https://doi.org/10.1515/demo-2025-0012)
+ 
+Derumigny, A. (2025).
+Measures of non-simplifyingness for conditional copulas and vines. 
+[arXiv:2504.07704](https://arxiv.org/pdf/2504.07704)
 
