@@ -23,6 +23,12 @@ measures_nonsimplifyingness_NP(
 
 \item{h}{the bandwidth used for kernel smoothing}
 
+\item{measures}{choices of measures of non-simplifyingness to be computed.
+\code{measures = "all"} includes all available non-parametric measures of
+non-simplifyingness. Otherwise, \code{measures} must be a character vector
+and a subset of \code{c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM", }
+\code{"T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS")}.}
+
 \item{kernel.name}{the name of the kernel}
 
 \item{truncVal}{the value of truncation for the integral,
@@ -33,6 +39,10 @@ i.e. \eqn{0} is allowed but not \eqn{0.5}.
 
 The default is \code{truncVal = NULL}, which actually means that
 \code{truncVal = h} if \code{h < 0.5} and \code{truncVal = 0} else.}
+
+\item{numericalInt}{parameters to be given to
+\code{statmod::\link[statmod]{gauss.quad}}, including the number of
+quadrature points and the type of interpolation.}
 }
 \description{
 Compute a measure of non-simplifyingness based on non-parametric estimation

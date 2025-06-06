@@ -7,6 +7,11 @@
 #'
 #' @param Z vector of \code{n} observations of the conditioning variable
 #'
+#' @param measures choices of measures of non-simplifyingness to be computed.
+#' \code{measures = "all"} includes all available non-parametric measures of
+#' non-simplifyingness. Otherwise, \code{measures} must be a character vector
+#' and a subset of \code{c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM", }
+#' \code{"T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS")}.
 #'
 #' @param h the bandwidth used for kernel smoothing
 #'
@@ -20,6 +25,10 @@
 #'
 #' The default is \code{truncVal = NULL}, which actually means that
 #' \code{truncVal = h} if \code{h < 0.5} and \code{truncVal = 0} else.
+#'
+#' @param numericalInt parameters to be given to
+#' \code{statmod::\link[statmod]{gauss.quad}}, including the number of
+#' quadrature points and the type of interpolation.
 #'
 #'
 #' @export
