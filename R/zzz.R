@@ -59,6 +59,27 @@
   }
 }
 
+.checkUnivX1X2Z <- function(X1, X2, Z)
+{
+  if (NCOL(X1) > 1){
+    stop(errorCondition(
+      message = paste0("X1 must be univariate. Here it has ",
+                       NCOL(X1), " columns"),
+      class = "WrongDimensionError") )
+  }
+  if (NCOL(X2) > 1){
+    stop(errorCondition(
+      message = paste0("X2 must be univariate. Here it has ",
+                       NCOL(X2), " columns"),
+      class = "WrongDimensionError") )
+  }
+  if (NCOL(Z) > 1){
+    stop(errorCondition(
+      message = paste0("Z must be univariate. Here it has ",
+                       NCOL(Z), " columns"),
+      class = "WrongDimensionError") )
+  }
+}
 
 .observedX1X2_to_X1X2 <- function(env)
 {
