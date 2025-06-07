@@ -267,9 +267,9 @@ CKT.kernel.univariate <- function(X1, X2, matrixSignsPairs, Z,
                                   progressBar = TRUE)
 {
   if (typeEstCKT != "wdm"){
-    if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
-      stop("matrixSignsPairs must be a square matrix.")
-    } else if (nrow(matrixSignsPairs) != length(Z)){
+    .check_MatrixSignPairs(matrixSignsPairs)
+
+    if (nrow(matrixSignsPairs) != length(Z)){
       stop(paste0("Z must have the same length ",
                   "as the number of rows of matrixSignsPairs."))
     }
@@ -336,16 +336,14 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
                                     progressBar = TRUE)
 {
   if (typeEstCKT != "wdm"){
-    if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
-      stop("matrixSignsPairs must be a square matrix.")
-    } else if (nrow(matrixSignsPairs) != nrow(Z)){
-      stop(paste0("Z and matrixSignsPairs must have",
-                  "the same number of rows."))
-    } else if (ncol(Z) != ncol(ZToEstimate)){
-      stop(paste0("Z and ZToEstimate must have",
-                  "the same number of columns."))
+    .check_MatrixSignPairs(matrixSignsPairs)
+
+    if (NROW(matrixSignsPairs) != NROW(Z)){
+      stop("'Z' and 'matrixSignsPairs' must have the same number of rows.")
     }
   }
+
+  .checkSame_ncols_Z_newZ(Z, ZToEstimate, name_Z = "Z", name_newZ = "ZToEstimate")
 
   dim_Z = ncol(Z)
   n_prime = nrow(ZToEstimate)
@@ -427,6 +425,8 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'
 #' @param Z a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
+#' (in the case that several conditioning variables are given; in this case,
+#' each column corresponds to 1 conditioning variable).
 #'
 #' @param newZ the new data of observations of Z at which
 #' the conditional Kendall's tau should be estimated.
@@ -556,10 +556,14 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   X1 = as.numeric(X1)
   X2 = as.numeric(X2)
 
+  # Checking that the number of columns of Z and of newZ are the same
+  .checkSame_ncols_Z_newZ(Z, newZ, name_Z = "Z", name_newZ = "newZ")
+
   # Putting Z as a column vector if it has only one column
   if (NCOL(Z) == 1 && is.matrix(Z)){
     Z = as.numeric(Z)
   }
+
 
   if (typeEstCKT == "wdm") {
     matrixSignsPairs = NULL

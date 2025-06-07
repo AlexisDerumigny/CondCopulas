@@ -21,6 +21,19 @@
   }
 }
 
+.checkSame_ncols_Z_newZ <- function(Z, newZ, name_Z, name_newZ){
+  if (NCOL(Z) != NCOL(newZ)){
+    stop(errorCondition(
+      message = paste0(name_Z, " and ", name_newZ ,
+                       " must have the same number of columns ",
+                       "(so the same number of conditioning variables). ",
+                       "However, here ", name_Z, " has ", NCOL(Z), " columns ",
+                       "while ", name_newZ, " has ", NCOL(newZ), " columns." ),
+      class = "WrongDimensionError"),
+    )
+  }
+}
+
 .checkUnivX1X2 <- function(X1, X2)
 {
   if (NCOL(X1) > 1){
@@ -78,6 +91,19 @@
       message = paste0("Z must be univariate. Here it has ",
                        NCOL(Z), " columns"),
       class = "WrongDimensionError") )
+  }
+}
+
+.check_MatrixSignPairs <- function(matrixSignsPairs)
+{
+  if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
+    stop(errorCondition(
+      message = paste0("'matrixSignsPairs' must be a square matrix. ",
+                       "Here, its dimensions are: ",
+                       nrow(matrixSignsPairs), " rows and ",
+                       ncol(matrixSignsPairs), " columns."),
+      class = "WrongDimensionError")
+    )
   }
 }
 

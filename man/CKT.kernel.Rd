@@ -29,7 +29,9 @@ CKT.kernel(
 (or a 1-column matrix)}
 
 \item{Z}{a vector of n observations of the conditioning variable,
-or a matrix with n rows of observations of the conditioning vector}
+or a matrix with n rows of observations of the conditioning vector
+(in the case that several conditioning variables are given; in this case,
+each column corresponds to 1 conditioning variable).}
 
 \item{newZ}{the new data of observations of Z at which
 the conditional Kendall's tau should be estimated.}
