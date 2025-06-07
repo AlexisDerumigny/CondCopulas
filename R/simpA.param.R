@@ -149,7 +149,7 @@ simpA.param <- function(
   } else {
     if (truncVal < 0 || truncVal >= 0.5){
       stop(errorCondition(
-        message = paste0("'truncVal' must be between 0 and 1/2 (strictly). ",
+        message = paste0("'truncVal' must be [0, 0.5). ",
                          "Here it is: ", truncVal),
         class = "InvalidInputError"
       ))
