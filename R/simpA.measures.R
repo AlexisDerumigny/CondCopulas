@@ -30,6 +30,10 @@
 #' \code{statmod::\link[statmod]{gauss.quad}}, including the number of
 #' quadrature points and the type of interpolation.
 #'
+#' @param verbose option used for debugging. If \code{verbose = 0}, the function
+#' is silent. Higher values of \code{verbose} give more explicit details on the
+#' computations.
+#'
 #'
 #' @export
 #'
@@ -37,7 +41,8 @@ measures_nonsimplifyingness_NP <- function(
     X1, X2, Z, h,
     measures = "all",
     kernel.name = "Epanechnikov", truncVal = NULL,
-    numericalInt = list(kind = "legendre", nGrid = 10))
+    numericalInt = list(kind = "legendre", nGrid = 10),
+    verbose = 0)
 {
   .checkSame_nobs_X1X2Z(X1, X2, Z)
   n = length(X1)
@@ -77,7 +82,7 @@ measures_nonsimplifyingness_NP <- function(
   # We now determine the truncation value based on the user-specified `truncVal`
   # or on the `h` if `truncVal` is missing.
   if (is.null(truncVal)){
-    result$truncVal = ifelse(h < 0.5, yes = h, no = 0)
+    result$truncVal = ifelse(result$h < 0.5, yes = result$h, no = 0)
 
   } else {
     if (truncVal < 0 || truncVal >= 0.5){
@@ -100,6 +105,9 @@ measures_nonsimplifyingness_NP <- function(
   for (i in 1:nrow(result)){
     h = result$h[i]
     truncVal = result$truncVal[i]
+    if (verbose > 0){
+      cat("h = ", h, "; truncVal = ", truncVal, "; ")
+    }
 
     nGrid = numericalInt$nGrid
     grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
@@ -124,6 +132,9 @@ measures_nonsimplifyingness_NP <- function(
 
       "tilde_T0_KS" = {testStat_tilde_T0_KS(env); env$true_stat}
     )
+    if (verbose > 0){
+      cat(result$measure[i], " = ", result$value[i], "\n")
+    }
   }
 
   return (result)

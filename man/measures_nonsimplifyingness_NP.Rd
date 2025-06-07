@@ -13,7 +13,8 @@ measures_nonsimplifyingness_NP(
   measures = "all",
   kernel.name = "Epanechnikov",
   truncVal = NULL,
-  numericalInt = list(kind = "legendre", nGrid = 10)
+  numericalInt = list(kind = "legendre", nGrid = 10),
+  verbose = 0
 )
 }
 \arguments{
@@ -43,6 +44,10 @@ The default is \code{truncVal = NULL}, which actually means that
 \item{numericalInt}{parameters to be given to
 \code{statmod::\link[statmod]{gauss.quad}}, including the number of
 quadrature points and the type of interpolation.}
+
+\item{verbose}{option used for debugging. If \code{verbose = 0}, the function
+is silent. Higher values of \code{verbose} give more explicit details on the
+computations.}
 }
 \description{
 Compute a measure of non-simplifyingness based on non-parametric estimation
