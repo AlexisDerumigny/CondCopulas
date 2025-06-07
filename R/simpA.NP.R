@@ -176,6 +176,8 @@ simpA.NP <- function(
     grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
     # Change of range to be on [truncVal , 1 - truncVal]
     grid$nodes <- grid$nodes * (1/2 - truncVal) + 1/2
+
+    # FIXME: the weights should depend on `truncVal`
     grid$weights <- grid$weights / 2
   }
 

@@ -74,6 +74,8 @@ measures_nonsimplifyingness_NP <- function(
                        h = h,
                        stringsAsFactors = FALSE)
 
+  # We now determine the truncation value based on the user-specified `truncVal`
+  # or on the `h` if `truncVal` is missing.
   if (is.null(truncVal)){
     result$truncVal = ifelse(h < 0.5, yes = h, no = 0)
 
@@ -101,8 +103,10 @@ measures_nonsimplifyingness_NP <- function(
 
     nGrid = numericalInt$nGrid
     grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
-    # Change of range to be on [0,1]
-    grid$nodes <- grid$nodes * (1/2 - h) + 1/2
+    # Change of range to be on [truncVal , 1 - truncVal]
+    grid$nodes <- grid$nodes * (1/2 - truncVal) + 1/2
+
+    # FIXME: the weights should depend on `truncVal`
     grid$weights <- grid$weights / 2
 
     result$value[i] <- switch(
