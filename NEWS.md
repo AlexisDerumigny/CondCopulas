@@ -14,6 +14,9 @@ effect (contrary to what was written in the documentation). It is now taken into
 account. Also it is now checked that this parameter belongs to the interval
 `[0, 1/2)` so that the integration interval is not empty.
 
+* In `simpA.NP` and `simpA.param`, the weights involved in the Gaussian quadrature
+have been fixed to correspond to the correct integration interval.
+
 
 # CondCopulas 0.1.4.1
 

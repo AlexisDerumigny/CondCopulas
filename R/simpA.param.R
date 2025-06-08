@@ -159,12 +159,9 @@ simpA.param <- function(
   n <- length(X1)
 
   nGrid = numericalInt$nGrid
-  grid <- statmod::gauss.quad(n = nGrid, kind = numericalInt$kind)
-  # Change of range to be on [truncVal , 1 - truncVal]
-  grid$nodes <- grid$nodes * (1/2 - truncVal) + 1/2
-
-  # FIXME: the weights should depend on `truncVal`
-  grid$weights <- grid$weights / 2
+  # grid on [truncVal , 1 - truncVal]
+  grid <- get.gauss.quad(nGrid = nGrid, kind = numericalInt$kind,
+                         center = 1/2, half_length = (1/2 - truncVal))
 
   switch(
     typeBoot,
