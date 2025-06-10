@@ -42,6 +42,8 @@
 #' Only needed if \code{typeEstCKT} is not the default 'wdm'.
 #'
 #' @param nPairs number of pairs used in the cross-validation criteria.
+#' Use \code{nPairs = "all"} to choose all pairs.
+#' The default is \code{nPairs = 10 * n}, where \code{n} is the sample size.
 #'
 #' @param typeEstCKT type of estimation of the conditional Kendall's tau.
 #'
@@ -103,7 +105,7 @@
 #'
 CKT.hCV.l1out <- function (X1 = NULL, X2 = NULL, Z = NULL,
                            range_h, matrixSignsPairs = NULL,
-                           nPairs = 10*length(X1),
+                           nPairs = NULL,
                            typeEstCKT = "wdm", kernel.name = "Epa",
                            progressBar = TRUE, verbose = FALSE,
                            observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
@@ -120,6 +122,13 @@ CKT.hCV.l1out <- function (X1 = NULL, X2 = NULL, Z = NULL,
   .checkUnivX1X2(X1, X2)
   if (NCOL(Z) == 1 && is.matrix(Z)){
     Z = as.numeric(Z)
+  }
+
+  if (is.null(nPairs)){
+    nPairs <- 10 * length(X1)
+  } else if (nPairs == "all"){
+    n <- length(X1)
+    nPairs <- n * (n-1) / 2
   }
 
   # Construction of the matrix of selected pairs

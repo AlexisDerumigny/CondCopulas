@@ -17,6 +17,10 @@ in particular, if the input already contained `NA`s.
 * In case of cross-validation, `CKT.kernel` also returns the result of the
 corresponding function (`CKT.hCV.l1out` or `CKT.hCV.Kfolds`).
 
+* New option `nPairs = "all"` in `CKT.hCV.l1out` to use all possible pairs.
+Also available in `CKT.kernel` if `CKT.hCV.l1out` is chosen as the cross-validation
+method.
+
 
 ## Bug fixes:
 

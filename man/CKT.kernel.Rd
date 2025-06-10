@@ -56,7 +56,9 @@ Possible choices are \code{"leave-one-out"} and \code{"Kfolds"}.}
 if \code{methodCV = "Kfolds"}.}
 
 \item{nPairs}{number of pairs used in the cross-validation criteria,
-if \code{methodCV = "leave-one-out"}.}
+if \code{methodCV = "leave-one-out"}. Use \code{nPairs = "all"} to choose
+all pairs. The default is \code{nPairs = 10 * n}, where \code{n} is the
+sample size.}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.
 Possible choices are \itemize{

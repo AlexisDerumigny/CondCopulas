@@ -454,7 +454,9 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' Possible choices are \code{"leave-one-out"} and \code{"Kfolds"}.
 #'
 #' @param nPairs number of pairs used in the cross-validation criteria,
-#' if \code{methodCV = "leave-one-out"}.
+#' if \code{methodCV = "leave-one-out"}. Use \code{nPairs = "all"} to choose
+#' all pairs. The default is \code{nPairs = 10 * n}, where \code{n} is the
+#' sample size.
 #'
 #' @param Kfolds number of subsamples used,
 #' if \code{methodCV = "Kfolds"}.
@@ -630,10 +632,6 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
     resultCV = NULL
 
   } else {
-
-    if (is.null(nPairs)){
-      nPairs <- 10 * length(X1)
-    }
 
     # Do the cross-validation
 

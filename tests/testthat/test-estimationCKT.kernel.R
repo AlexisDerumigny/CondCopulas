@@ -260,5 +260,12 @@ test_that("Cross-validation works for CKT.kernel", {
       newZ = newZ, h = c(0.01, 0.1, 1, 10), kernel.name = "Epa", methodCV = "leave-one-out",
       nPairs = Inf)
   })
+
+  expect_no_error({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = c(0.01, 0.1, 1, 10), kernel.name = "Epa", methodCV = "leave-one-out",
+      nPairs = "all")
+  })
 })
 
