@@ -29,7 +29,7 @@
                        "(so the same number of conditioning variables). ",
                        "However, here ", name_Z, " has ", NCOL(Z), " columns ",
                        "while ", name_newZ, " has ", NCOL(newZ), " columns." ),
-      class = "WrongDimensionError"),
+      class = "WrongDimensionError")
     )
   }
 }
