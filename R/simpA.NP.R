@@ -171,7 +171,7 @@ simpA.NP <- function(
   n <- length(X1)
 
   if (testStat %in% c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM",
-                      "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS")){
+                      "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS", "I_2n")){
 
     nGrid = numericalInt$nGrid
     # grid on [truncVal , 1 - truncVal]
