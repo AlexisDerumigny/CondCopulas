@@ -12,7 +12,7 @@ CKT.hCV.l1out(
   Z = NULL,
   range_h,
   matrixSignsPairs = NULL,
-  nPairs = 10 * length(X1),
+  nPairs = NULL,
   typeEstCKT = "wdm",
   kernel.name = "Epa",
   progressBar = TRUE,
@@ -54,7 +54,9 @@ to the observations of Z}
 produced by \code{\link{computeMatrixSignPairs}(observedX1, observedX2)}.
 Only needed if \code{typeEstCKT} is not the default 'wdm'.}
 
-\item{nPairs}{number of pairs used in the cross-validation criteria.}
+\item{nPairs}{number of pairs used in the cross-validation criteria.
+Use \code{nPairs = "all"} to choose all pairs.
+The default is \code{nPairs = 10 * n}, where \code{n} is the sample size.}
 
 \item{typeEstCKT}{type of estimation of the conditional Kendall's tau.}
 
