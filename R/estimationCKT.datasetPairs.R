@@ -304,9 +304,10 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
   # } else { cut = +Inf }
   if (!is.null(nPairs) && nPairs < nrow(dataMatrix)){
     cut = stats::quantile(x = dataMatrix[, dimZ+2], probs = nPairs / nrow(dataMatrix))
+
+    dataMatrix = dataMatrix[ dataMatrix[,dimZ+2] <= cut ,]
   }
 
-  dataMatrix = dataMatrix[ dataMatrix[,dimZ+2] <= cut ,]
   colnames(dataMatrix) <- c("concordant", paste(rep("Z",dimZ), 1:dimZ, sep="_"),
                             "normDiff", "iUsed", "jUsed")
   return (dataMatrix)

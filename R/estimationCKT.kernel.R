@@ -499,7 +499,7 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' Dependence Modeling, 7(1), 292-321.
 #' \doi{10.1515/demo-2019-0016}
 #'
-#' @return a list with two components
+#' @return a list with components:
 #' \itemize{
 #'    \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
 #'    containing the values of the estimated conditional Kendall's tau.
@@ -507,6 +507,10 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'    \item \code{finalh} the bandwidth \code{h} that was finally used
 #'    for kernel smoothing (either the one specified by the user
 #'    or the one chosen by cross-validation if multiple bandwidths were given.)
+#'
+#'    \item \code{resultCV} (only in case of cross-validation). This gives the
+#'    output of the cross-validation function that is used, i.e. the output of
+#'    either \code{\link{CKT.hCV.l1out}} or \code{\link{CKT.hCV.Kfolds}}.
 #' }
 #'
 #' @seealso \code{\link{CKT.estimate}} for other estimators
@@ -583,7 +587,7 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
                        h, kernel.name = "Epa",
                        methodCV = "Kfolds",
-                       Kfolds = 5, nPairs = 10*length(observedX1),
+                       Kfolds = 5, nPairs = NULL,
                        typeEstCKT = "wdm", progressBar = TRUE,
                        warnNA = TRUE,
                        observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
@@ -623,7 +627,13 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
 
   if (length(h) == 1){
     finalh = h
+    resultCV = NULL
+
   } else {
+
+    if (is.null(nPairs)){
+      nPairs <- 10 * length(X1)
+    }
 
     # Do the cross-validation
 
@@ -707,7 +717,8 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
     }
   }
 
-  return (list(estimatedCKT = estCKT, h = finalh))
+  return (list(estimatedCKT = estCKT, h = finalh,
+               resultCV = resultCV))
 }
 
 

@@ -13,7 +13,7 @@ CKT.kernel(
   kernel.name = "Epa",
   methodCV = "Kfolds",
   Kfolds = 5,
-  nPairs = 10 * length(observedX1),
+  nPairs = NULL,
   typeEstCKT = "wdm",
   progressBar = TRUE,
   warnNA = TRUE,
@@ -95,7 +95,7 @@ usually if either the bandwidth \code{h} is too small, or if there are already
 \code{X2}, \code{Z}. Support for this will be removed at a later version.}
 }
 \value{
-a list with two components
+a list with components:
 \itemize{
    \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
    containing the values of the estimated conditional Kendall's tau.
@@ -103,6 +103,10 @@ a list with two components
    \item \code{finalh} the bandwidth \code{h} that was finally used
    for kernel smoothing (either the one specified by the user
    or the one chosen by cross-validation if multiple bandwidths were given.)
+
+   \item \code{resultCV} (only in case of cross-validation). This gives the
+   output of the cross-validation function that is used, i.e. the output of
+   either \code{\link{CKT.hCV.l1out}} or \code{\link{CKT.hCV.Kfolds}}.
 }
 }
 \description{

@@ -11,8 +11,11 @@ that all the entries are numeric (and that the dimensions match).
 
 * Add option `warnNA = FALSE` to `CKT.kernel` for not raising warnings if some
 of the estimated conditional Kendall's tau are `NA`s. The corresponding warning
-has also been improved and is more explicit about the number of NAs produced, in
-particular, if the input already contained `NA`s.
+has also been improved and is more explicit about the number of `NA`s produced,
+in particular, if the input already contained `NA`s.
+
+* In case of cross-validation, `CKT.kernel` also returns the result of the
+corresponding function (`CKT.hCV.l1out` or `CKT.hCV.Kfolds`).
 
 
 ## Bug fixes:

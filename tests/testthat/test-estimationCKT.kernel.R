@@ -228,3 +228,37 @@ test_that("CKT.kernel gives warning in presence of NAs", {
     X1 = X1, X2 = X2, Z = Z,
     newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm", warnNA = FALSE)
 })
+
+
+
+test_that("Cross-validation works for CKT.kernel", {
+
+  set.seed(1)
+  N = 50
+  Z = rnorm(n = N)
+  X1 = rnorm(n = N)
+  X2 = rnorm(n = N)
+
+  newZ = seq(-2, 2, by = 0.5)
+
+
+  expect_no_error({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = c(0.1, 1, 10), kernel.name = "Epa", methodCV = "Kfolds")
+  })
+
+  expect_no_error({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = c(0.01, 0.1, 1, 10), kernel.name = "Epa", methodCV = "leave-one-out")
+  })
+
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = c(0.01, 0.1, 1, 10), kernel.name = "Epa", methodCV = "leave-one-out",
+      nPairs = Inf)
+  })
+})
+
