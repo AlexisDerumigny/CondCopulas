@@ -2,6 +2,7 @@
 % Please edit documentation in R/simpA.kendallReg.R
 \name{simpA.kendallReg}
 \alias{simpA.kendallReg}
+\alias{se.simpA_kendallReg_test}
 \alias{coef.simpA_kendallReg_test}
 \alias{vcov.simpA_kendallReg_test}
 \alias{print.simpA_kendallReg_test}
@@ -33,6 +34,8 @@ simpA.kendallReg(
   Kfolds_lambda = 5,
   l_norm = 1
 )
+
+\method{se}{simpA_kendallReg_test}(object, type, ...)
 
 \method{coef}{simpA_kendallReg_test}(object, ...)
 
@@ -84,6 +87,14 @@ the sum of squares of differences.}
 
 \item{object, x}{an \code{S3} object of class \code{simpA_kendallReg_test}.}
 
+\item{type}{type of standard error to be returned. Possible values are: \itemize{
+  \item \code{"coefficients"}: standard errors for estimated coefficients
+  \item \code{"kernel-based CKT"}: standard errors for the kernel-based
+  estimated values of conditional Kendall's taus
+  \item \code{"regression-based CKT"}: standard errors for the regression-based
+  estimated values of conditional Kendall's taus
+}}
+
 \item{...}{other arguments, unused}
 
 \item{ylim}{graphical parameter, see \link{plot}}
@@ -122,6 +133,9 @@ with standard errors, z values and p-values.
 
 Function \code{vcov.simpA_kendallReg_test} returns the (estimated)
 variance-covariance matrix of the estimated coefficients.
+
+Function \code{se.simpA_kendallReg_test} returns the standard errors of the
+estimated coefficients or of the estimated conditional Kendall's taus.
 }
 \description{
 This function computes Kendall's regression, a regression-like
@@ -158,6 +172,10 @@ plot(result)
 coef(result)
 # Obtain variance-covariance matrix of the coefficients
 vcov(result)
+# Obtain standard errors of the kernel-based estimates of CKT
+se(result, type = "kernel-based CKT")
+# Obtain standard errors of the regression-based estimates of CKT
+se(result, type = "regression-based CKT")
 
 result_morePhi = simpA.kendallReg(
    X1, X2, Z, h_kernel = 0.03,

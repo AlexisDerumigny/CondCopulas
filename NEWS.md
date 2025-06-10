@@ -21,6 +21,9 @@ corresponding function (`CKT.hCV.l1out` or `CKT.hCV.Kfolds`).
 Also available in `CKT.kernel` if `CKT.hCV.l1out` is chosen as the cross-validation
 method.
 
+* New S3 generic `se` for the standard errors. Currently only used for objects
+returned by `simpA.kendallReg`.
+
 
 ## Bug fixes:
 
@@ -34,6 +37,10 @@ have been fixed to correspond to the correct integration interval.
 
 * Some errors occurring in `CKT.kernel` with a multivariate `Z` and small
 bandwidth have been fixed.
+
+* Fix bug in computation of the standard errors in `simpA.kendallReg`. This
+affected also the corresponding p-values of each estimated coefficients
+(but not the p-value of the Wald-type test which are computed in another way).
 
 
 # CondCopulas 0.1.4.1

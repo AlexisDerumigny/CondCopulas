@@ -58,6 +58,14 @@
 #'
 #' @param ylim graphical parameter, see \link{plot}
 #'
+#' @param type type of standard error to be returned. Possible values are: \itemize{
+#'   \item \code{"coefficients"}: standard errors for estimated coefficients
+#'   \item \code{"kernel-based CKT"}: standard errors for the kernel-based
+#'   estimated values of conditional Kendall's taus
+#'   \item \code{"regression-based CKT"}: standard errors for the regression-based
+#'   estimated values of conditional Kendall's taus
+#' }
+#'
 #' @param ... other arguments, unused
 #'
 #' @return \code{simpA.kendallReg} returns an \code{S3} object of
@@ -93,6 +101,9 @@
 #'
 #' Function \code{vcov.simpA_kendallReg_test} returns the (estimated)
 #' variance-covariance matrix of the estimated coefficients.
+#'
+#' Function \code{se.simpA_kendallReg_test} returns the standard errors of the
+#' estimated coefficients or of the estimated conditional Kendall's taus.
 #'
 #'
 #' @references
@@ -143,6 +154,10 @@
 #' coef(result)
 #' # Obtain variance-covariance matrix of the coefficients
 #' vcov(result)
+#' # Obtain standard errors of the kernel-based estimates of CKT
+#' se(result, type = "kernel-based CKT")
+#' # Obtain standard errors of the regression-based estimates of CKT
+#' se(result, type = "regression-based CKT")
 #'
 #' result_morePhi = simpA.kendallReg(
 #'    X1, X2, Z, h_kernel = 0.03,
@@ -353,14 +368,54 @@ simpA.kendallReg <- function(
 }
 
 
+#' @export
+#' @rdname simpA.kendallReg
+se.simpA_kendallReg_test <- function(object, type, ...) {
+
+  switch (
+    type,
+
+    "coefficients" = {
+      # Compute asymptotic standard errors for the coefficients
+      std_errors = sqrt(diag(object$varCov))
+      return (std_errors)
+    },
+
+    "kernel-based CKT" = {
+      asympt_se_np = sqrt(object$resultWn$vect_H_ii) / sqrt(object$n * object$h_kernel)
+      return (asympt_se_np)
+    },
+
+    "regression-based CKT" = {
+
+      # Remember the chain rule (lambda^{-1})' = 1 / (lambda' o lambda^{-1}))
+      lambdainvprime_estCKT = 1 / vapply(X = object$fitted.values,
+                                         FUN = object$Lambda_deriv, FUN.VALUE = 1)
+
+      # vcov matrix for beta' phi(z)
+      designMatrix = object$designMatrix_withIntercept
+      varCov = object$varCov
+      vcova = designMatrix %*% varCov %*% t(designMatrix)
+
+      # vcov matrix for lambdainv(beta' phi(z))
+      # by the delta method, this is given by the sandwich rule
+      vcova = diag(lambdainvprime_estCKT) %*% vcova %*% diag(lambdainvprime_estCKT)
+
+      asympt_se_reg = sqrt(diag(vcova))
+      return (asympt_se_reg)
+    }
+  )
+}
+
+
 #'
 #' @export
 #' @rdname simpA.kendallReg
 #'
 coef.simpA_kendallReg_test <- function(object, ...)
 {
-  std_errors = diag(object$varCov)
-  z_values = object$coef / diag(object$varCov)
+  std_errors = se(object, type = "coefficients")
+  z_values = object$coef / std_errors
   coef = cbind(Estimate = object$coef,
                `Std. Error` = std_errors,
                `z value` = z_values,
@@ -386,16 +441,12 @@ print.simpA_kendallReg_test <- function(x, ...)
   # Use stringi::stri_escape_unicode to get the unicode characters escaped
   cat("Kendall regression: \u039b(\U0001d70f) = \u03b20 + \u03b2\' phi(z) \n")
   cat("where \U0001d70f is conditional Kendall's tau between X1 and X2 given Z = z \n \n")
-  cat("Coefficients: \n")
-  std_errors = diag(x$varCov)
-  z_values = x$coef / diag(x$varCov)
-  coef = cbind(Estimate = x$coef,
-               `Std. Error` = std_errors,
-               `z value` = z_values,
-               `p-value` = 2 * stats::pnorm(abs(z_values), lower.tail = FALSE))
 
+  cat("Coefficients: \n")
+  coef = coef(x, type = "coefficients")
   stats::printCoefmat(coef)
   cat("\n")
+
   cat("Wald statistics \u03b2\' V^{-1} \u03b2\ :", x$statWn, "\n")
   cat("Test of the simplifying assumption with", x$df, "DF,  ",
       "pvalue: ", x$p_val)
@@ -407,29 +458,18 @@ print.simpA_kendallReg_test <- function(x, ...)
 plot.simpA_kendallReg_test <- function(x, ylim = c(-1.5, 1.5), ...)
 {
   z = x$vectorZToEstimate
+
   est_CKT_NP = x$vector_hat_CKT_NP
-  asympt_se_np = sqrt(x$resultWn$vect_H_ii) / sqrt(x$n * x$h_kernel)
+  asympt_se_np = se(object = x, type = "kernel-based CKT")
 
   plot(z, est_CKT_NP, type = "l", ylim = ylim, col = "red",
        ylab = "Conditional Kendall's tau given Z = z")
+
   graphics::lines(z, est_CKT_NP + 1.96 * asympt_se_np, type = "l", col = "red")
   graphics::lines(z, est_CKT_NP - 1.96 * asympt_se_np, type = "l", col = "red")
 
   est_CKT_reg = vapply(X = x$fitted.values, FUN = x$Lambda_inv, FUN.VALUE = 1)
-
-  # Remember the chain rule (lambda^{-1})' = 1 / (lambda' o lambda^{-1}))
-  lambdainvprime_estCKT = 1 / vapply(X = x$fitted.values, FUN = x$Lambda_deriv, FUN.VALUE = 1)
-
-  # vcov matrix for beta' phi(z)
-  designMatrix = x$designMatrix_withIntercept
-  varCov = x$varCov
-  vcova = designMatrix %*% varCov %*% t(designMatrix)
-
-  # vcov matrix for lambdainv(beta' phi(z))
-  # by the delta method, this is given by the sandwich rule
-  vcova = diag(lambdainvprime_estCKT) %*% vcova %*% diag(lambdainvprime_estCKT)
-
-  asympt_se_reg = sqrt(diag(vcova))
+  asympt_se_reg = se(object = x, type = "regression-based CKT")
 
   graphics::lines(z, est_CKT_reg, type = "l", ylim = ylim, col = "blue")
   graphics::lines(z, est_CKT_reg + 1.96 * asympt_se_reg, type = "l", col = "blue")

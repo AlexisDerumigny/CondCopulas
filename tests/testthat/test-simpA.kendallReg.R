@@ -175,6 +175,11 @@ test_that("simpA.kendallReg works with many phi", {
        function(x){return(as.numeric(x <= 0.4))},
        function(x){return(as.numeric(x <= 0.6))}) )
 
+  result = simpA.kendallReg(
+    X1, X2, Z, h_kernel = 0.03,
+    listPhi = list(
+      function(x){return(x)}) )
+
   expect_equal(result$p_val, 0, tolerance = 0.02)
 
   # We simulate from a simplified conditional copula
