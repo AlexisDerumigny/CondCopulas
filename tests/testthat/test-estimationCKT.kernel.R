@@ -201,3 +201,30 @@ test_that("CKT.kernel works without error for the different types of estimators 
     newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 4)
 })
 
+
+
+test_that("CKT.kernel gives warning in presence of NAs", {
+
+  set.seed(1)
+  N = 50
+  Z = cbind(rnorm(n = N), rnorm(n = N))
+  X1 = rnorm(n = N)
+  X2 = rnorm(n = N)
+
+  newZ = expand.grid(Z1 = seq(-3, 3, by = 0.5),
+                     Z2 = seq(-3, 3, by = 1))
+
+  newZ[1,1] = NA
+  X1[2] = NA
+
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm")
+  })
+
+  # Warnings can be disabled with the corresponding option
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm", warnNA = FALSE)
+})

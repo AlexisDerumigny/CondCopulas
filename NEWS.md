@@ -9,6 +9,11 @@ The new behavior is the following: there is 1 warning per call of
 * Inputs `Z` and `newZ` to `CKT.kernel` can be of class `data.frame`, provided
 that all the entries are numeric (and that the dimensions match).
 
+* Add option `warnNA = FALSE` to `CKT.kernel` for not raising warnings if some
+of the estimated conditional Kendall's tau are `NA`s. The corresponding warning
+has also been improved and is more explicit about the number of NAs produced, in
+particular, if the input already contained `NA`s.
+
 
 ## Bug fixes:
 

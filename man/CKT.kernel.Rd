@@ -16,6 +16,7 @@ CKT.kernel(
   nPairs = 10 * length(observedX1),
   typeEstCKT = "wdm",
   progressBar = TRUE,
+  warnNA = TRUE,
   observedX1 = NULL,
   observedX2 = NULL,
   observedZ = NULL
@@ -83,6 +84,12 @@ Possible choices are: \itemize{
   This only applies when the bandwidth is chosen by cross-validation
   (i.e. when \code{h} is a vector).
 }}
+
+\item{warnNA}{a Boolean to indicate whether warnings should be raised if
+\code{NA}s are produced. By default it is \code{TRUE}. If \code{warnNA=FALSE},
+then no warning is raised even if \code{NA}s are produced. This is the case
+usually if either the bandwidth \code{h} is too small, or if there are already
+\code{NA}s in (some of) the inputs.}
 
 \item{observedX1, observedX2, observedZ}{old parameter names for \code{X1},
 \code{X2}, \code{Z}. Support for this will be removed at a later version.}

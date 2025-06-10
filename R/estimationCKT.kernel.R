@@ -482,6 +482,12 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'   (i.e. when \code{h} is a vector).
 #' }
 #'
+#' @param warnNA a Boolean to indicate whether warnings should be raised if
+#' \code{NA}s are produced. By default it is \code{TRUE}. If \code{warnNA=FALSE},
+#' then no warning is raised even if \code{NA}s are produced. This is the case
+#' usually if either the bandwidth \code{h} is too small, or if there are already
+#' \code{NA}s in (some of) the inputs.
+#'
 #' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
 #' \code{X2}, \code{Z}. Support for this will be removed at a later version.
 #'
@@ -579,6 +585,7 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
                        methodCV = "Kfolds",
                        Kfolds = 5, nPairs = 10*length(observedX1),
                        typeEstCKT = "wdm", progressBar = TRUE,
+                       warnNA = TRUE,
                        observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {
   if (length(newZ) == 0){
@@ -664,12 +671,39 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
       progressBar = progressBar > 0)
   }
 
-  if (anyNA(estCKT)){
-    if (!anyNA(X1) && !anyNA(X2) && !anyNA(Z)){
-      warning("NA in estimated CKT. ",
-              "This often happens when the bandwidth h is too small, ",
-              "consider using a bigger bandwidth ",
-              "(see the documentation for advice on the choice of h).")
+  if (anyNA(estCKT) && warnNA){
+    n_NA = length(which(is.na(estCKT)))
+    if (!anyNA(X1) && !anyNA(X2) && !anyNA(Z) && !anyNA(newZ)){
+      warning(CondCopulas_warning_condition_base(
+        message = paste0(
+          "NA in estimated CKT (", n_NA, " out of ", NROW(newZ), "). ",
+          "This often happens when the bandwidth h is too small, ",
+          "consider using a bigger bandwidth ",
+          "(see the documentation for advice on the choice of h). ",
+          "You can disable this warning using the input `warnNA = FALSE`."),
+
+        subclass = "NA_ProducedWarning")
+      )
+    } else {
+      n_NA_X1 = length(which(is.na(X1)))
+      n_NA_X2 = length(which(is.na(X2)))
+      n_NA_Z = length(which(is.na(Z)))
+      n_NA_newZ = length(which(is.na(newZ)))
+      warning(CondCopulas_warning_condition_base(
+        message = paste0(
+          "NA in estimated CKT (", n_NA, " out of ", NROW(newZ), "). ",
+          "This often happens when the bandwidth h is too small. ",
+          "Here there are also missing values in the following inputs: \n",
+          "* X1: "  , n_NA_X1  , " missing out of ", length(X1)  , "\n",
+          "* X2: "  , n_NA_X2  , " missing out of ", length(X2)  , "\n",
+          "* Z: "   , n_NA_Z   , " missing out of ", length(Z)   , "\n",
+          "* newZ: ", n_NA_newZ, " missing out of ", length(newZ), "\n",
+          "This can also happens if the bandwidth is too small ",
+          "(see the documentation for advice on the choice of h). ",
+          "You can disable this warning using the input `warnNA = FALSE`."),
+
+        subclass = "NA_ProducedWarning")
+      )
     }
   }
 
