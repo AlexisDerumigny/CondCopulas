@@ -147,6 +147,46 @@
   }
 }
 
+#' Check whether an object Z is either a matrix or a data.frame or a vector
+#' with only numeric components
+#'
+#' @returns a vector or a matrix with at least 2 columns, with the same content
+#' as Z. This is guaranteed to be of type `numeric`.
+#'
+#' @noRd
+.ensure_Z_numeric_vector_or_matrix <- function(Z, nameZ){
+  if (is.vector(Z)){
+    if(!is.numeric(Z)){
+      stop(errorCondition(
+        message = paste0("If ", nameZ, " is a vector, it should be numeric. ",
+                         "Here, ", nameZ, " is of class ", class(Z) ,".") ,
+        class = "NonNumericInputError"
+      ))
+    }
+  } else if (inherits(Z, "data.frame")){
+    Z = as.matrix.data.frame(Z)
+    if(!is.numeric(Z)){
+      stop(errorCondition(
+        message = paste0(nameZ, " should be composed of numeric values. ",
+                         "Here, ", nameZ, " is of storage mode ", mode(Z) ,".") ,
+        class = "NonNumericInputError"
+      ))
+    }
+  } else if (!inherits(Z, "matrix")){
+    stop(errorCondition(
+      message = paste0(nameZ, " should be a numeric matrix or vector.",
+                       "Here, ", nameZ, " is of class ", class(Z) ,".") ,
+      class = "NonNumericInputError"
+    ))
+  }
+
+  if (NCOL(Z) == 1){
+    Z = as.numeric(Z)
+  }
+
+  return (Z)
+}
+
 
 #' Constructor for warning conditions of the package
 #'

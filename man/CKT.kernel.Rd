@@ -31,10 +31,13 @@ CKT.kernel(
 \item{Z}{a vector of n observations of the conditioning variable,
 or a matrix with n rows of observations of the conditioning vector
 (in the case that several conditioning variables are given; in this case,
-each column corresponds to 1 conditioning variable).}
+each column corresponds to 1 conditioning variable). It can also be a
+\code{data.frame}, provided that all the entries are \code{numeric}.}
 
-\item{newZ}{the new data of observations of Z at which
-the conditional Kendall's tau should be estimated.}
+\item{newZ}{the new data of observations of Z at which the conditional
+Kendall's tau should be estimated. It must have the same number of column
+as \code{Z}. It can be a vector (if \code{NCOL(Z) == 1}), a \code{matrix} or
+a \code{data.frame}, provided that all the entries are \code{numeric}.}
 
 \item{h}{the bandwidth used for kernel smoothing.
 If this is a vector, then cross-validation is used following the method

@@ -559,10 +559,9 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   # Checking that the number of columns of Z and of newZ are the same
   .checkSame_ncols_Z_newZ(Z, newZ, name_Z = "Z", name_newZ = "newZ")
 
-  # Putting Z as a column vector if it has only one column
-  if (NCOL(Z) == 1 && is.matrix(Z)){
-    Z = as.numeric(Z)
-  }
+  # Checking the class of Z, newZ, and converting them to the right class
+  Z = .ensure_Z_numeric_vector_or_matrix(Z = Z, nameZ = "Z")
+  newZ = .ensure_Z_numeric_vector_or_matrix(Z = newZ, nameZ = "newZ")
 
 
   if (typeEstCKT == "wdm") {

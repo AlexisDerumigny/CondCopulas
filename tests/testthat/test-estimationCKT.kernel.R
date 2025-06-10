@@ -24,9 +24,14 @@ test_that("CKT.kernel gives the same results with inputs that are matrices with 
     X1 = X1, X2 = X2, Z = matrix(Z, ncol = 1),
     newZ = newZ, h = 10, kernel.name = "Epa")
 
+  estimatedCKT_kernel_dfZ <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = data.frame(Z = Z),
+    newZ = newZ, h = 10, kernel.name = "Epa")
+
   expect_identical(estimatedCKT_kernel_matX1, estimatedCKT_kernel)
   expect_identical(estimatedCKT_kernel_matX1, estimatedCKT_kernel)
   expect_identical(estimatedCKT_kernel_matZ, estimatedCKT_kernel)
+  expect_identical(estimatedCKT_kernel_dfZ, estimatedCKT_kernel)
 })
 
 

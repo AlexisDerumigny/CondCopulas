@@ -6,6 +6,9 @@ warning per value of `X3` such that the total sum of kernel-based weights is 0.
 The new behavior is the following: there is 1 warning per call of
 `estimateNPCondCopula`.
 
+* Inputs `Z` and `newZ` to `CKT.kernel` can be of class `data.frame`, provided
+that all the entries are numeric (and that the dimensions match).
+
 
 ## Bug fixes:
 
