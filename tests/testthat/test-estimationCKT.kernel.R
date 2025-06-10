@@ -50,3 +50,28 @@ test_that("old interface to CKT.kernel works", {
 
   expect_identical(estimatedCKT_kernel_old, estimatedCKT_kernel)
 })
+
+
+test_that("CKT.kernel returns an error in case of wrong dimensions", {
+
+  N = 10
+  Z1 = rnorm(n = N, mean = 5, sd = 2)
+  Z2 = rnorm(n = N, mean = 5, sd = 2)
+  conditionalTau = -0.9 + 1.8 * pnorm(Z1 - Z2, mean = 2, sd = 2)
+  simCopula = VineCopula::BiCopSim(N = N , family = 1,
+      par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+  X1 = qnorm(simCopula[,1])
+  X2 = qnorm(simCopula[,2])
+
+  newZ = expand.grid(Z1 = seq(2,10,by = 0.5),
+                     Z2 = seq(2,10,by = 1))
+  expect_error(
+    {CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z1,
+      newZ = newZ, h = 1, kernel.name = "Epa")},
+    class = "WrongDimensionError"
+  )
+
+})
+
+
