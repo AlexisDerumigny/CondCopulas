@@ -20,6 +20,9 @@ account. Also it is now checked that this parameter belongs to the interval
 * In `simpA.NP` and `simpA.param`, the weights involved in the Gaussian quadrature
 have been fixed to correspond to the correct integration interval.
 
+* Some errors occurring in `CKT.kernel` with a multivariate `Z` and small
+bandwidth have been fixed.
+
 
 # CondCopulas 0.1.4.1
 

@@ -184,21 +184,28 @@ CKT.kernelPointwise.multivariate <- function(X1, X2, matrixSignsPairs, matrixZ,
                                              h, pointZ, kernel.name, typeEstCKT)
 {
   if (kernel.name == "Epa"){
-    # For faster computation, only uses points with non-zero
-    # values for the kernel
+    # For faster computation, only uses points with non-zero values for the kernel
     u = sweep(matrixZ, MARGIN = 2, STATS = pointZ)
+
     isSmaller_h = apply(X = u, MARGIN = 1, FUN = function(x){
       return (all(abs(x) <= h))
     })
-    whichNonZero = which( isSmaller_h )
-    listWeights = computeWeights.multivariate(
-      matrixZ[whichNonZero, ], h, pointZ, kernel.name)
 
-  } else {
-    listWeights = computeWeights.multivariate(
-      matrixZ[ , ], h, pointZ, kernel.name)
+    whichNonZero = which( isSmaller_h )
+
+    # We need at least 2 points, i.e. at least 1 pair,
+    # to estimate (conditional) Kendall's tau
+    if (length(whichNonZero) <= 1){
+      return (NA)
+    } # now `length(whichNonZero)` is at least 2.
+
+    matrixZ = matrixZ[whichNonZero, ]
+    matrixSignsPairs = matrixSignsPairs[whichNonZero, whichNonZero]
+    X1 = X1[whichNonZero]
+    X2 = X2[whichNonZero]
   }
 
+  listWeights = computeWeights.multivariate(matrixZ, h, pointZ, kernel.name)
 
   if(typeEstCKT == "wdm"){
 
@@ -210,17 +217,13 @@ CKT.kernelPointwise.multivariate <- function(X1, X2, matrixSignsPairs, matrixZ,
     switch (
       typeEstCKT,
       # 1
-      { estimate =
-        4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) - 1 } ,
+      { estimate = 4 * sum(matrixWeights * matrixSignsPairs) - 1 } ,
       # 2
-      { estimate =sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
+      { estimate = sum(matrixWeights * matrixSignsPairs) },
       # 3
-      { estimate =
-        1 - 4 * sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) },
+      { estimate = 1 - 4 * sum(matrixWeights * matrixSignsPairs) },
       # 4
-      { estimate =
-        sum(matrixWeights * matrixSignsPairs[whichNonZero, whichNonZero]) /
-        (1 - sum(listWeights^2)) },
+      { estimate = sum(matrixWeights * matrixSignsPairs) / (1 - sum(listWeights^2)) },
 
       {stop(paste0("typeEstCKT: ", typeEstCKT, " is not in {1,2,3,4}" ) ) }
     )
@@ -426,10 +429,13 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' @param Z a vector of n observations of the conditioning variable,
 #' or a matrix with n rows of observations of the conditioning vector
 #' (in the case that several conditioning variables are given; in this case,
-#' each column corresponds to 1 conditioning variable).
+#' each column corresponds to 1 conditioning variable). It can also be a
+#' \code{data.frame}, provided that all the entries are \code{numeric}.
 #'
-#' @param newZ the new data of observations of Z at which
-#' the conditional Kendall's tau should be estimated.
+#' @param newZ the new data of observations of Z at which the conditional
+#' Kendall's tau should be estimated. It must have the same number of column
+#' as \code{Z}. It can be a vector (if \code{NCOL(Z) == 1}), a \code{matrix} or
+#' a \code{data.frame}, provided that all the entries are \code{numeric}.
 #'
 #' @param typeEstCKT type of estimation of the conditional Kendall's tau.
 #' Possible choices are \itemize{
@@ -509,7 +515,10 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' @examples
 #' # We simulate from a conditional copula
 #' set.seed(1)
-#' N = 800
+#' N = 100
+#' # This is a small example for performance reason.
+#' # For a better example, use:
+#' # N = 800
 #' Z = rnorm(n = N, mean = 5, sd = 2)
 #' conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
 #' simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -528,6 +537,40 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' plot(newZ, trueConditionalTau , col = "black",
 #'      type = "l", ylim = c(-1, 1))
 #' lines(newZ, estimatedCKT_kernel, col = "red")
+#'
+#' # Multivariate example
+#' N = 100
+#' # This is a small example for performance reason.
+#' # For a better example, use:
+#' # N = 1000
+#' Z1 = rnorm(n = N, mean = 5, sd = 2)
+#' Z2 = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = -0.9 + 1.8 * pnorm(Z1 - Z2, mean = 2, sd = 2)
+#' simCopula = VineCopula::BiCopSim(N = N , family = 1,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+#' X1 = qnorm(simCopula[,1])
+#' X2 = qnorm(simCopula[,2])
+#'
+#' Z = cbind(Z1, Z2)
+#'
+#' newZ = expand.grid(Z1 = seq(2,8,by = 0.5),
+#'                    Z2 = seq(2,8,by = 1))
+#' estimatedCKT_kernel <- CKT.kernel(
+#'    X1 = X1, X2 = X2, Z = Z,
+#'    newZ = newZ, h = 1, kernel.name = "Epa")$estimatedCKT
+#'
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   df = rbind(
+#'     data.frame(newZ, CKT = estimatedCKT_kernel,
+#'                type = "estimated CKT") ,
+#'     data.frame(newZ, CKT = -0.9 + 1.8 * pnorm(newZ$Z1 - newZ$Z2, mean = 2, sd = 2),
+#'                type = "true CKT")
+#'   )
+#'
+#'   ggplot2::ggplot(df) +
+#'   ggplot2::geom_tile(ggplot2::aes(x = Z1, y = Z2, fill = CKT)) +
+#'   ggplot2::facet_grid(as.formula("~type"))
+#' }
 #'
 #' @export
 #'

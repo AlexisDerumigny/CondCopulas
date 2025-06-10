@@ -140,7 +140,10 @@ reach the same level of precision as in the univariate case.
 \examples{
 # We simulate from a conditional copula
 set.seed(1)
-N = 800
+N = 100
+# This is a small example for performance reason.
+# For a better example, use:
+# N = 800
 Z = rnorm(n = N, mean = 5, sd = 2)
 conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
 simCopula = VineCopula::BiCopSim(N=N , family = 1,
@@ -159,6 +162,40 @@ trueConditionalTau = -0.9 + 1.8 * pnorm(newZ, mean = 5, sd = 2)
 plot(newZ, trueConditionalTau , col = "black",
      type = "l", ylim = c(-1, 1))
 lines(newZ, estimatedCKT_kernel, col = "red")
+
+# Multivariate example
+N = 100
+# This is a small example for performance reason.
+# For a better example, use:
+# N = 1000
+Z1 = rnorm(n = N, mean = 5, sd = 2)
+Z2 = rnorm(n = N, mean = 5, sd = 2)
+conditionalTau = -0.9 + 1.8 * pnorm(Z1 - Z2, mean = 2, sd = 2)
+simCopula = VineCopula::BiCopSim(N = N , family = 1,
+    par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+X1 = qnorm(simCopula[,1])
+X2 = qnorm(simCopula[,2])
+
+Z = cbind(Z1, Z2)
+
+newZ = expand.grid(Z1 = seq(2,8,by = 0.5),
+                   Z2 = seq(2,8,by = 1))
+estimatedCKT_kernel <- CKT.kernel(
+   X1 = X1, X2 = X2, Z = Z,
+   newZ = newZ, h = 1, kernel.name = "Epa")$estimatedCKT
+
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  df = rbind(
+    data.frame(newZ, CKT = estimatedCKT_kernel,
+               type = "estimated CKT") ,
+    data.frame(newZ, CKT = -0.9 + 1.8 * pnorm(newZ$Z1 - newZ$Z2, mean = 2, sd = 2),
+               type = "true CKT")
+  )
+
+  ggplot2::ggplot(df) +
+  ggplot2::geom_tile(ggplot2::aes(x = Z1, y = Z2, fill = CKT)) +
+  ggplot2::facet_grid(as.formula("~type"))
+}
 
 }
 \references{

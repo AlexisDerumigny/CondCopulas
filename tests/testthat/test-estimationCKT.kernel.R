@@ -80,3 +80,124 @@ test_that("CKT.kernel returns an error in case of wrong dimensions", {
 })
 
 
+test_that("CKT.kernel works without error for the different types of estimators in dim 1", {
+
+  set.seed(1)
+  N = 50
+  Z = rnorm(n = N)
+  X1 = rnorm(n = N)
+  X2 = rnorm(n = N)
+
+  newZ = seq(-10, 10, by = 1)
+
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm")
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 1)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 2)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 3)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 4)
+  })
+
+  # Expect no warning nor errors with Gaussian kernel
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = "wdm")
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 1)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 2)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 3)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 4)
+})
+
+
+
+test_that("CKT.kernel works without error for the different types of estimators in dim 2", {
+
+  set.seed(1)
+  N = 50
+  Z = cbind(rnorm(n = N), rnorm(n = N))
+  X1 = rnorm(n = N)
+  X2 = rnorm(n = N)
+
+  newZ = expand.grid(Z1 = seq(-3, 3, by = 0.5),
+                     Z2 = seq(-3, 3, by = 1))
+
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm")
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 1)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 2)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 3)
+  })
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = 4)
+  })
+
+  # Expect no warning nor errors with Gaussian kernel
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = "wdm")
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 1)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 2)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 3)
+
+  estimatedCKT_kernel <- CKT.kernel(
+    X1 = X1, X2 = X2, Z = Z,
+    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = 4)
+})
+
