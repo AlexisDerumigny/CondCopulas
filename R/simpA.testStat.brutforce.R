@@ -68,7 +68,7 @@ testStat_T1_CvM_Cs3 <- function(env)
     {
       env$true_stat = env$true_stat +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(env$grid$weights * (env$array_C_IJ[i,j,] - env$mat_C_sIJ[i,j])^2)
+        sum(env$grid$weights * (env$array_C_IJ[i,j,] - env$mat_C_sIJ[i,j])^2)
     }
   }
 }
@@ -122,7 +122,7 @@ testStat_T1_CvM_Cs3_boot1st <- function(env)
     {
       env$stat_st = env$stat_st +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(env$grid$weights * (env$array_C_IJ_st[i,j,] - env$array_C_IJ[i,j,]
+        sum(env$grid$weights * (env$array_C_IJ_st[i,j,] - env$array_C_IJ[i,j,]
                                  - env$mat_C_sIJ_st[i,j] + env$mat_C_sIJ[i,j])^2)
     }
   }
@@ -188,7 +188,7 @@ testStat_T1_CvM_Cs4 <- function(env)
     {
       env$true_stat = env$true_stat +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(env$grid$weights * (env$array_C_IJ[i,j,] - env$mat_C_sIJ[i,j])^2)
+        sum(env$grid$weights * (env$array_C_IJ[i,j,] - env$mat_C_sIJ[i,j])^2)
     }
   }
 }
@@ -255,7 +255,7 @@ testStat_T1_CvM_Cs4_boot1st <- function(env)
     {
       env$stat_st = env$stat_st +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(env$grid$weights * (env$array_C_IJ_st[i,j,] - env$array_C_IJ[i,j,]
+        sum(env$grid$weights * (env$array_C_IJ_st[i,j,] - env$array_C_IJ[i,j,]
                                  - env$mat_C_sIJ_st[i,j] + env$mat_C_sIJ[i,j])^2)
     }
   }
@@ -298,7 +298,7 @@ testStat_tilde_T0_CvM <- function(env)
     {
       env$true_stat = env$true_stat +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(outer(env$grid$weights, env$grid$weights) *
+        sum(outer(env$grid$weights, env$grid$weights) *
                (env$array_C_IJ[,,i] - env$array_C_IJ[,,j])^2)
 
 
@@ -343,7 +343,7 @@ testStat_tilde_T0_CvM_boot1st <- function(env)
     {
       env$stat_st = env$stat_st +
         env$grid$weights[i] * env$grid$weights[j] *
-        mean(outer(env$grid$weights, env$grid$weights) *
+        sum(outer(env$grid$weights, env$grid$weights) *
                (env$array_C_IJ_st[,,i] - env$array_C_IJ[,,i] +
                   env$array_C_IJ[,,j] - env$array_C_IJ_st[,,j])^2)
 

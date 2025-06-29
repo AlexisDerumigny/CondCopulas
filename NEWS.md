@@ -35,6 +35,11 @@ account. Also it is now checked that this parameter belongs to the interval
 * In `simpA.NP` and `simpA.param`, the weights involved in the Gaussian quadrature
 have been fixed to correspond to the correct integration interval.
 
+* Fix a bug in `simpA.NP` for computation of the integration-based test statistics
+`T1_CvM_Cs3`, `T1_CvM_Cs4`, `tilde_T0_CvM`, which were incorrect of a constant
+factor. P-values were unaffected by this bug, as the constant factor was also
+present in the bootstrap test statistic.
+
 * Some errors occurring in `CKT.kernel` with a multivariate `Z` and small
 bandwidth have been fixed.
 
