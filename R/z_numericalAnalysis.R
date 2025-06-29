@@ -15,10 +15,13 @@
 #' grid = get.gauss.quad(nGrid = 10, kind = "legendre",
 #'                       center = 1/2, half_length = 1/2)
 #'
-#' # Integral of \eqn{x \mapsto x} on [0, 1]
+#' # Integral of \eqn{x \mapsto 1} on [0, 1]
 #' stopifnot(isTRUE(all.equal(sum(grid$weights) , 1) ) )
 #'
-#' # Integral of \eqn{x \mapsto x} on [1/4, 3/4] = [1/2 +- 1/4]
+#' # Integral of \eqn{x \mapsto x} on [0, 1]
+#' stopifnot(isTRUE(all.equal(sum(grid$weights * grid$nodes) , 1/2) ) )
+#'
+#' # Integral of \eqn{x \mapsto 1} on [1/4, 3/4] = [1/2 +- 1/4]
 #' grid = get.gauss.quad(nGrid = 10, kind = "legendre",
 #'                       center = 1/2, half_length = 1/4)
 #' stopifnot(isTRUE(all.equal(sum(grid$weights) , 1/2) ) )
