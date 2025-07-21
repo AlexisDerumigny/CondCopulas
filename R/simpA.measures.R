@@ -66,7 +66,7 @@ measures_nonsimplifyingness_NP <- function(
     if(length(which_bad) > 0){
       stop(errorCondition(
         message = paste0(
-          "Unknwon measure(s): ",
+          "Unknown measure(s): ",
           "'", paste0(measures[which_bad], collapse = "', '"), "'.",
           "\n",
           "Possible measures are: ",
