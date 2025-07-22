@@ -34,6 +34,35 @@
 #' is silent. Higher values of \code{verbose} give more explicit details on the
 #' computations.
 #'
+#' @returns a data.frame where each row corresponds to one measure of
+#' non-simplifyingness and one choice of \code{h}.
+#' As a particular case, if \code{measures} and \code{h} are both of length 1,
+#' this data.frame will have only one row.
+#'
+#' @references
+#' Derumigny, A. (2025). Measures of non-simplifyingness for conditional copulas
+#' and vines. ArXiv preprint, arXiv:2504.07704.
+#' \doi{10.48550/arXiv.2504.07704}
+#'
+#' @seealso \code{\link{simpA.NP}()} for non-parametric tests of the simplifying
+#' assumption.
+#'
+#' @examples
+#' set.seed(1)
+#' N = 500
+#' Z = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = 0.8
+#' simCopula = VineCopula::BiCopSim(N=N , family = 1,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+#' X1 = qnorm(simCopula[,1], mean = Z)
+#' X2 = qnorm(simCopula[,2], mean = - Z)
+#'
+#' result <- measures_nonsimplifyingness_NP(
+#'    X1 = X1, X2 = X2, Z = Z, h = 0.08, measures = "tilde_T0_CvM")
+#'
+#' result <- measures_nonsimplifyingness_NP(
+#'    X1 = X1, X2 = X2, Z = Z, h = 0.08, measures = "all")
+#'
 #'
 #' @export
 #'
