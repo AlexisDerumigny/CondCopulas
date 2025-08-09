@@ -18,7 +18,8 @@
   ylim = c(-1.2, 1.2),
   progressBar = TRUE,
   color_CKT = "black",
-  color_confint = "red"
+  color_confint = "red",
+  ...
 )
 }
 \arguments{

@@ -838,11 +838,12 @@ confint.estimated_CKT_kernel <- function(object, level = 0.95,
 plot.estimated_CKT_kernel <- function(x, confint = NULL, level = NULL,
                                       xlim = NULL, ylim = c(-1.2, 1.2),
                                       progressBar = TRUE,
-                                      color_CKT = "black", color_confint = "red")
+                                      color_CKT = "black", color_confint = "red",
+                                      ...)
 {
   plot(x$newZ, x$estimatedCKT, type = "l", ylim = ylim, xlim = xlim,
        xlab = "z",
-       ylab = "Conditional Kendall's tau given Z = z", col = color_CKT)
+       ylab = "Conditional Kendall's tau given Z = z", col = color_CKT, ...)
 
   if (!isFALSE(confint)){
 
