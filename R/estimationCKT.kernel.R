@@ -594,6 +594,7 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'
 CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
                        h, kernel.name = "Epa",
+                       se = FALSE, confint = FALSE, level = 0.95,
                        methodCV = "Kfolds",
                        Kfolds = 5, nPairs = NULL,
                        typeEstCKT = "wdm", progressBar = TRUE,
@@ -721,8 +722,194 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
     }
   }
 
-  return (list(estimatedCKT = estCKT, h = finalh,
-               resultCV = resultCV))
+  result = list(estimatedCKT = estCKT, h = finalh,
+                resultCV = resultCV,
+                matrixSignsPairs = matrixSignsPairs,
+                X1 = X1, X2 = X2, Z = Z, newZ = newZ,
+                kernel.name = kernel.name,
+                typeEstCKT = typeEstCKT)
+
+  class(result) <- "estimated_CKT_kernel"
+
+  # Adding additional components to result as requested
+  if (se || confint){
+    result$se <- se(result)
+  }
+  if (confint){
+    result$confint = confint(object = result, level = level)
+  }
+
+  return (result)
 }
 
+
+#' @export
+#'
+#' @rdname plot.estimated_CKT_kernel
+se.estimated_CKT_kernel <- function(object, progressBar = TRUE, ...)
+{
+  if ( !is.null(object$se) ){
+    return(object$se)
+  }
+
+  if ( is.null(object$matrixSignPairs)){
+    typeEstCKT = if(object$typeEstCKT == "wdm") 4 else object$typeEstCKT
+
+    matrixSignsPairs = computeMatrixSignPairs(
+      vectorX1 = object$X1, vectorX2 = object$X2, typeEstCKT = typeEstCKT)
+  } else {
+    matrixSignsPairs = object$matrixSignsPairs
+  }
+
+  temp <- compute_all_Gn_H_ii(vectorZ = object$Z,
+                              vectorZToEstimate = object$newZ,
+                              vector_hat_CKT_NP = object$estimatedCKT,
+                              matrixSignsPairs = matrixSignsPairs,
+                              h = object$h, kernel.name = "Epa", intK2 = 3/5,
+                              progressBar = progressBar)
+
+  n = length(object$X1)
+
+  asympt_se_np = sqrt(temp$vect_H_ii) / sqrt(n * object$h)
+
+  return (asympt_se_np)
+}
+
+
+#' @export
+#'
+#' @rdname plot.estimated_CKT_kernel
+confint.estimated_CKT_kernel <- function(object, level = 0.95,
+                                         progressBar = TRUE, ...)
+{
+  if (is.null(object$se)){
+    object$se = se(object, progressBar = progressBar)
+  }
+  # Now se is available
+
+  # Quantile of the standard normal distribution at level 1 - alpha / 2
+  alpha = 1 - level
+  q_1_alpha_2 <- qnorm(1 - alpha / 2)
+
+  estCKT = object$estimatedCKT
+  nprime = length(estCKT)
+
+  result <- matrix(nrow = nprime, ncol = 2)
+  result[, 1] = pmax(-1, estCKT - q_1_alpha_2 * object$se)
+  result[, 2] = pmin(1, estCKT + q_1_alpha_2 * object$se)
+
+  colnames(result) <- paste(c(alpha / 2, 1 - alpha / 2) , "%")
+  rownames(result) <- object$newZ
+
+  return (result)
+}
+
+
+#' Methods for class `estimated_CKT_kernel`
+#'
+#' @param object,x an \code{S3} object of class \code{estimated_CKT_kernel}.
+#'
+#' @examples
+#' # We simulate from a conditional copula
+#' set.seed(1)
+#' N = 100
+#' # This is a small example for performance reasons.
+#' # For a better example, use:
+#' # N = 800
+#' Z = rnorm(n = N, mean = 5, sd = 2)
+#' conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
+#' simCopula = VineCopula::BiCopSim(N=N , family = 1,
+#'     par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+#' X1 = qnorm(simCopula[,1])
+#' X2 = qnorm(simCopula[,2])
+#'
+#' newZ = seq(2, 10, by = 1)
+#' estimatedCKT_kernel <- CKT.kernel(
+#'    X1 = X1, X2 = X2, Z = Z,
+#'    newZ = newZ, h = 0.2, kernel.name = "Epa", se = TRUE)
+#'
+#' se(estimatedCKT_kernel)
+#' confint(estimatedCKT_kernel, level = 0.9)
+#'
+#' plot(estimatedCKT_kernel, confint = TRUE)
+#'
+#'
+#' @export
+plot.estimated_CKT_kernel <- function(x, confint = NULL, level = NULL,
+                                      xlim = NULL, ylim = c(-1.2, 1.2),
+                                      progressBar = TRUE,
+                                      color_CKT = "black", color_confint = "red")
+{
+  plot(x$newZ, x$estimatedCKT, type = "l", ylim = ylim, xlim = xlim,
+       xlab = "z",
+       ylab = "Conditional Kendall's tau given Z = z", col = color_CKT)
+
+  if (!isFALSE(confint)){
+
+    # Easy case: a level is not specified but confint is available in the object.
+    # then we just plot it.
+    if (is.null(level) && !is.null(x$confint)){
+      graphics::lines(x$newZ, x$confint[, 1], type = "l", col = color_confint)
+      graphics::lines(x$newZ, x$confint[, 2], type = "l", col = color_confint)
+    } else {
+      # We will need to do computations. But first, let's see whether the user
+      # intended to plot a confidence interval
+      if (is.null(confint)){
+        # If the user specifies a level then it shows intent to have a
+        # confidence interval
+        confint = !is.null(level)
+      } else {
+        # If the user specifies confint = TRUE but without giving an explicit
+        # level, we use by default 95%
+        if (is.null(level)){
+          level = 0.95
+        }
+      }
+      if (confint){
+        x$confint = confint(x, level = level, progressBar = progressBar)
+        graphics::lines(x$newZ, x$confint[, 1], type = "l", col = color_confint)
+        graphics::lines(x$newZ, x$confint[, 2], type = "l", col = color_confint)
+      }
+    }
+  }
+}
+
+
+compute_all_Gn_H_ii <- function(vectorZ, vectorZToEstimate, matrixSignsPairs,
+                                vector_hat_CKT_NP,
+                                h, kernel.name, intK2, progressBar){
+  nprime = length(vectorZToEstimate)
+
+  # 1 - Computation of G_n(z'_i) for all i
+  vectorZToEstimate_arr = array(vectorZToEstimate)
+  matrixSignsPairsSymmetrized = (matrixSignsPairs + t(matrixSignsPairs)) / 2
+  if (progressBar){
+    Gn_zipr = pbapply::pbapply(
+      X = vectorZToEstimate_arr, MARGIN = 1,
+      FUN = function(pointZ) {compute_vect_Gn_zipr(
+        pointZ, vectorZ, h,
+        kernel.name, matrixSignsPairsSymmetrized) } )
+  } else {
+    Gn_zipr = apply(
+      X = vectorZToEstimate_arr, MARGIN = 1,
+      FUN = function(pointZ) {compute_vect_Gn_zipr(
+        pointZ, vectorZ, h,
+        kernel.name, matrixSignsPairsSymmetrized) } )
+  }
+
+  # 2 - Computation of H_(i,i) under the hypothesis that all z'_i are distinct
+  vect_H_ii = rep(NA, nprime)
+  for (iprime in 1:nprime) {
+    pointZ = vectorZToEstimate[iprime]
+    listKh = computeWeights.univariate(
+      vectorZ = vectorZ, h = h, pointZ = pointZ,
+      kernel.name = kernel.name, normalization = FALSE)
+    estimator_fZ = mean(listKh)
+    vect_H_ii[iprime] = 4 * (intK2 / estimator_fZ) *
+      abs(Gn_zipr[iprime] - (vector_hat_CKT_NP[iprime])^2)
+  }
+
+  return (list(Gn_zipr = Gn_zipr,
+               vect_H_ii = vect_H_ii))
+}
 
