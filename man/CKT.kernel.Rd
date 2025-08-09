@@ -143,8 +143,9 @@ the whole dataset.
 Note that for a consistent estimation, as the sample size \eqn{n} tends
 to the infinity, \code{h} should tend to \eqn{0} while the size of the set
 \eqn{\{i: Z_i \in [z \pm h]\}} should also tend to the infinity.
-Indeed the conditioning points should be closer and closer to the point of interest \eqn{z}
-(small \code{h}) and more and more numerous (\code{h} tending to 0 slowly enough).
+Indeed the conditioning points should be closer and closer to the point of
+interest \eqn{z} (small \code{h}) and more and more numerous
+(\code{h} tending to 0 slowly enough).
 
 In the multivariate case, similar recommendations can be made.
 Because of the curse of dimensionality, a larger sample will be necessary to
@@ -201,7 +202,8 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
   df = rbind(
     data.frame(newZ, CKT = estimatedCKT_kernel,
                type = "estimated CKT") ,
-    data.frame(newZ, CKT = -0.9 + 1.8 * pnorm(newZ$Z1 - newZ$Z2, mean = 2, sd = 2),
+    data.frame(newZ, CKT = -0.9 + 1.8 * pnorm(newZ$Z1 - newZ$Z2,
+                                              mean = 2, sd = 2),
                type = "true CKT")
   )
 
