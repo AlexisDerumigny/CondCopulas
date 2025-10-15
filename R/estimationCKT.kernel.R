@@ -597,7 +597,7 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
                        se = FALSE, confint = FALSE, level = 0.95,
                        methodCV = "Kfolds",
                        Kfolds = 5, nPairs = NULL,
-                       typeEstCKT = "wdm", progressBar = TRUE,
+                       typeEstCKT = "wdm", progressBar = 1,
                        warnNA = TRUE,
                        observedX1 = NULL, observedX2 = NULL, observedZ = NULL)
 {

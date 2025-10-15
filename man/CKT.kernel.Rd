@@ -18,7 +18,7 @@ CKT.kernel(
   Kfolds = 5,
   nPairs = NULL,
   typeEstCKT = "wdm",
-  progressBar = TRUE,
+  progressBar = 1,
   warnNA = TRUE,
   observedX1 = NULL,
   observedX2 = NULL,
