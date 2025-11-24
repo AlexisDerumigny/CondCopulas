@@ -182,7 +182,11 @@ test_that("CKT.kernel works without error for the different types of estimators 
 
   estimatedCKT_kernel <- CKT.kernel(
     X1 = X1, X2 = X2, Z = Z,
-    newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = "wdm")
+    newZ = newZ, h = 10, kernel.name = "Gaussian", typeEstCKT = "wdm",
+    confint = TRUE # since we also expect no errors/warnings with the conf intervals
+    )
+  expect_identical(dim(estimatedCKT_kernel$confint),
+                   c(nrow(newZ), 2L))
 
   estimatedCKT_kernel <- CKT.kernel(
     X1 = X1, X2 = X2, Z = Z,
@@ -227,6 +231,15 @@ test_that("CKT.kernel gives warning in presence of NAs", {
   estimatedCKT_kernel <- CKT.kernel(
     X1 = X1, X2 = X2, Z = Z,
     newZ = newZ, h = 1, kernel.name = "Epa", typeEstCKT = "wdm", warnNA = FALSE)
+
+  # Warnings can also be gotten from the standard error
+  newZ[1,1] = 1 # so that the missing value is only at the level of the X1 variable
+  expect_warning({
+    estimatedCKT_kernel <- CKT.kernel(
+      X1 = X1, X2 = X2, Z = Z,
+      newZ = newZ, h = 1, kernel.name = "Gaussian", typeEstCKT = "wdm",
+      se = TRUE)
+  })
 })
 
 

@@ -598,11 +598,22 @@ computeVectorZToEstimate = function(vecteurZrealised,
 compute_vect_Gn_zipr = function(pointZ, vectorZ, h,
                                 kernel.name, matrixSignsPairsSymmetrized)
 {
-  n = length(vectorZ)
+  if (length(pointZ) == 1){
+    n = length(vectorZ)
 
-  listWeights = computeWeights.univariate(
-    vectorZ = vectorZ, h = h, pointZ = pointZ,
-    kernel.name = kernel.name, normalization = TRUE)
+    listWeights = computeWeights.univariate(
+      vectorZ = vectorZ, h = h, pointZ = pointZ,
+      kernel.name = kernel.name, normalization = TRUE)
+
+  } else {
+
+    n = nrow(vectorZ)
+
+    listWeights = computeWeights.multivariate(
+      matrixZ = vectorZ, h = h, pointZ = pointZ,
+      kernel.name = kernel.name, normalization = TRUE)
+  }
+
   matrixWeights = outer(listWeights, listWeights)
   result = 0
   for (k in 1:n) {

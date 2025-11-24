@@ -823,7 +823,11 @@ confint.estimated_CKT_kernel <- function(object, level = 0.95,
   result[, 2] = pmin(1, estCKT + q_1_alpha_2 * object$se)
 
   colnames(result) <- paste(c(alpha / 2, 1 - alpha / 2) , "%")
-  rownames(result) <- object$newZ
+  if (is.null(dim(object$newZ))){
+    rownames(result) <- object$newZ
+  } else {
+    rownames(result) <- apply(object$newZ, MARGIN = 1, FUN = paste0, collapse = ";")
+  }
 
   return (result)
 }
@@ -903,10 +907,15 @@ plot.estimated_CKT_kernel <- function(x, confint = NULL, level = NULL,
 compute_all_Gn_H_ii <- function(vectorZ, vectorZToEstimate, matrixSignsPairs,
                                 vector_hat_CKT_NP,
                                 h, kernel.name, intK2, progressBar){
-  nprime = length(vectorZToEstimate)
+  nprime = NROW(vectorZToEstimate)
 
   # 1 - Computation of G_n(z'_i) for all i
-  vectorZToEstimate_arr = array(vectorZToEstimate)
+  if (is.null(dim(vectorZToEstimate))){
+    vectorZToEstimate_arr = array(vectorZToEstimate)
+  } else {
+    vectorZToEstimate_arr = array(vectorZToEstimate, dim = dim(vectorZToEstimate))
+  }
+
   matrixSignsPairsSymmetrized = (matrixSignsPairs + t(matrixSignsPairs)) / 2
   if (progressBar){
     Gn_zipr = pbapply::pbapply(
@@ -925,10 +934,18 @@ compute_all_Gn_H_ii <- function(vectorZ, vectorZToEstimate, matrixSignsPairs,
   # 2 - Computation of H_(i,i) under the hypothesis that all z'_i are distinct
   vect_H_ii = rep(NA, nprime)
   for (iprime in 1:nprime) {
-    pointZ = vectorZToEstimate[iprime]
-    listKh = computeWeights.univariate(
-      vectorZ = vectorZ, h = h, pointZ = pointZ,
-      kernel.name = kernel.name, normalization = FALSE)
+    if (is.null(dim(vectorZToEstimate))){
+      pointZ = vectorZToEstimate[iprime]
+      listKh = computeWeights.univariate(
+        vectorZ = vectorZ, h = h, pointZ = pointZ,
+        kernel.name = kernel.name, normalization = FALSE)
+    } else {
+      pointZ = vectorZToEstimate[iprime, ]
+      listKh = computeWeights.multivariate(
+        matrixZ = vectorZ, h = h, pointZ = pointZ,
+        kernel.name = kernel.name, normalization = FALSE)
+    }
+
     estimator_fZ = mean(listKh)
     vect_H_ii[iprime] = 4 * (intK2 / estimator_fZ) *
       abs(Gn_zipr[iprime] - (vector_hat_CKT_NP[iprime])^2)
