@@ -789,7 +789,7 @@ confint.estimated_CKT_kernel <- function(object, level = 0.95,
 
   # Quantile of the standard normal distribution at level 1 - alpha / 2
   alpha = 1 - level
-  q_1_alpha_2 <- qnorm(1 - alpha / 2)
+  q_1_alpha_2 <- stats::qnorm(1 - alpha / 2)
 
   estCKT = object$estimatedCKT
   nprime = length(estCKT)
