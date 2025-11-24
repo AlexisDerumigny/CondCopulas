@@ -100,7 +100,7 @@ simCopula = VineCopula::BiCopSim(N=N , family = 1,
 X1 = qnorm(simCopula[,1])
 X2 = qnorm(simCopula[,2])
 
-newZ = seq(2,10,by = 0.1)
+newZ = seq(2,8,by = 0.1)
 h = 0.1
 estimatedCKT_tree <- CKT.estimate(
   X1 = X1, X2 = X2, Z = Z,
