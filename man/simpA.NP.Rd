@@ -160,4 +160,6 @@ Other tests of the simplifying assumption:
   \code{\link{bCond.simpA.param}}
   (test assuming a parametric form for the conditional copula)
 }
+The non-parametric measures of non-simplifyingness
+\code{\link{measures_nonsimplifyingness_NP}}.
 }

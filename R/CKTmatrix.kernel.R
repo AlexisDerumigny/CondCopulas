@@ -70,10 +70,10 @@
 # \code{ElliptCopulas::\link[ElliptCopulas]{KTMatrixEst}()} for the fast estimation
 # of Kendall's tau matrix in the unconditional case (i.e., without Z and without smoothing).
 #'
-#' @references van der Spek, R., & Derumigny, A. (2022).
+#' @references van der Spek, R., & Derumigny, A. (2025).
 #' Fast estimation of Kendall's Tau and conditional Kendall's Tau matrices
 #' under structural assumptions.
-#' \href{https://arxiv.org/abs/2204.03285}{arxiv:2204.03285}.
+#' \doi{10.1515/demo-2025-0012}
 #'
 #' @examples
 #'

@@ -107,7 +107,8 @@ usually if either the bandwidth \code{h} is too small, or if there are already
 \code{X2}, \code{Z}. Support for this will be removed at a later version.}
 }
 \value{
-a list with components:
+an \code{S3} object of class \code{estimated_CKT_kernel} with
+components including:
 \itemize{
    \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
    containing the values of the estimated conditional Kendall's tau.
@@ -119,7 +120,11 @@ a list with components:
    \item \code{resultCV} (only in case of cross-validation). This gives the
    output of the cross-validation function that is used, i.e. the output of
    either \code{\link{CKT.hCV.l1out}} or \code{\link{CKT.hCV.Kfolds}}.
+
+   \item \code{se}, and \code{confint} if requested.
 }
+Some methods (\code{se}, \code{confint} and \code{plot}) are available for
+such an object, see \code{\link{plot.estimated_CKT_kernel}}.
 }
 \description{
 Let \eqn{X_1} and \eqn{X_2} be two random variables.

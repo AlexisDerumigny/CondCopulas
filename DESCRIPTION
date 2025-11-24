@@ -1,7 +1,7 @@
 Package: CondCopulas
 Type: Package
 Title: Estimation and Inference for Conditional Copula Models
-Version: 0.1.4.1
+Version: 0.1.5
 Authors@R: c(
     person("Alexis", "Derumigny", , email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097")),
     person("Jean-David", "Fermanian", , email = "Jean-David.Fermanian@ensae.fr", role = c("ctb","ths"), comment = c(ORCID = "0000-0001-5960-5555")),
@@ -15,9 +15,11 @@ Description:
     <doi:10.1515/demo-2019-0016>,
     <doi:10.1016/j.csda.2019.01.013>,
     <doi:10.1016/j.jmva.2020.104610>),
-    and test procedures for the simplifying assumption
+    test procedures for the simplifying assumption
     (proposed in Derumigny and Fermanian (2017) <doi:10.1515/demo-2017-0011>
-    and Derumigny, Fermanian and Min (2022) <doi:10.1002/cjs.11742>).
+    and Derumigny, Fermanian and Min (2022) <doi:10.1002/cjs.11742>),
+    and measures of non-simplifyingness
+    (proposed in Derumigny (2025) <doi:10.48550/arXiv.2504.07704>).
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.3.3

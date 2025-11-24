@@ -1,4 +1,12 @@
 
+# CondCopulas 0.2.0
+
+## New features
+
+* New function `measures_nonsimplifyingness_NP` for the estimation of the 
+non-parametric measures of non-simplifyingness for conditional copulas,
+introduced in [arXiv:2504.07704](https://arxiv.org/pdf/2504.07704).
+
 * Add more explicit warnings in `estimateNPCondCopula` when the bandwidth `h`
 is too small. This should reduce the total number of warnings there when using
 too small bandwidth. The previous behavior was the following: there would be 1
@@ -14,31 +22,34 @@ of the estimated conditional Kendall's tau are `NA`s. The corresponding warning
 has also been improved and is more explicit about the number of `NA`s produced,
 in particular, if the input already contained `NA`s.
 
+* `CKT.kernel` now returns an `S3` object of class `estimated_CKT_kernel` with
+`se`, `confint` and `plot` methods.
+
 * In case of cross-validation, `CKT.kernel` also returns the result of the
 corresponding function (`CKT.hCV.l1out` or `CKT.hCV.Kfolds`).
 
 * New option `nPairs = "all"` in `CKT.hCV.l1out` to use all possible pairs.
-Also available in `CKT.kernel` if `CKT.hCV.l1out` is chosen as the cross-validation
-method.
+Also available in `CKT.kernel` if `CKT.hCV.l1out` is chosen as the
+cross-validation method.
 
 * New S3 generic `se` for the standard errors. Currently only used for objects
-returned by `simpA.kendallReg`.
+returned by `simpA.kendallReg` and `CKT.kernel`.
 
 
-## Bug fixes:
+## Bug fixes
 
 * In `simpA.NP` and `simpA.param`, the parameter `truncVal` used to have no
 effect (contrary to what was written in the documentation). It is now taken into
 account. Also it is now checked that this parameter belongs to the interval
 `[0, 1/2)` so that the integration interval is not empty.
 
-* In `simpA.NP` and `simpA.param`, the weights involved in the Gaussian quadrature
-have been fixed to correspond to the correct integration interval.
+* In `simpA.NP` and `simpA.param`, the weights involved in the Gaussian
+quadrature have been fixed to correspond to the correct integration interval.
 
-* Fix a bug in `simpA.NP` for computation of the integration-based test statistics
-`T1_CvM_Cs3`, `T1_CvM_Cs4`, `tilde_T0_CvM`, which were incorrect of a constant
-factor. P-values were unaffected by this bug, as the constant factor was also
-present in the bootstrap test statistic.
+* Fix a bug in `simpA.NP` for computation of the integration-based test
+statistics `T1_CvM_Cs3`, `T1_CvM_Cs4`, `tilde_T0_CvM`, which were incorrect of a
+constant factor. P-values were unaffected by this bug, as the constant factor
+was also present in the bootstrap test statistic.
 
 * Some errors occurring in `CKT.kernel` with a multivariate `Z` and small
 bandwidth have been fixed.

@@ -513,7 +513,8 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' Dependence Modeling, 7(1), 292-321.
 #' \doi{10.1515/demo-2019-0016}
 #'
-#' @return a list with components:
+#' @return an \code{S3} object of class \code{estimated_CKT_kernel} with
+#' components including:
 #' \itemize{
 #'    \item \code{estimatedCKT} the vector of size \code{NROW(newZ)}
 #'    containing the values of the estimated conditional Kendall's tau.
@@ -525,7 +526,12 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #'    \item \code{resultCV} (only in case of cross-validation). This gives the
 #'    output of the cross-validation function that is used, i.e. the output of
 #'    either \code{\link{CKT.hCV.l1out}} or \code{\link{CKT.hCV.Kfolds}}.
+#'
+#'    \item \code{se}, and \code{confint} if requested.
 #' }
+#' Some methods (\code{se}, \code{confint} and \code{plot}) are available for
+#' such an object, see \code{\link{plot.estimated_CKT_kernel}}.
+#'
 #'
 #' @seealso \code{\link{CKT.estimate}} for other estimators
 #' of conditional Kendall's tau.
@@ -864,6 +870,21 @@ confint.estimated_CKT_kernel <- function(object, parm = NULL, level = 0.95,
 #'
 #' @param ... other arguments, currently passed to \code{plot.default} only for
 #' the \code{plot} method. These are ignored for the other methods.
+#'
+#'
+#' @return \code{plot} is only called for its side effect and does not return
+#' anything.
+#'
+#' \code{se} returns a vector of the same length as the number of points
+#' in the input \code{newZ} that was given to the function \code{\link{CKT.kernel}}.
+#'
+#' \code{confint} returns a matrix with 2 columns and the same number of rows as
+#' the number of points in the input \code{newZ} that was given to the function
+#' \code{\link{CKT.kernel}}.
+#'
+#'
+#' @seealso \code{\link{CKT.kernel}} which generates objects of class
+#' \code{estimated_CKT_kernel}.
 #'
 #' @examples
 #' # We simulate from a conditional copula

@@ -46,6 +46,17 @@ also be plotted?}
 \item{color_CKT, color_confint}{the colors respectively for the CKT curve
 and for the confidence intervals.}
 }
+\value{
+\code{plot} is only called for its side effect and does not return
+anything.
+
+\code{se} returns a vector of the same length as the number of points
+in the input \code{newZ} that was given to the function \code{\link{CKT.kernel}}.
+
+\code{confint} returns a matrix with 2 columns and the same number of rows as
+the number of points in the input \code{newZ} that was given to the function
+\code{\link{CKT.kernel}}.
+}
 \description{
 Methods for class `estimated_CKT_kernel`
 }
@@ -74,4 +85,8 @@ confint(estimatedCKT_kernel, level = 0.9)
 plot(estimatedCKT_kernel, confint = TRUE)
 
 
+}
+\seealso{
+\code{\link{CKT.kernel}} which generates objects of class
+\code{estimated_CKT_kernel}.
 }
