@@ -686,42 +686,6 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
       progressBar = progressBar > 0)
   }
 
-  if (anyNA(estCKT) && warnNA){
-    n_NA = length(which(is.na(estCKT)))
-    if (!anyNA(X1) && !anyNA(X2) && !anyNA(Z) && !anyNA(newZ)){
-      warning(CondCopulas_warning_condition_base(
-        message = paste0(
-          "NA in estimated CKT (", n_NA, " out of ", NROW(newZ), "). ",
-          "This often happens when the bandwidth h is too small, ",
-          "consider using a bigger bandwidth ",
-          "(see the documentation for advice on the choice of h). ",
-          "You can disable this warning using the input `warnNA = FALSE`."),
-
-        subclass = "NA_ProducedWarning")
-      )
-    } else {
-      n_NA_X1 = length(which(is.na(X1)))
-      n_NA_X2 = length(which(is.na(X2)))
-      n_NA_Z = length(which(is.na(Z)))
-      n_NA_newZ = length(which(is.na(newZ)))
-      warning(CondCopulas_warning_condition_base(
-        message = paste0(
-          "NA in estimated CKT (", n_NA, " out of ", NROW(newZ), "). ",
-          "This often happens when the bandwidth h is too small. ",
-          "Here there are also missing values in the following inputs: \n",
-          "* X1: "  , n_NA_X1  , " missing out of ", length(X1)  , "\n",
-          "* X2: "  , n_NA_X2  , " missing out of ", length(X2)  , "\n",
-          "* Z: "   , n_NA_Z   , " missing out of ", length(Z)   , "\n",
-          "* newZ: ", n_NA_newZ, " missing out of ", length(newZ), "\n",
-          "This can also happens if the bandwidth is too small ",
-          "(see the documentation for advice on the choice of h). ",
-          "You can disable this warning using the input `warnNA = FALSE`."),
-
-        subclass = "NA_ProducedWarning")
-      )
-    }
-  }
-
   result = list(estimatedCKT = estCKT, h = finalh,
                 resultCV = resultCV,
                 matrixSignsPairs = matrixSignsPairs,
@@ -732,15 +696,75 @@ CKT.kernel <- function(X1 = NULL, X2 = NULL, Z = NULL, newZ,
   class(result) <- "estimated_CKT_kernel"
 
   # Adding additional components to result as requested
-  if (se || confint){
-    result$se <- se(result)
+  if (confint){
+    # Confidence intervals requires the knowledge of the standard error
+    se <- TRUE
+  }
+  if (se){
+    result$se <- se(result, progressBar = progressBar)
   }
   if (confint){
-    result$confint = confint(object = result, level = level)
+    result$confint = confint(object = result, level = level,
+                             progressBar = progressBar)
+  }
+
+  # Raise warnings for NA values, if any  ======================================
+
+  if (warnNA){
+    if (anyNA(estCKT)){
+      warnNA_CKT.kernel(
+        X1 = X1, X2 = X2, Z = Z, newZ = newZ,
+        estimator = estCKT,
+        nameEstimator = "estimated conditional Kendall's tau")
+
+    } else if (anyNA(result$se)){
+      warnNA_CKT.kernel(
+        X1 = X1, X2 = X2, Z = Z, newZ = newZ,
+        estimator = result$se,
+        nameEstimator = "standard error of conditional Kendall's tau")
+    }
   }
 
   return (result)
 }
+
+
+warnNA_CKT.kernel <- function(X1, X2, Z, newZ, estimator, nameEstimator){
+  n_NA = length(which(is.na(estimator)))
+
+  if (!anyNA(X1) && !anyNA(X2) && !anyNA(Z) && !anyNA(newZ)){
+
+    message = paste0(
+      "NA in ", nameEstimator ," (", n_NA, " out of ", NROW(newZ), ").\n",
+      "This often happens when the bandwidth h is too small, ",
+      "consider using a bigger bandwidth ",
+      "(see the documentation for advice on the choice of h).\n",
+      "You can disable this warning using the input `warnNA = FALSE`.")
+
+  } else {
+    n_NA_X1 = length(which(is.na(X1)))
+    n_NA_X2 = length(which(is.na(X2)))
+    n_NA_Z = length(which(is.na(Z)))
+    n_NA_newZ = length(which(is.na(newZ)))
+
+    message = paste0(
+      "NA in ", nameEstimator ," (", n_NA, " out of ", NROW(newZ), "). \n",
+      "Here there are also missing values in the following inputs: \n",
+      "* X1: "  , n_NA_X1  , " missing out of ", length(X1)  , "\n",
+      "* X2: "  , n_NA_X2  , " missing out of ", length(X2)  , "\n",
+      "* Z: "   , n_NA_Z   , " missing out of ", length(Z)   , "\n",
+      "* newZ: ", n_NA_newZ, " missing out of ", length(newZ), "\n",
+      "This can also happens if the bandwidth is too small ",
+      "(see the documentation for advice on the choice of h).\n",
+      "You can disable this warning using the input `warnNA = FALSE`.")
+  }
+
+  warning(CondCopulas_warning_condition_base(
+    message = message,
+    subclass = "NA_ProducedWarning")
+  )
+}
+
 
 
 #' @export
