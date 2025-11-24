@@ -54,7 +54,8 @@ Test of the assumption that a conditional copulas does not vary
 through a list of discrete conditioning events
 }
 \examples{
-n = 800
+n = 50 # to get fast computation time. More realistic is n = 800.
+
 Z = stats::runif(n = n)
 CKT = 0.2 * as.numeric(Z <= 0.3) +
   0.5 * as.numeric(Z > 0.3 & Z <= 0.5) +
