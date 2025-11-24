@@ -8,7 +8,7 @@
 \usage{
 \method{se}{estimated_CKT_kernel}(object, progressBar = TRUE, ...)
 
-\method{confint}{estimated_CKT_kernel}(object, level = 0.95, progressBar = TRUE, ...)
+\method{confint}{estimated_CKT_kernel}(object, parm = NULL, level = 0.95, progressBar = TRUE, ...)
 
 \method{plot}{estimated_CKT_kernel}(
   x,
@@ -24,6 +24,27 @@
 }
 \arguments{
 \item{object, x}{an \code{S3} object of class \code{estimated_CKT_kernel}.}
+
+\item{progressBar}{\code{TRUE} if a progress bar is plotted if computations
+of standard errors is needed. Note that in some case, the standard error is
+already available in the object itself, then no progress bar is needed.}
+
+\item{...}{other arguments, currently passed to \code{plot.default} only for
+the \code{plot} method. These are ignored for the other methods.}
+
+\item{parm}{ignored for the moment, kept for compatibility with the generic
+\code{confint} method.}
+
+\item{level}{the confidence level for the confidence intervals. By default,
+95\% confidence intervals are computed, i.e. \code{level = 0.95}.}
+
+\item{confint}{in case of the \code{plot} method, should confidence bands
+also be plotted?}
+
+\item{xlim, ylim}{the x,y limits of the plot.}
+
+\item{color_CKT, color_confint}{the colors respectively for the CKT curve
+and for the confidence intervals.}
 }
 \description{
 Methods for class `estimated_CKT_kernel`

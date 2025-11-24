@@ -495,6 +495,13 @@ CKT.kernel.multivariate <- function(X1, X2, matrixSignsPairs, Z,
 #' usually if either the bandwidth \code{h} is too small, or if there are already
 #' \code{NA}s in (some of) the inputs.
 #'
+#' @param se,confint if \code{TRUE}, compute (asymptotic) standard errors and
+#' confidence intervals of conditional Kendall's tau. Standard errors are
+#' computed using Proposition 9 of (Derumigny & Fermanian, 2019).
+#'
+#' @param level the confidence level for the confidence intervals. By default,
+#' 95\% confidence intervals are computed, i.e. \code{level = 0.95}.
+#'
 #' @param observedX1,observedX2,observedZ old parameter names for \code{X1},
 #' \code{X2}, \code{Z}. Support for this will be removed at a later version.
 #'
@@ -803,7 +810,7 @@ se.estimated_CKT_kernel <- function(object, progressBar = TRUE, ...)
 #' @export
 #'
 #' @rdname plot.estimated_CKT_kernel
-confint.estimated_CKT_kernel <- function(object, level = 0.95,
+confint.estimated_CKT_kernel <- function(object, parm = NULL, level = 0.95,
                                          progressBar = TRUE, ...)
 {
   if (is.null(object$se)){
@@ -836,6 +843,27 @@ confint.estimated_CKT_kernel <- function(object, level = 0.95,
 #' Methods for class `estimated_CKT_kernel`
 #'
 #' @param object,x an \code{S3} object of class \code{estimated_CKT_kernel}.
+#'
+#' @param progressBar \code{TRUE} if a progress bar is plotted if computations
+#' of standard errors is needed. Note that in some case, the standard error is
+#' already available in the object itself, then no progress bar is needed.
+#'
+#' @param confint in case of the \code{plot} method, should confidence bands
+#' also be plotted?
+#'
+#' @param level the confidence level for the confidence intervals. By default,
+#' 95\% confidence intervals are computed, i.e. \code{level = 0.95}.
+#'
+#' @param color_CKT,color_confint the colors respectively for the CKT curve
+#' and for the confidence intervals.
+#'
+#' @param xlim,ylim the x,y limits of the plot.
+#'
+#' @param parm ignored for the moment, kept for compatibility with the generic
+#' \code{confint} method.
+#'
+#' @param ... other arguments, currently passed to \code{plot.default} only for
+#' the \code{plot} method. These are ignored for the other methods.
 #'
 #' @examples
 #' # We simulate from a conditional copula

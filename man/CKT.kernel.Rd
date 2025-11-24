@@ -52,6 +52,13 @@ before doing the estimation.}
 Possible choices are \code{"Gaussian"} (Gaussian kernel)
 and \code{"Epa"} (Epanechnikov kernel).}
 
+\item{se, confint}{if \code{TRUE}, compute (asymptotic) standard errors and
+confidence intervals of conditional Kendall's tau. Standard errors are
+computed using Proposition 9 of (Derumigny & Fermanian, 2019).}
+
+\item{level}{the confidence level for the confidence intervals. By default,
+95\% confidence intervals are computed, i.e. \code{level = 0.95}.}
+
 \item{methodCV}{method used for the cross-validation.
 Possible choices are \code{"leave-one-out"} and \code{"Kfolds"}.}
 
