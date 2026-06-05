@@ -1,4 +1,9 @@
 
+* In `simpA.NP` and `simpA.param`, some of the p-values were `NA` or `NaN` for
+some combinations of the test statistics and the bootstrap methods. This is
+now fixed.
+
+
 # CondCopulas 0.2.0
 
 ## New features
