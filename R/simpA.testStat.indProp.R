@@ -132,7 +132,8 @@ testStat_Ichi <- function(env)
                                        U3 = env$U3, n = env$n)
   env$listG = env$resultG$G
   env$listG_indep = env$resultG$G_indep
-  env$true_stat = sum((env$listG - env$listG_indep)^2 / env$listG_indep)
+  env$normalized_diff = (env$listG - env$listG_indep)^2 / env$listG_indep
+  env$true_stat = sum(env$normalized_diff[which(is.finite(env$normalized_diff))])
 }
 
 
@@ -161,8 +162,9 @@ testStat_Ichi_boot1st <- function(env)
                                           U3 = env$U3_st, n = env$n)
   env$listG_st = env$resultG_st$G
   env$listG_indep_st = env$resultG_st$G_indep
-  env$stat_st = sum((env$listG_st - env$listG
-                     - env$listG_indep_st + env$listG_indep)^2 / env$listG_indep_st)
+  env$normalized_diff = (env$listG_st - env$listG
+                         - env$listG_indep_st + env$listG_indep)^2 / env$listG_indep_st
+  env$stat_st = sum(env$normalized_diff[which(is.finite(env$normalized_diff))])
 }
 
 
@@ -191,7 +193,8 @@ testStat_Ichi_boot2st <- function(env)
                                           U3 = env$U3_st, n = env$n)
   env$listG_st = env$resultG_st$G
   env$listG_indep_st = env$resultG_st$G_indep
-  env$stat_st = sum((env$listG_st - env$listG_indep_st)^2 / env$listG_indep_st)
+  env$normalized_diff = (env$listG_st - env$listG_indep_st)^2 / env$listG_indep_st
+  env$stat_st = sum(env$normalized_diff[which(is.finite(env$normalized_diff))])
 }
 
 
