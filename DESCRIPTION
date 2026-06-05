@@ -22,7 +22,6 @@ Description:
     (proposed in Derumigny (2025) <doi:10.48550/arXiv.2504.07704>).
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = FALSE)
 Suggests:
     MASS,
@@ -46,3 +45,4 @@ VignetteBuilder: knitr
 BugReports: https://github.com/AlexisDerumigny/CondCopulas/issues
 URL: https://github.com/AlexisDerumigny/CondCopulas
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
