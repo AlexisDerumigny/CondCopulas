@@ -226,11 +226,11 @@ testStat_I2n <- function(env)
     {
       for (j in 1:env$nGrid)
       {
-        env$C_IJ_ijk = mean(as.numeric(env$Z1_J <= env$grid$nodes[i] &
-                                         env$Z2_J <= env$grid$nodes[j] &
+        env$C_IJ_ijk = mean(as.numeric(env$Z1 <= env$grid$nodes[i] &
+                                         env$Z2 <= env$grid$nodes[j] &
                                          env$U3 <= env$grid$nodes[k]))
-        env$C_I_given_J_ij = mean(as.numeric(env$Z1_J <= env$grid$nodes[i] &
-                                               env$Z2_J <= env$grid$nodes[j]))
+        env$C_I_given_J_ij = mean(as.numeric(env$Z1 <= env$grid$nodes[i] &
+                                               env$Z2 <= env$grid$nodes[j]))
         env$C_J_k = mean(as.numeric(env$U3 <= env$grid$nodes[k]))
 
         env$array_C_IJ[i,j,k] = env$grid$weights[i] *
@@ -272,12 +272,12 @@ testStat_I2n_boot1st <- function(env)
     {
       for (j in 1:env$nGrid)
       {
-        env$C_IJ_ijk_st = mean(as.numeric(env$Z1_J_st <= env$grid$nodes[i]
-                                      & env$Z2_J_st <= env$grid$nodes[j]
+        env$C_IJ_ijk_st = mean(as.numeric(env$Z1_st <= env$grid$nodes[i]
+                                      & env$Z2_st <= env$grid$nodes[j]
                                       & env$U3_st <= env$grid$nodes[k]))
 
-        env$C_I_given_J_ij_st = mean(as.numeric(env$Z1_J_st <= env$grid$nodes[i]
-                                            & env$Z2_J_st <= env$grid$nodes[j]))
+        env$C_I_given_J_ij_st = mean(as.numeric(env$Z1_st <= env$grid$nodes[i]
+                                            & env$Z2_st <= env$grid$nodes[j]))
 
         env$C_J_k_st = mean(as.numeric(env$U3_st <= env$grid$nodes[k]))
 
@@ -323,12 +323,12 @@ testStat_I2n_boot2st <- function(env)
     {
       for (j in 1:env$nGrid)
       {
-        env$C_IJ_ijk_st = mean(as.numeric(env$Z1_J_st <= env$grid$nodes[i]
-                                          & env$Z2_J_st <= env$grid$nodes[j]
+        env$C_IJ_ijk_st = mean(as.numeric(env$Z1_st <= env$grid$nodes[i]
+                                          & env$Z2_st <= env$grid$nodes[j]
                                           & env$U3_st <= env$grid$nodes[k]))
 
-        env$C_I_given_J_ij_st = mean(as.numeric(env$Z1_J_st <= env$grid$nodes[i]
-                                                & env$Z2_J_st <= env$grid$nodes[j]))
+        env$C_I_given_J_ij_st = mean(as.numeric(env$Z1_st <= env$grid$nodes[i]
+                                                & env$Z2_st <= env$grid$nodes[j]))
 
         env$C_J_k_st = mean(as.numeric(env$U3_st <= env$grid$nodes[k]))
 
