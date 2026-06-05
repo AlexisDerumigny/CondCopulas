@@ -53,24 +53,36 @@ test_that("all test statistics run without errors", {
   X1 = qnorm(simCopula[,1], mean = Z)
   X2 = qnorm(simCopula[,2], mean = - Z)
 
+  all_testStats = c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM",
+                    "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS", "I_chi", "I_2n")
 
-  for (testStat in c("T1_CvM_Cs3", "T1_CvM_Cs4", "tilde_T0_CvM",
-                       "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS", "I_chi", "I_2n")){
-    expect_no_error({
-      result_1 <- simpA.NP(
-        X1 = X1, X2 = X2, X3 = Z,
-        testStat = testStat, typeBoot = "boot.NP",
-        h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = NULL)
-    })
-  }
+  all_bootstrap_NP = c("boot.NP", "boot.pseudoInd", "boot.pseudoInd.sameX3", "boot.cond")
 
-  for (typeBoot in c("boot.NP", "boot.pseudoInd", "boot.pseudoInd.sameX3", "boot.cond")){
-    expect_no_error({
-      result_1 <- simpA.NP(
-        X1 = X1, X2 = X2, X3 = Z,
-        testStat = "I_chi", typeBoot = "boot.NP",
-        h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = NULL)
-    })
-  }
+  result_testStat = lapply(
+    all_testStats,
+    FUN = function(testStat) {simpA.NP(
+      X1 = X1, X2 = X2, X3 = Z,
+      testStat = testStat, typeBoot = "boot.NP",
+      h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = NULL)
+    }
+  )
+
+  pvals_testStat = lapply(result_testStat, FUN = \(x){x$p_val}) |> unlist()
+  names(pvals_testStat) <- all_testStats
+
+  expect_all_true(0 <= pvals_testStat & pvals_testStat <= 1)
+
+  result_bootstrap = lapply(
+    all_bootstrap_NP,
+    FUN = function(typeBoot) {simpA.NP(
+      X1 = X1, X2 = X2, X3 = Z,
+      testStat = "I_chi", typeBoot = typeBoot,
+      h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = NULL)
+    }
+  )
+  pvals_bootstrap = lapply(result_bootstrap, FUN = \(x){x$p_val}) |> unlist()
+  names(pvals_bootstrap) <- all_bootstrap_NP
+  expect_all_true(0 <= pvals_bootstrap & pvals_bootstrap <= 1)
+
 })
 
