@@ -37,3 +37,30 @@ test_that("the truncation works", {
   )
 
 })
+
+
+test_that("All bootstrap methods run", {
+  set.seed(1)
+  N = 500
+  Z = rnorm(n = N, mean = 5, sd = 2)
+  conditionalTau = -0.9 + 1.8 * pnorm(Z, mean = 5, sd = 2)
+  simCopula = VineCopula::BiCopSim(N=N , family = 1,
+                                   par = VineCopula::BiCopTau2Par(1 , conditionalTau ))
+  X1 = qnorm(simCopula[,1], mean = Z)
+  X2 = qnorm(simCopula[,2], mean = - Z)
+
+  all_bootstrap = c(
+    "boot.NP", "boot.pseudoInd", "boot.pseudoInd.sameX3", "boot.pseudoNP",
+    "boot.cond", "boot.paramInd", "boot.paramCond")
+
+  results = lapply(
+    all_bootstrap,
+    FUN = function(bootstrap) {simpA.param(
+      X1 = X1, X2 = X2, X3 = Z, family = 1,
+      h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, typeBoot = bootstrap)
+    }
+  )
+
+  pvals = lapply(results, FUN = \(x){x$p_val}) |> unlist()
+  expect_all_true(0 <= pvals & pvals <= 1)
+})

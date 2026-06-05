@@ -297,9 +297,9 @@ estimateParCondCopula_ZIJ <- function (Z1_J, Z2_J, observedX3,
 
     if (!is.finite(theta_xJ[i]) | !is.numeric(theta_xJ[i]))
     {
-      warnings(paste0("Problem of estimation in estimationParCondCopulas",
-                      ". For newX3 =", newX3[i],
-                      " , theta(xJ) is estimated by", theta_xJ[i]))
+      warning(paste0("Problem of estimation in estimationParCondCopulas",
+                     ". For newX3 = ", newX3[i],
+                     " , theta(xJ) is estimated by: ", theta_xJ[i]))
     }
   }
   theta_xJ = as.numeric(theta_xJ)

@@ -92,15 +92,20 @@ testStat_T2c_boot1st <- function(env)
 
 testStat_T2c_boot2st <- function(env)
 {
-  if (is.null(env$existZU_st)) {
+  if (is.null(env$U3_st)) {
+    # Computation of the pseudos-observations
+    ecdf3_st = stats::ecdf(env$X3_st)
+
+    env$U3_st = ecdf3_st(env$X3_st)
+  }
+
+  if (is.null(env$Z1_st) || is.null(env$Z2_st)) {
     # Computation of the pseudos-observations
     ecdf1_st = stats::ecdf(env$X1_st)
     ecdf2_st = stats::ecdf(env$X2_st)
-    ecdf3_st = stats::ecdf(env$X3_st)
 
     env$U1_st = ecdf1_st(env$X1_st)
     env$U2_st = ecdf2_st(env$X2_st)
-    env$U3_st = ecdf3_st(env$X3_st)
 
     # Computation of Z
     env$resultZ_st = estimationOfZ_I_J(U1 = env$U1_st, U2 = env$U2_st, U3 = env$U3_st,

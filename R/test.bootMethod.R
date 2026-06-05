@@ -186,8 +186,8 @@ boot.paramInd <- function(env, FUN_trueStat, FUN_stat_st)
       # Resampling to create the bootstrapped sample
       simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
                                           par = env$theta_0, par2 = 4)
-      env$Z1_J_st = simCopule_st[,1]
-      env$Z2_J_st = simCopule_st[,2]
+      env$Z1_st = simCopule_st[,1]
+      env$Z2_st = simCopule_st[,2]
 
       permutation2 = as.integer(stats::runif(env$n, 1, env$n))
       env$U3_st = env$U3[permutation2]
@@ -200,8 +200,8 @@ boot.paramInd <- function(env, FUN_trueStat, FUN_stat_st)
       # Resampling to create the bootstrapped sample
       simCopule_st = VineCopula::BiCopSim(N = env$n , family = env$family,
                                           par = env$theta_0)
-      env$Z1_J_st = simCopule_st[,1]
-      env$Z2_J_st = simCopule_st[,2]
+      env$Z1_st = simCopule_st[,1]
+      env$Z2_st = simCopule_st[,2]
 
       permutation2 = as.integer(stats::runif(env$n, 1, env$n))
       env$U3_st = env$U3[permutation2]
@@ -245,12 +245,15 @@ boot.paramCond <- function(env, FUN_trueStat, FUN_stat_st)
         i_X3 = as.integer(stats::runif(1,1,env$n))
         simCopule_st = VineCopula::BiCopSim(N=1 , family = env$family,
                                               par = env$theta_xJ_n[i_X3], par2 = 4)
-        env$Z1_J_st[i] = simCopule_st[1]
-        env$Z2_J_st[i] = simCopule_st[2]
+        env$Z1_st[i] = simCopule_st[1]
+        env$Z2_st[i] = simCopule_st[2]
         env$X3_st[i] = env$X3[i_X3]
       }
       ecdf3_st = stats::ecdf(env$X3_st)
       env$U3_st = ecdf3_st(env$X3_st)
+
+      FUN_stat_st(env)
+      env$vect_statB[iBootstrap] <- env$stat_st
     }
   } else if (env$family == 3) {
     theta_xJ_n = estimateParCondCopula_ZIJ(
@@ -259,42 +262,52 @@ boot.paramCond <- function(env, FUN_trueStat, FUN_stat_st)
 
     for (iBootstrap in 1:env$nBootstrap) {
       # Resampling to create the bootstrapped sample
-      env$Z1_J_st = rep(NA, env$n)
-      env$Z2_J_st = rep(NA, env$n)
+      env$Z1_st = rep(NA, env$n)
+      env$Z2_st = rep(NA, env$n)
       env$X3_st = rep(NA, env$n)
       for (i in 1:env$n)
       {
         i_X3 = as.integer(stats::runif(1,1,env$n))
         simCopule_st = VineCopula::BiCopSim(N=1 , family = env$family,
                                             par = min(env$theta_xJ_n[i_X3],100))
-        env$Z1_J_st[i] = simCopule_st[1]
-        env$Z2_J_st[i] = simCopule_st[2]
+        env$Z1_st[i] = simCopule_st[1]
+        env$Z2_st[i] = simCopule_st[2]
         env$X3_st[i] = env$X3[i_X3]
       }
       ecdf3_st = stats::ecdf(env$X3_st)
       env$U3_st = ecdf3_st(env$X3_st)
+
+      FUN_stat_st(env)
+      env$vect_statB[iBootstrap] <- env$stat_st
     }
   } else {
     theta_xJ_n = estimateParCondCopula_ZIJ(
-      Z1_J = env$Z1_J, Z2_J = env$Z2_J, observedX3 = env$U3,
+      Z1_J = env$Z1, Z2_J = env$Z2, observedX3 = env$U3,
       newX3 = env$U3, family = env$family, h = env$h, method = "mle")
+
+    if (anyNA(theta_xJ_n)) {
+      stop("Numerical problem in estimating the conditional parameter theta_xJ_n.")
+    }
 
     for (iBootstrap in 1:env$nBootstrap) {
       # Resampling to create the bootstrapped sample
-      env$Z1_J_st = rep(NA, env$n)
-      env$Z2_J_st = rep(NA, env$n)
+      env$Z1_st = rep(NA, env$n)
+      env$Z2_st = rep(NA, env$n)
       env$X3_st = rep(NA, env$n)
       for (i in 1:env$n)
       {
         i_X3 = as.integer(stats::runif(1,1,env$n))
         simCopule_st = VineCopula::BiCopSim(N=1 , family = env$family,
                                             par = env$theta_xJ_n[i_X3])
-        env$Z1_J_st[i] = simCopule_st[1]
-        env$Z2_J_st[i] = simCopule_st[2]
+        env$Z1_st[i] = simCopule_st[1]
+        env$Z2_st[i] = simCopule_st[2]
         env$X3_st[i] = env$X3[i_X3]
       }
       ecdf3_st = stats::ecdf(env$X3_st)
       env$U3_st = ecdf3_st(env$X3_st)
+
+      FUN_stat_st(env)
+      env$vect_statB[iBootstrap] <- env$stat_st
     }
   }
 
