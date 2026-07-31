@@ -8,8 +8,8 @@ install.packages("CondCopulas")
 
 The development version from GitHub, using the `devtools` package:
 ``` r
-# install.packages("devtools")
-devtools::install_github("AlexisDerumigny/CondCopulas")
+# install.packages("remotes")
+remotes::install_github("AlexisDerumigny/CondCopulas")
 ```
 
 If you have any questions or suggestions, feel free to
@@ -189,7 +189,8 @@ Tau and conditional Kendall’s Tau matrices under structural assumptions.
 *Dependence Modeling*, 13(1), 20250012.
 [pdf](https://doi.org/10.1515/demo-2025-0012)
  
-Derumigny, A. (2025).
-Measures of non-simplifyingness for conditional copulas and vines. 
-[arXiv:2504.07704](https://arxiv.org/pdf/2504.07704)
+Derumigny, A. (2026).
+Measures of non-simplifyingness for conditional copulas and vines.
+*Statistical Dependence Modeling: Festschrift in Honor of Claudia Czado*, 131-152, Springer.
+[pdf](https://doi.org/10.1007/978-3-032-14252-8_7)
 
