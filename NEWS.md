@@ -3,6 +3,8 @@
 some combinations of the test statistics and the bootstrap methods. This is
 now fixed.
 
+* Fix an error in `CKT.predict.kNN` when being called with `partition = NULL`.
+
 
 # CondCopulas 0.2.0
 

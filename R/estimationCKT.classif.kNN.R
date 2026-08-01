@@ -338,14 +338,17 @@ CKT.adaptkNN <- function(matrixKNN, vect_k,
     stop("Lengths are different for matrixKNN[1,] and vect_k")
   }
 
-  if (is.null(partition)){
+  if (is.null(partition) || length(partition) == 0){
     partition_id = rep(1, n_grid_z)
   } else if (length(partition) == 1){
     partition_id = ceiling((1:n_grid_z)*(partition/n_grid_z))
   } else {
+    if (any(partition < 1 | partition > n_grid_z) ) {
+      stop("partition must consist of integers between 1 and the number of new Z.")
+    }
     partition_id = partition
   }
-  sizePartition = max(partition)
+  sizePartition = max(partition_id)
 
   order_k = order(vect_k)
 
