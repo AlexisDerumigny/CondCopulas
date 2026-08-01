@@ -238,11 +238,11 @@ CKT.predict.kNN.1 <- function(datasetPairs,
                        n_data, ", ", nrow(datasetPairs)),
       class = "DifferentLengthsError") )
   }
-  if (pPrime != ncol(designMatrix)){
+  if (pPrime != ncol(newZ)){
     stop(errorCondition(
       message = paste0("designMatrix and newZ should have the same number of columns. ",
                        "Here they are respectively: ",
-                       pPrime, " , ", ncol(designMatrix)),
+                       pPrime, " , ", ncol(newZ)),
       class = "WrongDimensionError") )
   }
 
