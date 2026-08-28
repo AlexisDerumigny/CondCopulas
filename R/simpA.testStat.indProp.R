@@ -25,7 +25,7 @@ computationOf_G_chi_ZU <- function (Z1, Z2, U3, n)
     {
       for (k3 in 1:5)
       {
-        listG[k1, k2, k3] =
+        listG[k1, k2, k3] = (
           fonctionG_IJ(partition[k1+1] , partition[k2+1] , partition[k3+1])
 
         - fonctionG_IJ(partition[k1  ] , partition[k2+1] , partition[k3+1])
@@ -37,6 +37,7 @@ computationOf_G_chi_ZU <- function (Z1, Z2, U3, n)
         + fonctionG_IJ(partition[k1  ] , partition[k2  ] , partition[k3+1])
 
         - fonctionG_IJ(partition[k1] , partition[k2] , partition[k3])
+        )
       }
     }
   }
@@ -49,7 +50,7 @@ computationOf_G_chi_ZU <- function (Z1, Z2, U3, n)
   {
     for (k2 in 1:5)
     {
-      listG_BkR[k1 , k2] =
+      listG_BkR[k1 , k2] = (
         fonctionG_IJ(partition[k1+1] , partition[k2+1] , 1)
 
       - fonctionG_IJ(partition[k1  ] , partition[k2+1] , 1)
@@ -61,17 +62,18 @@ computationOf_G_chi_ZU <- function (Z1, Z2, U3, n)
       + fonctionG_IJ(partition[k1  ] , partition[k2  ] , 1)
 
       - fonctionG_IJ(partition[k1] , partition[k2] , 0)
+      )
     }
   }
 
   # Computation of GI,J(R^2, Al)
 
-  listG_R2Al = rep(NA , n)
+  listG_R2Al = rep(NA , 5)
 
   for (k3 in 1:5)
   {
 
-    listG_R2Al[k3] =
+    listG_R2Al[k3] = (
       fonctionG_IJ(1               , 1               , partition[k3+1])
 
     - fonctionG_IJ(0               , 1               , partition[k3+1])
@@ -83,6 +85,7 @@ computationOf_G_chi_ZU <- function (Z1, Z2, U3, n)
     + fonctionG_IJ(0               , 0               , partition[k3+1])
 
     - fonctionG_IJ(0               , 0               , partition[k3])
+    )
 
   }
 
