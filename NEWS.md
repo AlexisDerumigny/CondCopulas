@@ -5,6 +5,9 @@ now fixed.
 
 * Fix an error in `CKT.predict.kNN` when being called with `partition = NULL`.
 
+* Fix a bug in `simpA.NP` with `testStat = "I_chi"`.
+(#6, thanks to Felipe Fontana Vieira @felipelfv)
+
 
 # CondCopulas 0.2.0
 
