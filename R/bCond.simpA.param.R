@@ -102,13 +102,13 @@ bCond.simpA.param <- function(
   nBootstrap = 100)
 {
   if (NROW(X1) != NROW(X2) || NROW(X1) != NROW(partition)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1 and X2 should be of the same length, ",
                        "(the number of observations in the dataset). ",
                        "This should be equal to the number of rows in 'partition'. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(partition)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 
   .checkUnivX1X2(X1, X2)

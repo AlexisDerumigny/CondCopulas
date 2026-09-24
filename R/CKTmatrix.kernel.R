@@ -134,11 +134,11 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
   nz = length( gridZ )
 
   if(length(observedZ) != n) {
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("The length of observedZ and the number of rows in ",
                        "`dataMatrix` must be equal. Here they are respectively: ",
                        length(observedZ), ", ", n),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 
   if(typeEstCKT == "wdm"){

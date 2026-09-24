@@ -85,22 +85,22 @@ measures_nonsimplifyingness_NP <- function(
                         "T1_KS_Cs3", "T1_KS_Cs4", "tilde_T0_KS")
 
   if (length(measures) == 0){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("'measures' should not be of length 0."),
-      class = "ZeroLengthError") )
+      subclass = "ZeroLengthError") )
   } else if (length(measures) == 1 && measures == "all"){
     measures = possible_measures
   } else {
     which_bad = which(!(measures %in% possible_measures))
     if(length(which_bad) > 0){
-      stop(errorCondition(
+      stop(CondCopulas_error_condition_base(
         message = paste0(
           "Unknown measure(s): ",
           "'", paste0(measures[which_bad], collapse = "', '"), "'.",
           "\n",
           "Possible measures are: ",
           "'", paste0(possible_measures, collapse = "', '"), "'."),
-        class = "UnknownMeasureNameError" ) )
+        subclass = "UnknownMeasureNameError" ) )
     }
   }
 
@@ -115,10 +115,10 @@ measures_nonsimplifyingness_NP <- function(
 
   } else {
     if (truncVal < 0 || truncVal >= 0.5){
-      stop(errorCondition(
+      stop(CondCopulas_error_condition_base(
         message = paste0("'truncVal' must be in the interval [0, 0.5). ",
                          "Here it is: ", truncVal),
-        class = "InvalidInputError"
+        subclass = "InvalidInputError"
       ))
     }
     result$truncVal = truncVal

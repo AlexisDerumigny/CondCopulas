@@ -349,10 +349,10 @@ datasetPairs_hCV <- function(X1, X2, Z, nPairs = NULL, typeEstCKT = 2)
 computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT = 4)
 {
   if (length(vectorX1) != length(vectorX2)) {
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("vectorX1 and vectorX2 have different lengths: ",
                        length(vectorX1), " and ", length(vectorX2)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 
   n = length(vectorX1)

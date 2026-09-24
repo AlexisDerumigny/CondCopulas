@@ -128,12 +128,12 @@ treeCKT2matrixInd <- function(estimatedTree, newDataXJ = NULL)
 matrixInd2matrixCKT <- function(matrixInd, newDataXI)
 {
   if (NROW(newDataXI) != NROW(matrixInd)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("`newDataXI` and `matrixInd` should have the same number",
                        "of rows, as they come from the same sample. ",
                        "Here they are respectively: ",
                        NROW(newDataXI), ", ", NROW(matrixInd)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 
   # We count the number of boxes in the partition

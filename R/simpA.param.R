@@ -148,10 +148,10 @@ simpA.param <- function(
     }
   } else {
     if (truncVal < 0 || truncVal >= 0.5){
-      stop(errorCondition(
-        message = paste0("'truncVal' must be [0, 0.5). ",
+      stop(CondCopulas_error_condition_base(
+        message = paste0("'truncVal' must be in [0, 0.5). ",
                          "Here it is: ", truncVal),
-        class = "InvalidInputError"
+        subclass = "InvalidInputError"
       ))
     }
   }

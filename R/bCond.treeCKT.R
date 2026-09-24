@@ -87,11 +87,11 @@ bCond.treeCKT <- function(XI, XJ,
 {
   # Doing various checks
   if(NROW(XI) != NROW(XJ)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("XI and XJ must have the same number of observations. ",
                        "Here they are respectively: ",
                        NROW(XI), ", ", NROW(XJ)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
   if (anyNA(XI) || anyNA(XJ)){
     stop("XI and XJ must not contain missing values.")

@@ -232,18 +232,18 @@ CKT.predict.kNN.1 <- function(datasetPairs,
   pPrime = ncol(designMatrix)
 
   if (n_data != nrow(datasetPairs)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("designMatrix and datasetPairs should have the same number of rows. ",
                        "Here they are respectively: ",
                        n_data, ", ", nrow(datasetPairs)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
   if (pPrime != ncol(newZ)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("designMatrix and newZ should have the same number of columns. ",
                        "Here they are respectively: ",
                        pPrime, " , ", ncol(newZ)),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
 
   weightsVar = rep(weightsVariables, length.out = pPrime)

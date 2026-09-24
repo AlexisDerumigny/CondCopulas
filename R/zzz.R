@@ -2,34 +2,34 @@
 .checkSame_nobs_X1X2Z <- function(X1, X2, Z)
 {
   if ((NROW(X1) != NROW(X2)) || (NROW(X1) != NROW(Z))){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1, X2 and Z must have the same number of observations. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(Z)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 }
 
 .checkSame_nobs_X1X2X3 <- function(X1, X2, X3)
 {
   if ((NROW(X1) != NROW(X2)) || (NROW(X1) != NROW(X3))){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1, X2 and X3 must have the same number of observations. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(X3)),
-      class = "DifferentLengthsError") )
+      subclass = "DifferentLengthsError") )
   }
 }
 
 .checkSame_ncols_Z_newZ <- function(Z, newZ, name_Z, name_newZ){
   if (NCOL(Z) != NCOL(newZ)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0(name_Z, " and ", name_newZ ,
                        " must have the same number of columns ",
                        "(so the same number of conditioning variables). ",
                        "However, here ", name_Z, " has ", NCOL(Z), " columns ",
                        "while ", name_newZ, " has ", NCOL(newZ), " columns." ),
-      class = "WrongDimensionError")
+      subclass = "WrongDimensionError")
     )
   }
 }
@@ -37,72 +37,72 @@
 .checkUnivX1X2 <- function(X1, X2)
 {
   if (NCOL(X1) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
   if (NCOL(X2) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
 }
 
 .checkUnivX1X2X3 <- function(X1, X2, X3)
 {
   if (NCOL(X1) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
   if (NCOL(X2) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
   if (NCOL(X3) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X3 must be univariate. Here it has ",
                        NCOL(X3), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
 }
 
 .checkUnivX1X2Z <- function(X1, X2, Z)
 {
   if (NCOL(X1) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
   if (NCOL(X2) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
   if (NCOL(Z) > 1){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("Z must be univariate. Here it has ",
                        NCOL(Z), " columns"),
-      class = "WrongDimensionError") )
+      subclass = "WrongDimensionError") )
   }
 }
 
 .check_MatrixSignPairs <- function(matrixSignsPairs)
 {
   if (nrow(matrixSignsPairs) != ncol(matrixSignsPairs)){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0("'matrixSignsPairs' must be a square matrix. ",
                        "Here, its dimensions are: ",
                        nrow(matrixSignsPairs), " rows and ",
                        ncol(matrixSignsPairs), " columns."),
-      class = "WrongDimensionError")
+      subclass = "WrongDimensionError")
     )
   }
 }
@@ -111,14 +111,14 @@
 {
   if (is.null(env$X1)){
     if (is.null(env$observedX1)){
-      stop("X1 must be non-null.")
+      stop(CondCopulas_error_condition_base("X1 must be non-null."))
     } else {
       env$X1 = env$observedX1
     }
   }
   if (is.null(env$X2)){
     if (is.null(env$observedX2)){
-      stop("X2 must be non-null.")
+      stop(CondCopulas_error_condition_base("X2 must be non-null."))
     } else {
       env$X2 = env$observedX2
     }
@@ -129,7 +129,7 @@
 {
   if (is.null(env$Z)){
     if (is.null(env$observedZ)){
-      stop("Z must be non-null.")
+      stop(CondCopulas_error_condition_base("Z must be non-null."))
     } else {
       env$Z = env$observedZ
     }
@@ -140,7 +140,7 @@
 {
   if (is.null(env$X3)){
     if (is.null(env$observedX3)){
-      stop("X3 must be non-null.")
+      stop(CondCopulas_error_condition_base("X3 must be non-null."))
     } else {
       env$X3 = env$observedX3
     }
@@ -157,26 +157,26 @@
 .ensure_Z_numeric_vector_or_matrix <- function(Z, nameZ){
   if (is.vector(Z)){
     if(!is.numeric(Z)){
-      stop(errorCondition(
+      stop(CondCopulas_error_condition_base(
         message = paste0("If ", nameZ, " is a vector, it should be numeric. ",
                          "Here, ", nameZ, " is of class ", class(Z) ,".") ,
-        class = "NonNumericInputError"
+        subclass = "NonNumericInputError"
       ))
     }
   } else if (inherits(Z, "data.frame")){
     Z = as.matrix.data.frame(Z)
     if(!is.numeric(Z)){
-      stop(errorCondition(
+      stop(CondCopulas_error_condition_base(
         message = paste0(nameZ, " should be composed of numeric values. ",
                          "Here, ", nameZ, " is of storage mode ", mode(Z) ,".") ,
-        class = "NonNumericInputError"
+        subclass = "NonNumericInputError"
       ))
     }
   } else if (!inherits(Z, "matrix")){
-    stop(errorCondition(
+    stop(CondCopulas_error_condition_base(
       message = paste0(nameZ, " should be a numeric matrix or vector.",
                        "Here, ", nameZ, " is of class ", class(Z) ,".") ,
-      class = "NonNumericInputError"
+      subclass = "NonNumericInputError"
     ))
   }
 
@@ -185,6 +185,22 @@
   }
 
   return (Z)
+}
+
+
+#' Constructor for error conditions of the package
+#'
+#' @noRd
+CondCopulas_error_condition_base <- function(message, subclass = NULL, call = sys.call(-1), ...) {
+  # errorCondition() automatically adds 'error' and 'condition' to the class
+  return (
+    errorCondition(
+      message = message,
+      class = c(subclass, "CondCopulasError"), # We add a base warning class
+      call = call,
+      ... # Allows for additional custom fields
+    )
+  )
 }
 
 
