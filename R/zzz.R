@@ -111,14 +111,18 @@
 {
   if (is.null(env$X1)){
     if (is.null(env$observedX1)){
-      stop(CondCopulas_error_condition_base("X1 must be non-null."))
+      stop(CondCopulas_error_condition_base(
+        "X1 must be non-null.",
+        subclass = "InvalidArgumentError"))
     } else {
       env$X1 = env$observedX1
     }
   }
   if (is.null(env$X2)){
     if (is.null(env$observedX2)){
-      stop(CondCopulas_error_condition_base("X2 must be non-null."))
+      stop(CondCopulas_error_condition_base(
+        "X2 must be non-null.",
+        subclass = "InvalidArgumentError") )
     } else {
       env$X2 = env$observedX2
     }
@@ -129,7 +133,9 @@
 {
   if (is.null(env$Z)){
     if (is.null(env$observedZ)){
-      stop(CondCopulas_error_condition_base("Z must be non-null."))
+      stop(CondCopulas_error_condition_base(
+        "Z must be non-null.",
+        subclass = "InvalidArgumentError") )
     } else {
       env$Z = env$observedZ
     }
@@ -140,7 +146,9 @@
 {
   if (is.null(env$X3)){
     if (is.null(env$observedX3)){
-      stop(CondCopulas_error_condition_base("X3 must be non-null."))
+      stop(CondCopulas_error_condition_base(
+        "X3 must be non-null.",
+        subclass = "InvalidArgumentError") )
     } else {
       env$X3 = env$observedX3
     }
