@@ -138,7 +138,7 @@ CKTmatrix.kernel <- function(dataMatrix, observedZ, gridZ,
       message = paste0("The length of observedZ and the number of rows in ",
                        "`dataMatrix` must be equal. Here they are respectively: ",
                        length(observedZ), ", ", n),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 
   if(typeEstCKT == "wdm"){

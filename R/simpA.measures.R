@@ -87,7 +87,7 @@ measures_nonsimplifyingness_NP <- function(
   if (length(measures) == 0){
     stop(CondCopulas_error_condition_base(
       message = paste0("'measures' should not be of length 0."),
-      subclass = "ZeroLengthError") )
+      subclass = c("ZeroLengthError", "InvalidArgumentError") ) )
   } else if (length(measures) == 1 && measures == "all"){
     measures = possible_measures
   } else {
@@ -100,7 +100,7 @@ measures_nonsimplifyingness_NP <- function(
           "\n",
           "Possible measures are: ",
           "'", paste0(possible_measures, collapse = "', '"), "'."),
-        subclass = "UnknownMeasureNameError" ) )
+        subclass = c("UnknownMeasureNameError", "InvalidArgumentError") ) )
     }
   }
 
@@ -118,7 +118,7 @@ measures_nonsimplifyingness_NP <- function(
       stop(CondCopulas_error_condition_base(
         message = paste0("'truncVal' must be in the interval [0, 0.5). ",
                          "Here it is: ", truncVal),
-        subclass = "InvalidInputError"
+        subclass = "InvalidArgumentError"
       ))
     }
     result$truncVal = truncVal

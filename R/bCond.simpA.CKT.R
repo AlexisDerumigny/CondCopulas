@@ -130,7 +130,7 @@ bCond.simpA.CKT <- function(XI, XJ = NULL, matrixInd = NULL,
                          "equal to the number of observations in the dataset. ",
                          "Here they are respectively: ",
                          NROW(XI), ", ", NROW(XJ)),
-        subclass = "DifferentLengthsError") )
+        subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
     }
 
     # First part: construction of the tree -----------------------

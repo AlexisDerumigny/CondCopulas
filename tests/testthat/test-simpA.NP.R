@@ -28,7 +28,7 @@ test_that("the truncation works", {
       testStat = "T1_CvM_Cs3", typeBoot = "boot.NP",
       h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = -1)},
 
-    class = "InvalidInputError"
+    class = "InvalidArgumentError"
   )
 
   expect_error(
@@ -37,7 +37,7 @@ test_that("the truncation works", {
       testStat = "T1_CvM_Cs3", typeBoot = "boot.NP",
       h = 2, kernel.name = "Epanechnikov", nBootstrap = 1, truncVal = 0.5)},
 
-    class = "InvalidInputError"
+    class = "InvalidArgumentError"
   )
 
 })

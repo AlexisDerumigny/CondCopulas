@@ -108,7 +108,7 @@ bCond.simpA.param <- function(
                        "This should be equal to the number of rows in 'partition'. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(partition)),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 
   .checkUnivX1X2(X1, X2)

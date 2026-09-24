@@ -6,7 +6,7 @@
       message = paste0("X1, X2 and Z must have the same number of observations. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(Z)),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 }
 
@@ -17,7 +17,7 @@
       message = paste0("X1, X2 and X3 must have the same number of observations. ",
                        "Here they are respectively: ",
                        NROW(X1), ", ", NROW(X2), ", ", NROW(X3)),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 }
 
@@ -29,7 +29,7 @@
                        "(so the same number of conditioning variables). ",
                        "However, here ", name_Z, " has ", NCOL(Z), " columns ",
                        "while ", name_newZ, " has ", NCOL(newZ), " columns." ),
-      subclass = "WrongDimensionError")
+      subclass = c("WrongDimensionError", "InvalidArgumentError") )
     )
   }
 }
@@ -40,13 +40,13 @@
     stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
   if (NCOL(X2) > 1){
     stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
 }
 
@@ -56,19 +56,19 @@
     stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
   if (NCOL(X2) > 1){
     stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
   if (NCOL(X3) > 1){
     stop(CondCopulas_error_condition_base(
       message = paste0("X3 must be univariate. Here it has ",
                        NCOL(X3), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
 }
 
@@ -78,19 +78,19 @@
     stop(CondCopulas_error_condition_base(
       message = paste0("X1 must be univariate. Here it has ",
                        NCOL(X1), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
   if (NCOL(X2) > 1){
     stop(CondCopulas_error_condition_base(
       message = paste0("X2 must be univariate. Here it has ",
                        NCOL(X2), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
   if (NCOL(Z) > 1){
     stop(CondCopulas_error_condition_base(
       message = paste0("Z must be univariate. Here it has ",
                        NCOL(Z), " columns"),
-      subclass = "WrongDimensionError") )
+      subclass = c("WrongDimensionError", "InvalidArgumentError") ) )
   }
 }
 
@@ -102,7 +102,7 @@
                        "Here, its dimensions are: ",
                        nrow(matrixSignsPairs), " rows and ",
                        ncol(matrixSignsPairs), " columns."),
-      subclass = "WrongDimensionError")
+      subclass = c("WrongDimensionError", "InvalidArgumentError") )
     )
   }
 }
@@ -160,7 +160,7 @@
       stop(CondCopulas_error_condition_base(
         message = paste0("If ", nameZ, " is a vector, it should be numeric. ",
                          "Here, ", nameZ, " is of class ", class(Z) ,".") ,
-        subclass = "NonNumericInputError"
+        subclass = c("NonNumericArgumentError", "InvalidArgumentError")
       ))
     }
   } else if (inherits(Z, "data.frame")){
@@ -169,14 +169,14 @@
       stop(CondCopulas_error_condition_base(
         message = paste0(nameZ, " should be composed of numeric values. ",
                          "Here, ", nameZ, " is of storage mode ", mode(Z) ,".") ,
-        subclass = "NonNumericInputError"
+        subclass = c("NonNumericArgumentError", "InvalidArgumentError")
       ))
     }
   } else if (!inherits(Z, "matrix")){
     stop(CondCopulas_error_condition_base(
       message = paste0(nameZ, " should be a numeric matrix or vector.",
                        "Here, ", nameZ, " is of class ", class(Z) ,".") ,
-      subclass = "NonNumericInputError"
+      subclass = c("NonNumericArgumentError", "InvalidArgumentError")
     ))
   }
 

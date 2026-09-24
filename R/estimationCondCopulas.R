@@ -69,7 +69,7 @@ estimateNPCondCopula <- function(X1 = NULL, X2 = NULL, X3 = NULL,
   if (any(U1_ < 0 | U1_ > 1 | U2_ < 0 | U2_ > 1)){
     stop(CondCopulas_error_condition_base(
       message = "All the elements of U1_ and U2_ should all be in the interval [0,1]",
-      subclass = "InvalidInputError"
+      subclass = "InvalidArgumentError"
     ))
   }
 

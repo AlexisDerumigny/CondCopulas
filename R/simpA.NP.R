@@ -165,7 +165,7 @@ simpA.NP <- function(
       stop(CondCopulas_error_condition_base(
         message = paste0("'truncVal' must be in the interval [0, 0.5). ",
                          "Here it is: ", truncVal),
-        subclass = "InvalidInputError"
+        subclass = "InvalidArgumentError"
       ))
     }
   }

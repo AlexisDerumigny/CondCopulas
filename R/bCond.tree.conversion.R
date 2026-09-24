@@ -133,7 +133,7 @@ matrixInd2matrixCKT <- function(matrixInd, newDataXI)
                        "of rows, as they come from the same sample. ",
                        "Here they are respectively: ",
                        NROW(newDataXI), ", ", NROW(matrixInd)),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 
   # We count the number of boxes in the partition

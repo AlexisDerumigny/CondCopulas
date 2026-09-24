@@ -352,7 +352,7 @@ computeMatrixSignPairs <- function(vectorX1, vectorX2, typeEstCKT = 4)
     stop(CondCopulas_error_condition_base(
       message = paste0("vectorX1 and vectorX2 have different lengths: ",
                        length(vectorX1), " and ", length(vectorX2)),
-      subclass = "DifferentLengthsError") )
+      subclass = c("DifferentLengthsError", "InvalidArgumentError") ) )
   }
 
   n = length(vectorX1)
